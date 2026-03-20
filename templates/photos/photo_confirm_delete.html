@@ -4,16 +4,11 @@
   {% include "header.html" with title="Delete Photo" %}
   <div class="mt-4">
     <p>Are you sure you want to delete <strong>{{ photo }}</strong>?</p>
-    <div class="flex gap-3 mt-6">
-      <button
-        class="btn btn-danger"
-        hx-delete="{% url 'photos:photo_delete' photo.pk %}"
-        hx-confirm="This cannot be undone."
-        hx-target="body"
-        hx-push-url="{% url 'photos:photo_list' %}"
-      >Delete</button>
+    <form method="post" class="flex gap-3 mt-6">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete</button>
       <a href="{% url 'photos:photo_detail' photo.pk %}"
          class="btn btn-secondary">Cancel</a>
-    </div>
+    </form>
   </div>
 {% endblock content %}

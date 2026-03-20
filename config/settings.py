@@ -61,6 +61,7 @@ INSTALLED_APPS: list[str] = [
     "heroicons",
     "widget_tweaks",
     "photoblog",
+    "photoblog.comments",
     "photoblog.users",
     "photoblog.photos",
 ]

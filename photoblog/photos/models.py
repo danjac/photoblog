@@ -1,6 +1,9 @@
 import sorl.thumbnail
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from django.urls import reverse
 
 
 class Photo(models.Model):
@@ -20,3 +23,13 @@ class Photo(models.Model):
     def __str__(self) -> str:
         """Return the photo's title."""
         return self.title
+
+    def get_absolute_url(self) -> str:
+        """Return the URL for this photo."""
+        return reverse("photos:photo_detail", kwargs={"pk": self.pk})
+
+
+@receiver(post_delete, sender=Photo)
+def delete_photo_file(sender, instance, **kwargs):
+    """Delete the image file from storage when a Photo is deleted."""
+    instance.image.delete(save=False)

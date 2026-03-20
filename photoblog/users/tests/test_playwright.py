@@ -15,9 +15,8 @@ def test_login_valid_credentials(page: Page, e2e_user, live_server):
     page.locator('[name="login"]').fill(e2e_user.username)
     page.locator('[name="password"]').fill("testpass")
     page.get_by_role("button", name="Sign In").click()
-    home_url = f"{live_server.url}{reverse('index')}"
-    page.wait_for_url(home_url)
-    expect(page).to_have_url(home_url)
+    photos_url = f"{live_server.url}{reverse('photos:photo_list')}"
+    expect(page).to_have_url(photos_url)
 
 
 def test_login_invalid_credentials(page: Page, e2e_user, live_server):

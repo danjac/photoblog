@@ -7,8 +7,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_http_methods, require_safe
+from django.views.decorators.http import require_safe
 
+from photoblog.comments.forms import CommentForm
+from photoblog.comments.models import Comment
 from photoblog.http.decorators import require_form_methods
 from photoblog.paginator import render_paginated_response
 from photoblog.partials import render_partial_response
@@ -36,10 +38,15 @@ def photo_list(request: HttpRequest) -> TemplateResponse:
 def photo_detail(request: HttpRequest, pk: int) -> TemplateResponse:
     """Display a single photo."""
     photo = get_object_or_404(Photo, pk=pk)
-    return TemplateResponse(
+    comment_form = CommentForm() if request.user.is_authenticated else None
+    comments = Comment.objects.filter(photo=photo).order_by("-created")
+    return render_paginated_response(
         request,
         "photos/photo_detail.html",
-        {"photo": photo},
+        comments,
+        extra_context={"photo": photo, "comment_form": comment_form},
+        per_page=10,
+        target="comment-list",
     )
 
 
@@ -90,14 +97,14 @@ def photo_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     )
 
 
-@require_http_methods(["GET", "HEAD", "DELETE"])
 @login_required
+@require_form_methods
 def photo_delete(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     """Delete a photo."""
     photo = get_object_or_404(Photo, pk=pk)
     if photo.user != request.user:
         raise PermissionDenied
-    if request.method == "DELETE":
+    if request.method == "POST":
         photo.delete()
         messages.success(request, _("Photo deleted."))
         return redirect(reverse("photos:photo_list"))

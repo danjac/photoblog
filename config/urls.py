@@ -18,6 +18,7 @@ urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
     path("", include("photoblog.users.urls")),
     path("photos/", include("photoblog.photos.urls")),
+    path("comments/", include("photoblog.comments.urls")),
     path("account/", include("allauth.urls")),
     path(
         "ht/live/",

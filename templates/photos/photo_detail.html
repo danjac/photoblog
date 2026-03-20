@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-{% load thumbnail %}
+{% load i18n thumbnail %}
 
 {% block content %}
   {% include "header.html" with title=photo.title %}
   <div class="mt-6">
     {% thumbnail photo.image "800x600" as im %}
       <img src="{{ im.url }}" alt="{{ photo.title }}" class="w-full max-w-2xl rounded-lg" width="{{ im.width }}" height="{{ im.height }}" />
+    {% empty %}
     {% endthumbnail %}
     {% if photo.description %}
       <p class="mt-4 text-base-content/70">{{ photo.description }}</p>
@@ -18,5 +19,52 @@
            class="btn btn-danger">Delete</a>
       </div>
     {% endif %}
+    {% if comment_form %}
+      <div id="comment-form" x-data="{ open: false }" class="mt-6">
+        <button type="button"
+                class="btn btn-primary"
+                x-show="!open"
+                x-cloak
+                @click="open = true">{% translate "Add comment" %}</button>
+        <form method="post"
+              action="{% url 'comments:comment_create' photo.pk %}"
+              x-show="open"
+              x-cloak
+              x-transition>
+          {% csrf_token %}
+          {{ comment_form.comment.as_field_group }}
+          <div class="flex gap-3 mt-2">
+            <button type="submit" class="btn btn-primary">{% translate "Submit" %}</button>
+            <button type="button"
+                    class="btn btn-ghost"
+                    @click="open = false">{% translate "Cancel" %}</button>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+  <div id="comment-list" class="mt-6">
+    {% fragment "paginate.html" target="comment-list" %}
+      {% for comment in page %}
+        <div id="comment-{{ comment.pk }}" class="p-4 mt-4 rounded-lg bg-base-200">
+          <p class="font-semibold">{{ comment.user.username }}</p>
+          <p class="mt-1">{{ comment.comment|linebreaksbr }}</p>
+          <p class="mt-2 text-sm text-base-content/60">{{ comment.created }}</p>
+          {% if comment.user == user %}
+            <div class="flex gap-2 mt-3">
+              <a href="{% url 'comments:comment_edit' comment.pk %}"
+                 class="btn btn-sm btn-secondary">{% translate "Edit" %}</a>
+              <form method="post" action="{% url 'comments:comment_delete' comment.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-error">{% translate "Delete" %}</button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      {% empty %}
+        <p class="text-base-content/60">No comments yet.</p>
+      {% endfor %}
+    {% endfragment %}
+    {% include "paginate.html" %}
   </div>
 {% endblock content %}

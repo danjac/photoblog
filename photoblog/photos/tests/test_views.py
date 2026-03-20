@@ -106,12 +106,12 @@ class TestPhotoDelete:
     def test_delete(self, client, auth_user):
         photo = PhotoFactory(user=auth_user)
         pk = photo.pk
-        response = client.delete(reverse("photos:photo_delete", args=[pk]))
+        response = client.post(reverse("photos:photo_delete", args=[pk]))
         assert response.status_code == 302
         assert not PhotoFactory._meta.model.objects.filter(pk=pk).exists()
 
     def test_404(self, client, auth_user):
-        response = client.delete(reverse("photos:photo_delete", args=[0]))
+        response = client.post(reverse("photos:photo_delete", args=[0]))
         assert response.status_code == 404
 
     def test_redirect_if_not_logged_in(self, client, photo):

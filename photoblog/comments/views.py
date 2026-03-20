@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_POST
 
 from photoblog.comments.forms import CommentForm
 from photoblog.comments.models import Comment
-from photoblog.http.decorators import require_form_methods
+from photoblog.http.decorators import require_DELETE, require_form_methods
 from photoblog.photos.models import Photo
 
 if TYPE_CHECKING:
@@ -58,12 +58,12 @@ def comment_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
 
 
 @login_required
-@require_POST
-def comment_delete(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
+@require_DELETE
+def comment_delete(request: HttpRequest, pk: int) -> HttpResponse:
     """Delete a comment."""
     comment = get_object_or_404(Comment, pk=pk)
     if comment.user != request.user:
         raise PermissionDenied
     comment.delete()
     messages.success(request, _("Comment deleted."))
-    return redirect(comment.photo)
+    return HttpResponse()

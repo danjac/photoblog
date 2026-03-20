@@ -54,10 +54,13 @@
             <div class="flex gap-2 mt-3">
               <a href="{% url 'comments:comment_edit' comment.pk %}"
                  class="btn btn-sm btn-secondary">{% translate "Edit" %}</a>
-              <form method="post" action="{% url 'comments:comment_delete' comment.pk %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-error">{% translate "Delete" %}</button>
-              </form>
+              <button type="button"
+                      class="btn btn-sm btn-error"
+                      hx-delete="{% url 'comments:comment_delete' comment.pk %}"
+                      hx-confirm='{% translate "Are you sure you want to delete this comment?" %}'
+                      hx-target="#comment-{{ comment.pk }}"
+                      hx-swap="delete"
+                      hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>{% translate "Delete" %}</button>
             </div>
           {% endif %}
         </div>

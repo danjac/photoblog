@@ -1,0 +1,38 @@
+{% load i18n static %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    {% block title %}{% title_tag %}{% endblock %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% meta_tags %}
+    <link rel="manifest" href="{% url 'manifest' %}">
+    <link rel="stylesheet" href="{% static 'app.css' %}" />
+    <script src="{% static 'vendor/htmx.js' %}" defer></script>
+    <script src="{% static 'vendor/alpine.js' %}" defer></script>
+  </head>
+  <body class="min-h-screen bg-base-100 text-base-content">
+    <div id="hx-indicator" x-data="hxIndicator"></div>
+    {% include "messages.html" %}
+    {% cookie_banner %}
+    {% include "navbar.html" %}
+    <main class="py-8 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      {% block content %}
+      {% endblock content %}
+    </main>
+    {% block scripts %}
+      <script src="{% static 'indicator.js' %}"></script>
+      <script>
+        document.addEventListener('htmx:beforeRequest', (evt) => {
+          evt.detail.target?.setAttribute('aria-busy', 'true');
+        });
+        document.addEventListener('htmx:afterRequest', (evt) => {
+          evt.detail.target?.removeAttribute('aria-busy');
+        });
+        if (typeof navigator.serviceWorker !== 'undefined') {
+          navigator.serviceWorker.register('{% static "service-worker.js" %}')
+        }
+      </script>
+    {% endblock scripts %}
+  </body>
+</html>

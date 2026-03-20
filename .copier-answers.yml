@@ -1,0 +1,11 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 449d8c4
+_src_path: gh:danjac/django-studio
+author: Your Name
+author_email: you@example.com
+description: A Django project
+domain: example.com
+license: MIT
+package_name: photoblog
+project_name: Photo Blog
+project_slug: photoblog

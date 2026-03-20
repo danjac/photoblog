@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Plugins */
+
+@plugin "@tailwindcss/typography";
+@plugin "./daisyui.mjs";
+
+@import "./theme.css";
+@import "./tweaks.css";
+@import "./htmx.css";

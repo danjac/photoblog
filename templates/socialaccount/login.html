@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% if process == "connect" %}
+    {% title_tag _("Connect Account") %}
+  {% else %}
+    {% title_tag _("Sign In") %}
+  {% endif %}
+{% endblock title %}
+
+{% block content %}
+  <div class="py-12 mx-auto max-w-md">
+    {% if process == "connect" %}
+      {% blocktranslate with provider=provider.name asvar title %}Connect {{ provider }}{% endblocktranslate %}
+    {% else %}
+      {% blocktranslate with provider=provider.name asvar title %}Sign In Via {{ provider }}{% endblocktranslate %}
+    {% endif %}
+    {% include "header.html" with title=title %}
+    <div class="mt-6">
+      {% if process == "connect" %}
+        <p class="mb-4 text-sm text-base-content/60">
+          {% blocktranslate with provider=provider.name %}You are about to connect a new third-party account from {{ provider }}.{% endblocktranslate %}
+        </p>
+      {% else %}
+        <p class="mb-4 text-sm text-base-content/60">
+          {% blocktranslate with provider=provider.name %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktranslate %}
+        </p>
+      {% endif %}
+      {% fragment "form.html" %}
+        {% fragment "form.html#buttons" %}
+          <button type="submit" class="btn btn-primary">{% translate "Continue" %}</button>
+        {% endfragment %}
+      {% endfragment %}
+    </div>
+  </div>
+{% endblock content %}

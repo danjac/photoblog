@@ -1,0 +1,10 @@
+@layer base {
+    :root {
+        scrollbar-width: thin;
+    }
+
+    /* AlpineJS */
+    [x-cloak] {
+        display: none !important;
+    }
+}

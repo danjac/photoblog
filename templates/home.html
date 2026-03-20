@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load heroicons i18n %}
+
+{% block content %}
+  <section class="my-8 rounded-2xl hero bg-base-200 min-h-[60vh]">
+    <div class="text-center hero-content">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
+          Capture. Share. Remember.
+        </h1>
+        <p class="py-6 text-lg text-base-content/70">
+          A personal space to showcase your photography. Browse stunning images,
+          discover curated collections, and connect through the art of visual storytelling.
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          {% if user.is_authenticated %}
+            <a href="{% url 'account_email' %}" class="btn btn-primary">{% translate "My Account" %}</a>
+            <a href="{% url 'photos:photo_list' %}" class="btn btn-outline btn-primary">{% translate "Browse Photos" %}</a>
+          {% else %}
+            <a href="{% url 'account_signup' %}" class="btn btn-primary">{% translate "Get started" %}</a>
+            <a href="{% url 'account_login' %}" class="btn btn-outline btn-primary">{% translate "Sign in" %}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="my-12 space-y-8">
+    <div class="flex gap-4 items-center">
+      {% heroicon_outline "sparkles" class="w-8 h-8 text-primary" %}
+      <div>
+        <h2 class="text-2xl font-semibold">Featured Photos</h2>
+        <p class="mt-1 text-base-content/70">
+          Explore a curated selection of stunning imagery from talented photographers around the world.
+          From sweeping landscapes to intimate portraits, discover work that inspires and captivates.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      {% heroicon_outline "folder-open" class="w-8 h-8 text-secondary" %}
+      <div>
+        <h2 class="text-2xl font-semibold">Collections</h2>
+        <p class="mt-1 text-base-content/70">
+          Browse themed collections organized by genre, location, and mood. Whether you're seeking
+          travel inspiration or looking to revisit a favorite subject, our collections make discovery effortless.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex gap-4 items-center">
+      {% heroicon_outline "arrow-up-circle" class="w-8 h-8 text-accent" %}
+      <div>
+        <h2 class="text-2xl font-semibold">Latest Uploads</h2>
+        <p class="mt-1 text-base-content/70">
+          Stay up to date with fresh additions from our community. New photos are uploaded daily,
+          ensuring there's always something new to explore and appreciate.
+        </p>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

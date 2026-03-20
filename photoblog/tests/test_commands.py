@@ -1,0 +1,184 @@
+import json
+from io import StringIO
+
+import pytest
+from django.contrib.sites.models import Site
+from django.core.management import call_command
+from django.core.management.base import CommandError
+
+MOCK_VENDORS = {
+    "htmx": {
+        "version": "2.0.7",
+        "source": "https://github.com/bigskysoftware/htmx/releases/download/v{version}/htmx.min.js",
+        "dest": "static/vendor/htmx.js",
+    },
+    "daisyui": {
+        "version": "5.5.18",
+        "files": [
+            {
+                "source": "https://github.com/saadeghi/daisyui/releases/download/v{version}/daisyui.mjs",
+                "dest": "tailwind/daisyui.mjs",
+            },
+        ],
+    },
+}
+
+
+# ---------------------------------------------------------------------------
+# set_default_site
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.django_db
+class TestSetDefaultSite:
+    def test_sets_domain_and_name(self):
+        call_command("set_default_site", "example.com", "My App")
+        site = Site.objects.get_current()
+        assert site.domain == "example.com"
+        assert site.name == "My App"
+
+    def test_outputs_success_message(self):
+        out = StringIO()
+        call_command("set_default_site", "example.com", "My App", stdout=out)
+        assert "example.com" in out.getvalue()
+
+
+# ---------------------------------------------------------------------------
+# sync_vendors fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def vendors_path(tmp_path, settings):
+    path = tmp_path / "vendors.json"
+    path.write_text(json.dumps(MOCK_VENDORS))
+    settings.VENDORS_FILE = path
+    return path
+
+
+# ---------------------------------------------------------------------------
+# sync_vendors
+# ---------------------------------------------------------------------------
+
+
+class TestSyncVendors:
+    def test_check_shows_available_updates(self, vendors_path, mocker, capsys):
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        call_command("sync_vendors", "--check")
+        output = capsys.readouterr().out
+        assert "2.0.7 -> 2.0.8" in output
+        assert "update(s) available" in output
+
+    def test_check_up_to_date(self, vendors_path, mocker, capsys):
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.7",
+        )
+        call_command("sync_vendors", "--check")
+        output = capsys.readouterr().out
+        assert "up to date" in output
+
+    def test_download_all_packages(self, vendors_path, mocker, tmp_path):
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mock_download = mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._download_file",
+        )
+        call_command("sync_vendors", "--no-input")
+        calls = [str(c) for c in mock_download.call_args_list]
+        assert any("htmx" in c for c in calls)
+        assert any("daisyui" in c for c in calls)
+
+    def test_download_updates_vendors_json(self, vendors_path, mocker, tmp_path):
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._download_file"
+        )
+        call_command("sync_vendors", "--no-input")
+        updated = json.loads(vendors_path.read_text())
+        assert updated["htmx"]["version"] == "2.0.8"
+        assert updated["daisyui"]["version"] == "2.0.8"
+
+    def test_missing_vendors_file_raises_error(self, tmp_path, settings):
+        settings.VENDORS_FILE = tmp_path / "vendors.json"
+        with pytest.raises(CommandError, match="not found"):
+            call_command("sync_vendors")
+
+    def test_invalid_json_vendors_file_raises_error(self, tmp_path, settings):
+        path = tmp_path / "vendors.json"
+        path.write_text("not valid json {")
+        settings.VENDORS_FILE = path
+        with pytest.raises(CommandError, match="not valid JSON"):
+            call_command("sync_vendors")
+
+    def test_malformed_vendor_raises_error(self, tmp_path, settings):
+        path = tmp_path / "vendors.json"
+        path.write_text(json.dumps({"htmx": {"source": "https://example.com/htmx.js"}}))
+        settings.VENDORS_FILE = path
+        with pytest.raises(CommandError, match="Malformed vendors config"):
+            call_command("sync_vendors", "--check")
+
+    def test_empty_vendors_file_raises_error(self, tmp_path, settings):
+        path = tmp_path / "vendors.json"
+        path.write_text("{}")
+        settings.VENDORS_FILE = path
+        with pytest.raises(CommandError, match="No vendors defined"):
+            call_command("sync_vendors")
+
+    def test_confirmation_prompt_aborts(self, vendors_path, mocker, capsys):
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch("builtins.input", return_value="n")
+        mock_download = mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._download_file",
+        )
+        call_command("sync_vendors")
+        mock_download.assert_not_called()
+        assert "Aborted" in capsys.readouterr().out
+
+    def test_confirmation_prompt_proceeds(self, vendors_path, mocker, tmp_path):
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch("builtins.input", return_value="y")
+        mock_download = mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._download_file",
+        )
+        call_command("sync_vendors")
+        assert mock_download.call_count > 0
+
+    def test_api_failure_warns_and_continues(self, vendors_path, mocker, capsys):
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            side_effect=TimeoutError("timed out"),
+        )
+        call_command("sync_vendors", "--check")
+        output = capsys.readouterr().out
+        assert "failed to check" in output
+
+    def test_download_failure_raises_error(self, vendors_path, mocker, tmp_path):
+        (tmp_path / "static" / "vendor").mkdir(parents=True)
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._latest_github_version",
+            return_value="2.0.8",
+        )
+        mocker.patch(
+            "photoblog.management.commands.sync_vendors.Command._download_file",
+            side_effect=CommandError("Failed to download htmx: connection refused"),
+        )
+        with pytest.raises(CommandError, match="Failed to download"):
+            call_command("sync_vendors", "--no-input")

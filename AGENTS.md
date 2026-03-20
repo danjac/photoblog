@@ -1,0 +1,185 @@
+# AGENTS.md
+
+This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
+
+
+## Stack
+
+- **Python 3.14**, **Django 6.0**, **PostgreSQL 18**, **Redis 8**
+- **Frontend**: HTMX + AlpineJS + Tailwind CSS (no JS build step; Tailwind compiled via `django-tailwind-cli`)
+- **Package manager**: `uv` (not pip/poetry)
+- **Task runner**: `just` (run `just` with no arguments to list all commands)
+- **Background tasks**: Django Tasks (`django-tasks-db`), not Celery
+
+**NOTE**: Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
+
+
+## Project Layout
+
+```
+config/             # Django settings, URLs, ASGI/WSGI
+photoblog/              # Main application package
+  users/            # User model, authentication
+  db/               # Database utilities (search mixin)
+  http/             # HTTP utilities (typed requests, responses, decorators)
+  partials.py       # render_partial_response() - HTMX partial swap helper
+  paginator.py      # render_paginated_response() + no-COUNT Paginator
+  tests/            # Shared test fixtures
+templates/          # Django templates (HTMX partials + full pages)
+static/             # Static assets
+conftest.py         # Root pytest config (fixture plugins)
+```
+
+## Commands
+
+```bash
+just check-all          # lint → typecheck → manage.py check → test-all — run before committing
+just test               # unit tests with coverage
+just test-e2e           # Playwright E2E tests (headless)
+just serve              # dev server + Tailwind watcher
+just dj <command>       # any manage.py command (e.g. just dj migrate)
+just start / just stop  # Docker services (PostgreSQL, Redis, Mailpit)
+```
+
+Run `just` with no arguments for the full command list.
+
+Tests live in `photoblog/**/tests/`; framework: `pytest`+`pytest-django`; E2E tests marked `@pytest.mark.e2e`.
+
+## Git Workflow
+
+Conventional commits enforced by commitlint. Format: `type: subject`
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+## Code Style
+
+**Python style**: See `docs/Python-Style-Guide.md`. Critical gotcha: `pyupgrade --py314` rewrites `except (E1, E2):` to `except E1, E2:` (PEP 758) — **do not revert this**; it is correct Python 3.14 syntax.
+
+**UI components**: Use [DaisyUI](https://daisyui.com/components/) for all component styling. Check daisyui.com/components before writing new markup — the component you need likely already exists. See `docs/Tailwind.md` and `docs/Django-Templates.md`.
+
+**Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/Design.md`.
+
+**Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/Frontend-Dependencies.md` for the full format and workflow.
+
+**Form rendering** — use the first option that fits:
+1. `{{ form.field.as_field_group }}` — explicit field order
+2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
+3. `{{ form }}` — all fields via configured renderer
+
+Never use `{{ form.as_div }}` or `{% include "form/field.html" %}`.
+See `docs/Django-Templates.md`.
+
+**Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/Django.md` for usage.
+
+## Working Conventions
+
+### Required reading before implementation
+
+**Read `docs/Django.md` before starting any implementation.** It documents
+installed apps, middleware order, settings conventions, admin patterns, and
+migrations. It also indexes the focused docs below.
+
+**Before starting any task, look up your task type in the table below and read
+the listed doc(s) before writing any code.** The table is a lookup — use it
+actively, not as background reading.
+
+| What you are about to implement | Read first |
+| ------------------------------- | ---------- |
+| Python conventions and gotchas  | `docs/Python-Style-Guide.md` |
+| Django views                    | `docs/Django-Views.md` |
+| Django models / querysets       | `docs/Django-Models.md` |
+| Django templates (partials, fragments, pagination) | `docs/Django-Templates.md` |
+| Django forms                    | `docs/Django-Templates.md`, `docs/Validation.md` |
+| Validating request params or external data | `docs/Validation.md` |
+| Django admin                    | `docs/Django.md` |
+| UI components (buttons, modals, layout)         | `docs/Design.md`, `docs/Tailwind.md` |
+| Accessibility                   | `docs/Accessibility.md` |
+| Internationalisation / i18n     | `docs/Django.md` |
+| Adding a Python dependency      | `docs/Packages.md` |
+| Adding a JS/CSS dependency      | `docs/Frontend-Dependencies.md` |
+| Any feature handling user data, accounts, or PII | `docs/GDPR.md` |
+| Background task                 | `docs/Django-Tasks.md` |
+| HTMX interaction                | `docs/HTMX.md` |
+| AlpineJS component              | `docs/Alpine.md` |
+| Authentication / allauth        | `docs/Authentication.md` |
+| File uploads / media storage    | `docs/File-Storage.md` |
+| Sending email (transactional / dev) | `docs/Sending-Emails.md` |
+| Testing patterns                | `docs/Testing.md` |
+| Any of the above                | `docs/Project-Structure.md` |
+
+If a doc contradicts what you see in existing code, flag it — do not silently pick one.
+
+- **Search before implementing** — search with `rg` or `ast-grep` for existing utilities. Check `photoblog/db/search.py`, `photoblog/http/`, `photoblog/partials.py`, and `photoblog/paginator.py` before writing new code.
+- **Scope discipline** — only change what was explicitly requested.
+- **Diagnose before changing** — state your diagnosis with a file:line reference before editing.
+- **Add imports and first usage in the same edit** — the pre-commit ruff hook strips unused imports immediately. Always add an import and its first usage together in a single edit.
+
+### Template Tags
+
+- **One library per app, named after the app** — `<app>/templatetags/<app>.py`, loaded via `{% load <app> %}`.
+- **Test as plain Python functions** — `simple_tag` and `filter` wrap ordinary functions; import and call them directly in tests without instantiating `Template`/`Context`.
+- **Tag tests live in `<app>/tests/test_template_tags.py`.**
+
+## Slash Commands
+
+Invoke with `/djstudio <subcommand>` in Claude Code.
+
+**General**
+
+| Subcommand | Purpose |
+| ---------- | ------- |
+| `help [command]` | Print documentation for a subcommand |
+| `sync` | Pull latest template changes via Copier and resolve merge conflicts |
+| `feedback` | File a GitHub issue against the django-studio repo |
+
+**Generators**
+
+| Subcommand | Purpose |
+| ---------- | ------- |
+| `create-app <app_name>` | Scaffold a complete Django app |
+| `create-view [<app_name>] <view>` | Add a view + template + URL |
+| `create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
+| `create-command <app_name> [desc]` | Add a management command with tests |
+| `create-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
+| `create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
+| `create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
+| `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
+| `create-tag [<app_name>] [<module>]` | Add a template tag |
+| `create-filter [<app_name>] [<module>]` | Add a template filter |
+
+**Documentation**
+
+| Subcommand | Purpose |
+| ---------- | ------- |
+| `docs <topic>` | Look up or create project documentation |
+| `daisyui <component>` | Fetch DaisyUI component docs with project conventions |
+
+**Localisation**
+
+| Subcommand | Purpose |
+| ---------- | ------- |
+| `translate <locale>` | Extract, translate, and compile message catalogue |
+
+**Audits**
+
+| Subcommand | Purpose |
+| ---------- | ------- |
+| `perf` | Performance audit: N+1 queries, indexes, caching, async |
+| `secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
+| `gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
+| `a11y` | Accessibility audit: WCAG 2.1 AA |
+| `deadcode` | Remove unused Python code and static assets |
+
+**Deployment**
+
+| Subcommand | Purpose |
+| ---------- | ------- |
+| `launch` | Interactive first-deploy wizard (infra → secrets → deploy) |
+| `launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki) |
+| `rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
+| `enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
+
+
+## Template Feedback
+
+Generated from [django-studio](https://github.com/danjac/djstudio). To report a bug or improvement: `/djstudio feedback`

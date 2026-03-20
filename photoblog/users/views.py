@@ -1,0 +1,27 @@
+from typing import TYPE_CHECKING
+
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+from django.utils.translation import gettext as _
+from django.views.decorators.http import require_http_methods
+
+from photoblog.users.gdpr import anonymise_user
+
+if TYPE_CHECKING:
+    from photoblog.http.request import AuthenticatedHttpRequest
+    from photoblog.http.response import RenderOrRedirectResponse
+
+
+@require_http_methods(["GET", "HEAD", "DELETE"])
+@login_required
+def delete_account(request: AuthenticatedHttpRequest) -> RenderOrRedirectResponse:
+    """Show delete-account confirmation page; handle DELETE to anonymise and log out."""
+    if request.method == "DELETE":
+        anonymise_user(request.user)
+        logout(request)
+        messages.success(request, _("Your account has been deleted."))
+        return redirect("index")
+    return TemplateResponse(request, "account/delete_account.html")

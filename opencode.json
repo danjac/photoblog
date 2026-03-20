@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "djstudio": {
+      "template": ".claude/commands/djstudio.md",
+      "description": "Project assistant for django-studio generated projects"
+    }
+  }
+}

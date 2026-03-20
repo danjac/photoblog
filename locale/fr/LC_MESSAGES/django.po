@@ -1,0 +1,734 @@
+# French translations for PACKAGE.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-20 22:16+0000\n"
+"PO-Revision-Date: 2026-03-21\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: photoblog/photos/views.py:56
+msgid "Photo created."
+msgstr "Photo créée."
+
+#: photoblog/photos/views.py:80
+msgid "Photo updated."
+msgstr "Photo mise à jour."
+
+#: photoblog/photos/views.py:102
+msgid "Photo deleted."
+msgstr "Photo supprimée."
+
+#: photoblog/users/views.py:25
+msgid "Your account has been deleted."
+msgstr "Votre compte a été supprimé."
+
+#: templates/400.html:7
+msgid "Bad Request"
+msgstr "Mauvaise requête"
+
+#: templates/400.html:8
+msgid "The request could not be understood by the server."
+msgstr "Le serveur n'a pas pu comprendre la requête."
+
+#: templates/400.html:10 templates/403.html:10 templates/404.html:10
+#: templates/500.html:10
+msgid "Go home"
+msgstr "Retour à l'accueil"
+
+#: templates/403.html:7
+msgid "Permission Denied"
+msgstr "Accès refusé"
+
+#: templates/403.html:8
+msgid "You do not have permission to access this page."
+msgstr "Vous n'avez pas la permission d'accéder à cette page."
+
+#: templates/404.html:7
+msgid "Page Not Found"
+msgstr "Page introuvable"
+
+#: templates/404.html:8
+msgid "The page you are looking for does not exist."
+msgstr "La page que vous recherchez n'existe pas."
+
+#: templates/500.html:7
+msgid "Server Error"
+msgstr "Erreur serveur"
+
+#: templates/500.html:8
+msgid "Something went wrong on our end. Please try again later."
+msgstr "Une erreur s'est produite de notre côté. Veuillez réessayer plus tard."
+
+#: templates/about.html:5
+msgid "About"
+msgstr "À propos"
+
+#: templates/about.html:9
+#, python-format
+msgid "Welcome to <strong>%(name)s</strong>. This page is a placeholder — update it with a description of your project."
+msgstr "Bienvenue sur <strong>%(name)s</strong>. Cette page est un espace réservé — mettez-la à jour avec une description de votre projet."
+
+#: templates/about.html:15
+#, python-format
+msgid "If you have any questions or feedback, contact us at <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>."
+msgstr "Pour toute question ou commentaire, contactez-nous à <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>."
+
+#: templates/about.html:21
+msgid "Privacy Policy"
+msgstr "Politique de confidentialité"
+
+#: templates/account/account_inactive.html:4
+#: templates/account/account_inactive.html:8
+msgid "Account Inactive"
+msgstr "Compte inactif"
+
+#: templates/account/account_inactive.html:11
+msgid "This account is inactive."
+msgstr "Ce compte est inactif."
+
+#: templates/account/confirm_email_verification_code.html:4
+msgid "Email Verification"
+msgstr "Vérification de l'e-mail"
+
+#: templates/account/confirm_email_verification_code.html:8
+msgid "Enter Email Verification Code"
+msgstr "Entrez le code de vérification de l'e-mail"
+
+#: templates/account/confirm_email_verification_code.html:11
+#, python-format
+msgid "We've sent a code to <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>. The code expires shortly, so please enter it soon."
+msgstr "Nous avons envoyé un code à <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>. Le code expire bientôt, veuillez donc le saisir rapidement."
+
+#: templates/account/confirm_email_verification_code.html:18
+#: templates/account/confirm_login_code.html:24
+#: templates/account/confirm_password_reset_code.html:22
+#: templates/account/email_confirm.html:22
+#: templates/account/reauthenticate.html:18
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: templates/account/confirm_email_verification_code.html:20
+#: templates/account/confirm_login_code.html:27
+#: templates/account/confirm_password_reset_code.html:25
+#: templates/account/confirm_phone_verification_code.html:23
+msgid "Request new code"
+msgstr "Demander un nouveau code"
+
+#: templates/account/confirm_email_verification_code.html:23
+#: templates/account/confirm_email_verification_code.html:25
+#: templates/account/delete_account.html:29
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/account/confirm_email_verification_code.html:43
+#: templates/account/confirm_password_reset_code.html:40
+msgid "Use a different email address"
+msgstr "Utiliser une autre adresse e-mail"
+
+#: templates/account/confirm_email_verification_code.html:49
+#: templates/account/confirm_password_reset_code.html:47
+#: templates/account/confirm_phone_verification_code.html:45
+msgid "Change"
+msgstr "Modifier"
+
+#: templates/account/confirm_login_code.html:4 templates/account/login.html:8
+#: templates/account/login.html:19
+#: templates/account/password_reset_from_key_done.html:13
+#: templates/account/request_login_code.html:4
+#: templates/socialaccount/login.html:8
+#: templates/socialaccount/login_redirect.html:5
+msgid "Sign In"
+msgstr "Se connecter"
+
+#: templates/account/confirm_login_code.html:8
+msgid "Enter Sign-In Code"
+msgstr "Entrez le code de connexion"
+
+#: templates/account/confirm_login_code.html:12
+#, python-format
+msgid "We sent a code to <strong>%(email)s</strong>. The code expires shortly — enter it below."
+msgstr "Nous avons envoyé un code à <strong>%(email)s</strong>. Le code expire bientôt — saisissez-le ci-dessous."
+
+#: templates/account/confirm_login_code.html:14
+#, python-format
+msgid "We sent a code to <strong>%(phone)s</strong>. The code expires shortly — enter it below."
+msgstr "Nous avons envoyé un code à <strong>%(phone)s</strong>. Le code expire bientôt — saisissez-le ci-dessous."
+
+#: templates/account/confirm_login_code.html:16
+msgid "We sent you a code. The code expires shortly — enter it below."
+msgstr "Nous vous avons envoyé un code. Le code expire bientôt — saisissez-le ci-dessous."
+
+#: templates/account/confirm_password_reset_code.html:4
+#: templates/account/password_reset.html:8
+msgid "Password Reset"
+msgstr "Réinitialisation du mot de passe"
+
+#: templates/account/confirm_password_reset_code.html:8
+msgid "Enter Password Reset Code"
+msgstr "Entrez le code de réinitialisation du mot de passe"
+
+#: templates/account/confirm_password_reset_code.html:12
+#, python-format
+msgid "We sent a password reset code to <strong>%(email)s</strong>. The code expires shortly — enter it below."
+msgstr "Nous avons envoyé un code de réinitialisation de mot de passe à <strong>%(email)s</strong>. Le code expire bientôt — saisissez-le ci-dessous."
+
+#: templates/account/confirm_password_reset_code.html:14
+msgid "We sent you a password reset code. The code expires shortly — enter it below."
+msgstr "Nous vous avons envoyé un code de réinitialisation de mot de passe. Le code expire bientôt — saisissez-le ci-dessous."
+
+#: templates/account/confirm_phone_verification_code.html:4
+msgid "Phone Verification"
+msgstr "Vérification du téléphone"
+
+#: templates/account/confirm_phone_verification_code.html:8
+msgid "Enter Phone Verification Code"
+msgstr "Entrez le code de vérification du téléphone"
+
+#: templates/account/confirm_phone_verification_code.html:12
+#, python-format
+msgid "We sent a verification code to <strong>%(phone)s</strong>. The code expires shortly — enter it below."
+msgstr "Nous avons envoyé un code de vérification à <strong>%(phone)s</strong>. Le code expire bientôt — saisissez-le ci-dessous."
+
+#: templates/account/confirm_phone_verification_code.html:20
+msgid "Verify"
+msgstr "Vérifier"
+
+#: templates/account/confirm_phone_verification_code.html:38
+msgid "Use a different phone number"
+msgstr "Utiliser un autre numéro de téléphone"
+
+#: templates/account/delete_account.html:4
+msgid "Delete Account"
+msgstr "Supprimer le compte"
+
+#: templates/account/delete_account.html:8
+msgid "Delete your account"
+msgstr "Supprimer votre compte"
+
+#: templates/account/delete_account.html:11
+msgid "This will permanently delete your account and all associated data. This action cannot be undone."
+msgstr "Cela supprimera définitivement votre compte et toutes les données associées. Cette action est irréversible."
+
+#: templates/account/delete_account.html:14
+msgid "Are you sure you want to continue?"
+msgstr "Êtes-vous sûr de vouloir continuer ?"
+
+#: templates/account/delete_account.html:21
+msgid "Delete your account permanently? This cannot be undone."
+msgstr "Supprimer définitivement votre compte ? Cette action est irréversible."
+
+#: templates/account/delete_account.html:26 templates/navbar.html:68
+msgid "Delete my account"
+msgstr "Supprimer mon compte"
+
+#: templates/account/email.html:4 templates/account/email.html:8
+msgid "Email Addresses"
+msgstr "Adresses e-mail"
+
+#: templates/account/email.html:13
+msgid "The following email addresses are associated with your account:"
+msgstr "Les adresses e-mail suivantes sont associées à votre compte :"
+
+#: templates/account/email.html:32
+msgid "Verified"
+msgstr "Vérifiée"
+
+#: templates/account/email.html:36
+msgid "Unverified"
+msgstr "Non vérifiée"
+
+#: templates/account/email.html:41
+msgid "Primary"
+msgstr "Principale"
+
+#: templates/account/email.html:51
+msgid "Make Primary"
+msgstr "Définir comme principale"
+
+#: templates/account/email.html:54 templates/account/email_change.html:29
+#: templates/account/phone_change.html:28
+msgid "Re-send Verification"
+msgstr "Renvoyer la vérification"
+
+#: templates/account/email.html:57 templates/socialaccount/connections.html:36
+msgid "Remove"
+msgstr "Supprimer"
+
+#: templates/account/email.html:63
+msgid "You have no email addresses associated with your account."
+msgstr "Aucune adresse e-mail n'est associée à votre compte."
+
+#: templates/account/email.html:68
+msgid "Add Email Address"
+msgstr "Ajouter une adresse e-mail"
+
+#: templates/account/email.html:74
+msgid "Add Email"
+msgstr "Ajouter un e-mail"
+
+#: templates/account/email_change.html:4 templates/account/email_change.html:8
+#: templates/account/email_change.html:43
+msgid "Change Email"
+msgstr "Modifier l'e-mail"
+
+#: templates/account/email_change.html:12
+#, python-format
+msgid ""
+"\n"
+"            Your current email address is <strong>%(email)s</strong>.\n"
+"          "
+msgstr ""
+"\n"
+"            Votre adresse e-mail actuelle est <strong>%(email)s</strong>.\n"
+"          "
+
+#: templates/account/email_change.html:21
+#, python-format
+msgid ""
+"\n"
+"              A verification email has been sent to <strong>%(email)s</strong>. Check your inbox and\n"
+"              click the link to confirm the change.\n"
+"            "
+msgstr ""
+"\n"
+"              Un e-mail de vérification a été envoyé à <strong>%(email)s</strong>. Consultez votre boîte de réception et\n"
+"              cliquez sur le lien pour confirmer le changement.\n"
+"            "
+
+#: templates/account/email_change.html:33
+msgid "Cancel Change"
+msgstr "Annuler le changement"
+
+#: templates/account/email_confirm.html:4
+#: templates/account/email_confirm.html:8
+msgid "Confirm Email Address"
+msgstr "Confirmer l'adresse e-mail"
+
+#: templates/account/email_confirm.html:14
+#, python-format
+msgid ""
+"\n"
+"              Please confirm that <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>\n"
+"              is an email address for user %(user_display)s.\n"
+"            "
+msgstr ""
+"\n"
+"              Veuillez confirmer que <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>\n"
+"              est une adresse e-mail pour l'utilisateur %(user_display)s.\n"
+"            "
+
+#: templates/account/email_confirm.html:26
+#, python-format
+msgid ""
+"\n"
+"              Unable to confirm %(email)s because it is already confirmed by a different account.\n"
+"            "
+msgstr ""
+"\n"
+"              Impossible de confirmer %(email)s car il est déjà confirmé par un autre compte.\n"
+"            "
+
+#: templates/account/email_confirm.html:34
+#, python-format
+msgid ""
+"\n"
+"            This email confirmation link expired or is invalid.\n"
+"            Please <a class=\"underline\" href=\"%(email_url)s\">issue a new email confirmation request</a>.\n"
+"          "
+msgstr ""
+"\n"
+"            Ce lien de confirmation d'e-mail a expiré ou est invalide.\n"
+"            Veuillez <a class=\"underline\" href=\"%(email_url)s\">demander une nouvelle confirmation d'e-mail</a>.\n"
+"          "
+
+#: templates/account/login.html:11
+#, python-format
+msgid "No account? <a class=\"link link-primary\" href=\"%(url)s\">Sign up</a>."
+msgstr "Pas de compte ? <a class=\"link link-primary\" href=\"%(url)s\">Inscrivez-vous</a>."
+
+#: templates/account/logout.html:4 templates/account/logout.html:8
+#: templates/account/logout.html:16
+msgid "Sign Out"
+msgstr "Se déconnecter"
+
+#: templates/account/logout.html:11
+msgid "Are you sure you want to sign out?"
+msgstr "Êtes-vous sûr de vouloir vous déconnecter ?"
+
+#: templates/account/password_change.html:4
+#: templates/account/password_change.html:8
+#: templates/account/password_change.html:15
+#: templates/account/password_reset_from_key.html:19
+#: templates/account/password_reset_from_key.html:25
+msgid "Change Password"
+msgstr "Modifier le mot de passe"
+
+#: templates/account/password_reset.html:11
+msgid "Enter your email address and we will send you a link to reset your password."
+msgstr "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe."
+
+#: templates/account/password_reset.html:16
+msgid "Reset Password"
+msgstr "Réinitialiser le mot de passe"
+
+#: templates/account/password_reset_done.html:8
+msgid "Password Reset Sent"
+msgstr "Réinitialisation du mot de passe envoyée"
+
+#: templates/account/password_reset_done.html:11
+msgid "We have sent you an email with a link to reset your password. Please check your inbox."
+msgstr "Nous vous avons envoyé un e-mail avec un lien pour réinitialiser votre mot de passe. Veuillez vérifier votre boîte de réception."
+
+#: templates/account/password_reset_from_key.html:9
+msgid "Invalid Reset Link"
+msgstr "Lien de réinitialisation invalide"
+
+#: templates/account/password_reset_from_key.html:12
+#, python-format
+msgid ""
+"\n"
+"            This password reset link is invalid or has already been used.\n"
+"            Please <a class=\"underline\" href=\"%(url)s\">request a new one</a>.\n"
+"          "
+msgstr ""
+"\n"
+"            Ce lien de réinitialisation de mot de passe est invalide ou a déjà été utilisé.\n"
+"            Veuillez <a class=\"underline\" href=\"%(url)s\">en demander un nouveau</a>.\n"
+"          "
+
+#: templates/account/password_reset_from_key.html:29
+msgid "Your password has been changed."
+msgstr "Votre mot de passe a été modifié."
+
+#: templates/account/password_reset_from_key_done.html:8
+msgid "Password Changed"
+msgstr "Mot de passe modifié"
+
+#: templates/account/password_reset_from_key_done.html:11
+msgid "Your password has been changed successfully."
+msgstr "Votre mot de passe a été modifié avec succès."
+
+#: templates/account/password_set.html:4 templates/account/password_set.html:8
+#: templates/account/password_set.html:15
+msgid "Set Password"
+msgstr "Définir le mot de passe"
+
+#: templates/account/phone_change.html:4
+msgid "Change Phone"
+msgstr "Modifier le téléphone"
+
+#: templates/account/phone_change.html:8 templates/account/phone_change.html:39
+msgid "Change Phone Number"
+msgstr "Modifier le numéro de téléphone"
+
+#: templates/account/phone_change.html:12
+#, python-format
+msgid ""
+"\n"
+"            Your current phone number is <strong>%(phone)s</strong>.\n"
+"          "
+msgstr ""
+"\n"
+"            Votre numéro de téléphone actuel est <strong>%(phone)s</strong>.\n"
+"          "
+
+#: templates/account/phone_change.html:17
+msgid "(unverified)"
+msgstr "(non vérifié)"
+
+#: templates/account/phone_change.html:23
+msgid "Your phone number is still pending verification."
+msgstr "Votre numéro de téléphone est en attente de vérification."
+
+#: templates/account/reauthenticate.html:4
+#: templates/account/reauthenticate.html:8
+msgid "Confirm Access"
+msgstr "Confirmer l'accès"
+
+#: templates/account/reauthenticate.html:11
+msgid "Enter your password:"
+msgstr "Entrez votre mot de passe :"
+
+#: templates/account/request_login_code.html:8
+msgid "Sign In with Code"
+msgstr "Se connecter avec un code"
+
+#: templates/account/request_login_code.html:11
+msgid "Enter your email or phone number and we will send you a one-time sign-in code."
+msgstr "Entrez votre adresse e-mail ou votre numéro de téléphone et nous vous enverrons un code de connexion à usage unique."
+
+#: templates/account/request_login_code.html:18
+msgid "Send Code"
+msgstr "Envoyer le code"
+
+#: templates/account/request_login_code.html:22
+msgid "Other sign-in options"
+msgstr "Autres options de connexion"
+
+#: templates/account/signup.html:8 templates/account/signup.html:23
+#: templates/account/signup_by_passkey.html:4
+#: templates/socialaccount/signup.html:4 templates/socialaccount/signup.html:8
+#: templates/socialaccount/signup.html:21
+msgid "Sign Up"
+msgstr "S'inscrire"
+
+#: templates/account/signup.html:11
+#, python-format
+msgid "Already have an account? <a class=\"link link-primary\" href=\"%(url)s\">Sign in</a>."
+msgstr "Vous avez déjà un compte ? <a class=\"link link-primary\" href=\"%(url)s\">Connectez-vous</a>."
+
+#: templates/account/signup_by_passkey.html:8
+msgid "Passkey Sign Up"
+msgstr "Inscription par clé d'accès"
+
+#: templates/account/signup_by_passkey.html:11
+#, python-format
+msgid "Already have an account? <a class=\"underline\" href=\"%(url)s\">Sign in</a>."
+msgstr "Vous avez déjà un compte ? <a class=\"underline\" href=\"%(url)s\">Connectez-vous</a>."
+
+#: templates/account/signup_by_passkey.html:18
+msgid "Sign Up with Passkey"
+msgstr "S'inscrire avec une clé d'accès"
+
+#: templates/account/signup_by_passkey.html:22
+msgid "Other sign-up options"
+msgstr "Autres options d'inscription"
+
+#: templates/account/signup_closed.html:4
+#: templates/account/signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr "Inscription fermée"
+
+#: templates/account/signup_closed.html:11
+msgid "We are sorry, but the sign up is currently closed."
+msgstr "Nous sommes désolés, mais les inscriptions sont actuellement closes."
+
+#: templates/account/snippets/already_logged_in.html:4
+msgid "Note"
+msgstr "Note"
+
+#: templates/account/snippets/already_logged_in.html:5
+#, python-format
+msgid "You are already logged in as %(user_display)s."
+msgstr "Vous êtes déjà connecté en tant que %(user_display)s."
+
+#: templates/account/snippets/warn_no_email.html:3
+msgid "Warning:"
+msgstr "Avertissement :"
+
+#: templates/account/snippets/warn_no_email.html:4
+msgid "You currently do not have any email address set up. You should really add an email address so you can receive notifications, reset your password, etc."
+msgstr "Vous n'avez actuellement aucune adresse e-mail configurée. Vous devriez vraiment ajouter une adresse e-mail pour recevoir des notifications, réinitialiser votre mot de passe, etc."
+
+#: templates/account/verification_sent.html:4
+#: templates/account/verification_sent.html:8
+#: templates/account/verified_email_required.html:4
+#: templates/account/verified_email_required.html:8
+msgid "Verify Your Email Address"
+msgstr "Vérifiez votre adresse e-mail"
+
+#: templates/account/verification_sent.html:11
+msgid "We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes."
+msgstr "Nous vous avons envoyé un e-mail pour vérification. Suivez le lien fourni pour finaliser le processus d'inscription. Si vous ne trouvez pas l'e-mail de vérification dans votre boîte de réception principale, vérifiez votre dossier spam. Veuillez nous contacter si vous ne recevez pas l'e-mail de vérification dans quelques minutes."
+
+#: templates/account/verified_email_required.html:12
+msgid "This part of the site requires us to verify that you are who you claim to be. For this purpose, we require that you verify ownership of your email address."
+msgstr "Cette partie du site nécessite que nous vérifiions que vous êtes bien quien vous prétendez être. À cet effet, nous vous demandons de vérifier que vous êtes bien propriétaire de votre adresse e-mail."
+
+#: templates/account/verified_email_required.html:15
+msgid "We have sent an email to you for verification. Please click on the link inside that email. If you do not see the verification email in your main inbox, check your spam folder. Otherwise contact us if you do not receive it within a few minutes."
+msgstr "Nous vous avons envoyé un e-mail pour vérification. Veuillez cliquer sur le lien dans cet e-mail. Si vous ne trouvez pas l'e-mail de vérification dans votre boîte de réception principale, vérifiez votre dossier spam. Sinon, contactez-nous si vous ne le recevez pas dans quelques minutes."
+
+#: templates/account/verified_email_required.html:18
+#, python-format
+msgid "<strong>Note:</strong> you can still <a class=\"underline\" href=\"%(email_url)s\">change your email address</a>."
+msgstr "<strong>Note :</strong> vous pouvez toujours <a class=\"underline\" href=\"%(email_url)s\">modifier votre adresse e-mail</a>."
+
+#: templates/cookie_banner.html:8
+msgid "Cookie consent"
+msgstr "Consentement aux cookies"
+
+#: templates/cookie_banner.html:14
+#, python-format
+msgid "This site uses cookies for essential features such as logins and security. We do not share cookies or any other user information with third parties. For more information, please see our <a href=\"%(url)s\" class=\"underline\">Privacy Policy</a>."
+msgstr "Ce site utilise des cookies pour des fonctionnalités essentielles telles que les connexions et la sécurité. Nous ne partageons pas les cookies ou autres informations utilisateur avec des tiers. Pour plus d'informations, veuillez consulter notre <a href=\"%(url)s\" class=\"underline\">Politique de confidentialité</a>."
+
+#: templates/cookie_banner.html:19
+msgid "Accept cookies and close banner"
+msgstr "Accepter les cookies et fermer la bannière"
+
+#: templates/cookie_banner.html:25
+msgid "Accept and close"
+msgstr "Accepter et fermer"
+
+#: templates/error_base.html:5
+msgid "Error"
+msgstr "Erreur"
+
+#: templates/form/field.html:103
+msgid "Toggle password visibility"
+msgstr "Afficher/masquer le mot de passe"
+
+#: templates/home.html:17
+msgid "My Account"
+msgstr "Mon compte"
+
+#: templates/home.html:18
+msgid "Browse Photos"
+msgstr "Parcourir les photos"
+
+#: templates/home.html:20
+msgid "Get started"
+msgstr "Commencer"
+
+#: templates/home.html:21 templates/navbar.html:84 templates/navbar.html:138
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: templates/messages.html:18
+msgid "Dismiss"
+msgstr "Fermer"
+
+#: templates/navbar.html:44
+msgid "Signed in as"
+msgstr "Connecté en tant que"
+
+#: templates/navbar.html:50
+msgid "Account settings"
+msgstr "Paramètres du compte"
+
+#: templates/navbar.html:61
+msgid "Site admin"
+msgstr "Administration du site"
+
+#: templates/navbar.html:77
+msgid "Sign out"
+msgstr "Se déconnecter"
+
+#: templates/navbar.html:87 templates/navbar.html:143
+msgid "Sign up"
+msgstr "S'inscrire"
+
+#: templates/navbar.html:94
+msgid "Toggle navigation menu"
+msgstr "Afficher/masquer le menu de navigation"
+
+#: templates/navbar.html:108 templates/navbar.html:124
+msgid "Mobile navigation"
+msgstr "Navigation mobile"
+
+#: templates/paginate.html:21
+msgid "Pagination"
+msgstr "Pagination"
+
+#: templates/paginate.html:29 templates/paginate.html:30
+msgid "Previous Page"
+msgstr "Page précédente"
+
+#: templates/paginate.html:32 templates/paginate.html:38
+msgid "Previous"
+msgstr "Précédent"
+
+#: templates/paginate.html:36 templates/paginate.html:37
+msgid "First Page"
+msgstr "Première page"
+
+#: templates/paginate.html:43 templates/paginate.html:44
+msgid "Next Page"
+msgstr "Page suivante"
+
+#: templates/paginate.html:46 templates/paginate.html:52
+msgid "Next"
+msgstr "Suivant"
+
+#: templates/paginate.html:50 templates/paginate.html:51
+msgid "Last Page"
+msgstr "Dernière page"
+
+#: templates/socialaccount/authentication_error.html:4
+#: templates/socialaccount/authentication_error.html:8
+msgid "Third-Party Login Failure"
+msgstr "Échec de connexion par un tiers"
+
+#: templates/socialaccount/authentication_error.html:11
+msgid "An error occurred while attempting to login via your third-party account."
+msgstr "Une erreur s'est produite lors de la tentative de connexion via votre compte tiers."
+
+#: templates/socialaccount/connections.html:4
+#: templates/socialaccount/connections.html:8
+msgid "Account Connections"
+msgstr "Connexions du compte"
+
+#: templates/socialaccount/connections.html:12
+msgid "You can sign in to your account using any of the following third-party accounts:"
+msgstr "Vous pouvez vous connecter à votre compte en utilisant l'un des comptes tiers suivants :"
+
+#: templates/socialaccount/connections.html:41
+msgid "You currently have no third-party accounts connected to this account."
+msgstr "Vous n'avez actuellement aucun compte tiers connecté à ce compte."
+
+#: templates/socialaccount/connections.html:45
+msgid "Add a Third-Party Account"
+msgstr "Ajouter un compte tiers"
+
+#: templates/socialaccount/login.html:6
+msgid "Connect Account"
+msgstr "Connecter le compte"
+
+#: templates/socialaccount/login.html:15
+#, python-format
+msgid "Connect %(provider)s"
+msgstr "Connecter %(provider)s"
+
+#: templates/socialaccount/login.html:17
+#, python-format
+msgid "Sign In Via %(provider)s"
+msgstr "Se connecter via %(provider)s"
+
+#: templates/socialaccount/login.html:23
+#, python-format
+msgid "You are about to connect a new third-party account from %(provider)s."
+msgstr "Vous êtes sur le point de connecter un nouveau compte tiers de %(provider)s."
+
+#: templates/socialaccount/login.html:27
+#, python-format
+msgid "You are about to sign in using a third-party account from %(provider)s."
+msgstr "Vous êtes sur le point de vous connecter en utilisant un compte tiers de %(provider)s."
+
+#: templates/socialaccount/login.html:32
+#: templates/socialaccount/login_redirect.html:9
+msgid "Continue"
+msgstr "Continuer"
+
+#: templates/socialaccount/login_cancelled.html:4
+#: templates/socialaccount/login_cancelled.html:8
+msgid "Login Cancelled"
+msgstr "Connexion annulée"
+
+#: templates/socialaccount/login_cancelled.html:12
+#, python-format
+msgid "You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a class=\"underline\" href=\"%(login_url)s\">sign in</a>."
+msgstr "Vous avez décidé d'annuler la connexion à notre site en utilisant l'un de vos comptes existants. Si c'était une erreur, veuillez <a class=\"underline\" href=\"%(login_url)s\">vous connecter</a>."
+
+#: templates/socialaccount/signup.html:11
+#, python-format
+msgid ""
+"\n"
+"          You are about to use your %(provider_name)s account to login to %(site_name)s.\n"
+"          As a final step, please complete the following form:\n"
+"        "
+msgstr ""
+"\n"
+"          Vous êtes sur le point d'utiliser votre compte %(provider_name)s pour vous connecter à %(site_name)s.\n"
+"          En dernière étape, veuillez remplir le formulaire suivant :\n"
+"        "

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% title_tag _("Email Addresses") %}{% endblock %}
+
+{% block content %}
+  <div class="py-12 mx-auto max-w-lg">
+    {% include "header.html" with title=_("Email Addresses") %}
+    <div class="mt-6">
+      {% url 'account_email' as form_action %}
+      {% if emailaddresses %}
+        <p class="mb-4 text-sm text-base-content/60">
+          {% translate "The following email addresses are associated with your account:" %}
+        </p>
+        {% fragment "form.html" action=form_action %}
+          <div class="space-y-2">
+            {% for radio in emailaddress_radios %}
+              {% with emailaddress=radio.emailaddress %}
+                <div class="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="email"
+                    value="{{ emailaddress.email }}"
+                    id="{{ radio.id }}"
+                    {% if radio.checked %}checked{% endif %}
+                    class="w-4 h-4 accent-primary"
+                  />
+                  <label for="{{ radio.id }}" class="text-sm text-base-content/70">
+                    {{ emailaddress.email }}
+                    {% if emailaddress.verified %}
+                      <span class="ml-2 text-xs font-medium text-success-600 dark:text-success-400">
+                        {% translate "Verified" %}
+                      </span>
+                    {% else %}
+                      <span class="ml-2 text-xs font-medium text-error">
+                        {% translate "Unverified" %}
+                      </span>
+                    {% endif %}
+                    {% if emailaddress.primary %}
+                      <span class="ml-2 text-xs font-medium text-primary">
+                        {% translate "Primary" %}
+                      </span>
+                    {% endif %}
+                  </label>
+                </div>
+              {% endwith %}
+            {% endfor %}
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button type="submit" name="action_primary" class="btn btn-primary">
+              {% translate "Make Primary" %}
+            </button>
+            <button type="submit" name="action_send" class="btn btn-secondary">
+              {% translate "Re-send Verification" %}
+            </button>
+            <button type="submit" name="action_remove" class="btn btn-error">
+              {% translate "Remove" %}
+            </button>
+          </div>
+        {% endfragment %}
+      {% else %}
+        <p class="mb-4 text-sm text-base-content/60">
+          {% translate "You have no email addresses associated with your account." %}
+        </p>
+      {% endif %}
+      {% if can_add_email %}
+        <h2 class="mt-8 mb-4 text-xl font-semibold text-base-content">
+          {% translate "Add Email Address" %}
+        </h2>
+        {% fragment "form.html" action=form_action %}
+          {{ form }}
+          {% fragment "form.html#buttons" %}
+            <button type="submit" name="action_add" class="btn btn-primary">
+              {% translate "Add Email" %}
+            </button>
+          {% endfragment %}
+        {% endfragment %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}

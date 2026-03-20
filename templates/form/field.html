@@ -1,0 +1,131 @@
+{% load heroicons i18n widget_tweaks %}
+
+{% fragment "form/field.html#fieldset" %}
+  {% with widget_type=field|widget_type %}
+    {% include "form/field.html#"|add:widget_type %}
+  {% endwith %}
+{% endfragment %}
+
+{% partialdef fieldset %}
+  {% with errors=field.errors described_by=field.aria_describedby %}
+    <fieldset
+      class="fieldset"
+      {% if described_by %}aria-describedby="{{ described_by }}"{% endif %}
+    >
+      {{ content }}
+      {% partial errors %}
+      {% partial help_text %}
+    </fieldset>
+  {% endwith %}
+{% endpartialdef fieldset %}
+
+{% partialdef label %}
+  <legend class="fieldset-legend{% if field.errors %} text-error{% endif %}">
+    {{ field.label }}
+    {% if not field.field.required %}(optional){% endif %}
+  </legend>
+{% endpartialdef label %}
+
+{% partialdef errors %}
+  {% if errors %}
+    <ul class="space-y-1 text-sm font-semibold text-error">
+      {{ errors|unordered_list }}
+    </ul>
+  {% endif %}
+{% endpartialdef errors %}
+
+{% partialdef help_text %}
+  {% if field.help_text %}
+    <p class="label" id="{{ field.auto_id }}_helptext">
+      {{ field.help_text }}
+    </p>
+  {% endif %}
+{% endpartialdef help_text %}
+
+{# Default input #}
+{% partialdef input %}
+  {% partial label %}
+  {% render_field field class="w-full input" %}
+{% endpartialdef input %}
+
+{# Simple text and file inputs - same as default #}
+{% partialdef textinput %}{% partial input %}{% endpartialdef %}
+{% partialdef emailinput %}{% partial input %}{% endpartialdef %}
+{% partialdef fileinput %}{% partial input %}{% endpartialdef %}
+{% partialdef clearablefileinput %}{% partial input %}{% endpartialdef %}
+{% partialdef urlinput %}{% partial input %}{% endpartialdef %}
+
+{# Date #}
+{% partialdef dateinput %}
+  {% partial label %}
+  {% render_field field class="w-full input" type="date" %}
+{% endpartialdef dateinput %}
+
+{# Date + time #}
+{% partialdef datetimeinput %}
+  {% partial label %}
+  {% render_field field class="w-full input" type="datetime-local" %}
+{% endpartialdef datetimeinput %}
+
+{# Textarea #}
+{% partialdef textarea %}
+  {% partial label %}
+  {% render_field field class="w-full textarea" %}
+{% endpartialdef textarea %}
+
+{# Checkbox #}
+{% partialdef checkboxinput %}
+  <label class="gap-3 cursor-pointer label">
+    {% render_field field class="checkbox" %}
+    <span class="label-text{% if field.errors %} text-error{% endif %}">
+      {{ field.label }}
+      {% if not field.field.required %}(optional){% endif %}
+    </span>
+  </label>
+{% endpartialdef checkboxinput %}
+
+{# Checkbox select multiple (e.g. M2M fields) #}
+{% partialdef checkboxselectmultiple %}
+  {% partial label %}
+  <div class="space-y-2">
+    {% render_field field %}
+  </div>
+{% endpartialdef checkboxselectmultiple %}
+
+{# Password with show/hide toggle #}
+{% partialdef passwordinput %}
+  {% partial label %}
+  <div x-data="{ show: false }" class="relative">
+    {% render_field field class="pr-10 w-full input" x-ref="password" %}
+    <button
+      type="button"
+      x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';"
+      aria-label="{% translate "Toggle password visibility" %}"
+      class="flex absolute inset-y-0 right-0 justify-center items-center px-3"
+      tabindex="-1"
+    >
+      {% heroicon_mini "eye" class="opacity-50 size-5" x_show="show" %}
+      {% heroicon_mini "eye-slash" class="opacity-50 size-5" x_show="!show" %}
+    </button>
+  </div>
+{% endpartialdef passwordinput %}
+
+{# Select dropdown #}
+{% partialdef select %}
+  {% partial label %}
+  {% render_field field class="w-full select" %}
+{% endpartialdef select %}
+
+{# Multi-select #}
+{% partialdef selectmultiple %}
+  {% partial label %}
+  {% render_field field class="w-full select" %}
+{% endpartialdef selectmultiple %}
+
+{# django-money MoneyWidget (amount + currency select) #}
+{% partialdef moneywidget %}
+  {% partial label %}
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+    {% render_field field %}
+  </div>
+{% endpartialdef moneywidget %}

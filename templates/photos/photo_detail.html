@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block content %}
+  {% include "header.html" with title=photo.title %}
+  <div class="mt-6">
+    {% thumbnail photo.image "800x600" as im %}
+      <img src="{{ im.url }}" alt="{{ photo.title }}" class="w-full max-w-2xl rounded-lg" width="{{ im.width }}" height="{{ im.height }}" />
+    {% endthumbnail %}
+    {% if photo.description %}
+      <p class="mt-4 text-base-content/70">{{ photo.description }}</p>
+    {% endif %}
+    {% if photo.user == user %}
+      <div class="flex gap-3 mt-6">
+        <a href="{% url 'photos:photo_edit' photo.pk %}"
+           class="btn btn-secondary">Edit</a>
+        <a href="{% url 'photos:photo_delete' photo.pk %}"
+           class="btn btn-danger">Delete</a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

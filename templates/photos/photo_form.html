@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% include "header.html" with title="Photo" %}
+  {% partialdef photo-form inline %}
+    <div id="photo-form">
+      {% fragment "form.html" htmx=True hx_target="#photo-form" multipart=True %}
+        {% for field in form %}
+          {{ field.as_field_group }}
+        {% endfor %}
+        {% fragment "form.html#buttons" %}
+          <button type="submit" class="btn btn-primary">Save</button>
+          <a href="{% url 'photos:photo_list' %}" class="btn btn-secondary">
+            Cancel
+          </a>
+        {% endfragment %}
+      {% endfragment %}
+    </div>
+  {% endpartialdef photo-form %}
+{% endblock content %}

@@ -1,0 +1,167 @@
+import functools
+import json
+from typing import TYPE_CHECKING
+
+from django import template
+from django.conf import settings
+from django.shortcuts import resolve_url
+from django.utils.html import format_html, format_html_join
+
+if TYPE_CHECKING:
+    from django.contrib.sites.models import Site
+    from django.template.context import Context
+    from django.utils.safestring import SafeString
+    from django_stubs_ext import StrOrPromise
+
+    from photoblog.http.request import RequestContext
+
+register = template.Library()
+
+
+@register.inclusion_tag("cookie_banner.html", takes_context=True)
+def cookie_banner(context: RequestContext) -> dict:
+    """Render the GDPR cookie consent banner.
+
+    Passes ``cookies_accepted`` into the template based on whether the
+    GDPR consent cookie is present on the request.
+    """
+    cookies_accepted = settings.GDPR_COOKIE_NAME in context.request.COOKIES
+    return context.flatten() | {"cookies_accepted": cookies_accepted}
+
+
+@register.simple_tag(takes_context=True)
+def title_tag(
+    context: RequestContext, *elements: StrOrPromise, divider: str = " | "
+) -> str:
+    """Renders <title> content including the site name.
+
+    Example:
+        {% title_tag "About Us" %}
+    Results in:
+        <title>My Site | About Us</title>
+    """
+    content = divider.join(str(e) for e in (context.request.site.name, *elements))
+    return format_html("<title>{}</title>", content)
+
+
+@register.simple_tag
+@functools.cache
+def meta_tags() -> str:
+    """Renders META tags from settings including HTMX config."""
+    tags = [
+        *[{"name": key, "content": value} for key, value in settings.META_TAGS.items()],
+        {
+            "name": "htmx-config",
+            "content": json.dumps(settings.HTMX_CONFIG),
+        },
+    ]
+    return format_html_join(
+        "\n",
+        "<meta {}>",
+        (
+            (
+                format_html_join(
+                    " ",
+                    '{}="{}"',
+                    ((key, value) for key, value in meta.items()),
+                ),
+            )
+            for meta in tags
+        ),
+    )
+
+
+@register.simple_tag
+def absolute_uri(site: Site, path: str, *args, **kwargs) -> str:
+    """Returns absolute URI for the given path."""
+    scheme = "https" if settings.USE_HTTPS else "http"
+    url = resolve_url(path, *args, **kwargs)
+    return f"{scheme}://{site.domain}{url}"
+
+
+_NAV_ACTIVE_CLASSES = (
+    "bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
+)
+_NAV_INACTIVE_CLASSES = (
+    "text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
+)
+
+
+@register.simple_tag(takes_context=True)
+def active_app(
+    context: RequestContext,
+    *app_names: str,
+    active: str = _NAV_ACTIVE_CLASSES,
+    inactive: str = _NAV_INACTIVE_CLASSES,
+) -> str:
+    """Return active nav link CSS classes if the current app matches.
+
+    Compares against ``request.resolver_match.app_name``. Pass multiple names
+    to match any app in a group. Override ``active`` or ``inactive`` to use
+    different CSS classes for a specific nav item.
+
+    Example:
+        {% active_app 'podcasts' %}
+        {% active_app 'podcasts' 'episodes' %}
+        {% active_app 'podcasts' active='bg-secondary-50 text-secondary-700' %}
+    """
+    match = context.request.resolver_match
+    return active if match is not None and match.app_name in app_names else inactive
+
+
+@register.simple_tag(takes_context=True)
+def active_url(
+    context: RequestContext,
+    *url_names: str,
+    active: str = _NAV_ACTIVE_CLASSES,
+    inactive: str = _NAV_INACTIVE_CLASSES,
+) -> str:
+    """Return active nav link CSS classes if the current URL name matches.
+
+    Compares against ``request.resolver_match.url_name``. Pass multiple names
+    to match any of several views within a section. Override ``active`` or
+    ``inactive`` to use different CSS classes for a specific nav item.
+
+    Example:
+        {% active_url 'account_email' %}
+        {% active_url 'account_email' 'account_change_password' %}
+        {% active_url 'account_email' inactive='text-secondary-700' %}
+    """
+    match = context.request.resolver_match
+    return active if match is not None and match.url_name in url_names else inactive
+
+
+@register.simple_block_tag(takes_context=True)
+def fragment(
+    context: Context,
+    content: str,
+    template_name: str,
+    *,
+    only: bool = False,
+    **extra_context,
+) -> SafeString:
+    """Renders an include template with block content passed as {{ content }}.
+
+    Example:
+
+        {% fragment "header.html" %}
+        title goes here
+        {% endfragment %}
+
+    header.html:
+
+        <h1>{{ content }}</h1>
+
+    If `only` is passed the outer context is not included.
+    """
+    context = context.new() if only else context
+
+    if context.template is None:
+        raise template.TemplateSyntaxError(
+            "Can only be used inside a template context."
+        )
+
+    tmpl = context.template.engine.get_template(template_name)
+
+    with context.push(content=content, **extra_context):
+        return tmpl.render(context)

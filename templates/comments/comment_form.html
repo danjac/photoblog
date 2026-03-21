@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load heroicons i18n %}
 
 {% block content %}
   {% include "header.html" with title=_("Edit Comment") %}
@@ -7,8 +7,14 @@
     {% fragment "form.html" %}
       {{ form.comment.as_field_group }}
       {% fragment "form.html#buttons" %}
-        <button type="submit" class="btn btn-primary">{% translate "Save" %}</button>
-        <a href="{{ comment.photo.get_absolute_url }}" class="btn btn-ghost">{% translate "Cancel" %}</a>
+        <button type="submit" class="btn btn-primary">
+          {% heroicon_mini "check" aria_hidden="true" %}
+          {% translate "Save" %}
+        </button>
+        <a href="{{ comment.photo.get_absolute_url }}" class="btn btn-ghost">
+          {% heroicon_mini "x-mark" aria_hidden="true" %}
+          {% translate "Cancel" %}
+        </a>
       {% endfragment %}
     {% endfragment %}
   </div>

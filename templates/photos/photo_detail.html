@@ -43,10 +43,16 @@
           {% csrf_token %}
           {{ comment_form.comment.as_field_group }}
           <div class="flex gap-3 mt-2">
-            <button type="submit" class="btn btn-primary">{% translate "Submit" %}</button>
+            <button type="submit" class="btn btn-primary">
+              {% heroicon_mini "check" aria_hidden="true" %}
+              {% translate "Submit" %}
+            </button>
             <button type="button"
                     class="btn btn-ghost"
-                    @click="open = false">{% translate "Cancel" %}</button>
+                    @click="open = false">
+              {% heroicon_mini "x-mark" aria_hidden="true" %}
+              {% translate "Cancel" %}
+            </button>
           </div>
         </form>
       </div>

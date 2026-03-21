@@ -9,7 +9,7 @@
     {% empty %}
     {% endthumbnail %}
     {% if photo.description %}
-      <p class="mt-4 text-base-content/70">{{ photo.description }}</p>
+      <p class="mt-4 prose text-base-content/70">{{ photo.description|linebreaksbr }}</p>
     {% endif %}
     {% if photo.user == user %}
       <div class="flex gap-3 mt-6">
@@ -46,12 +46,12 @@
   <div id="comment-list" class="mt-6">
     {% fragment "paginate.html" target="comment-list" %}
       {% for comment in page %}
-        <div id="comment-{{ comment.pk }}" class="p-4 mt-4 rounded-lg bg-base-200">
+        <div id="comment-{{ comment.pk }}" class="p-4 mt-4 rounded-lg bg-base-200 prose">
           <p class="font-semibold">{{ comment.user.username }}</p>
           <p class="mt-1">{{ comment.comment|linebreaksbr }}</p>
           <p class="mt-2 text-sm text-base-content/60">{{ comment.created }}</p>
           {% if comment.user == user %}
-            <div class="flex gap-2 mt-3">
+            <div class="flex gap-2 mt-6">
               <a href="{% url 'comments:comment_edit' comment.pk %}"
                  class="btn btn-sm btn-secondary">{% translate "Edit" %}</a>
               <button type="button"

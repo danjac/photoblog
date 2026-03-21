@@ -85,7 +85,7 @@ def photo_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
         if form.is_valid():
             form.save()
             messages.success(request, _("Photo updated."))
-            return redirect(reverse("photos:photo_list"))
+            return redirect(photo)
     else:
         form = PhotoForm(instance=photo)
     return render_partial_response(

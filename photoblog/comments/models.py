@@ -18,8 +18,11 @@ class Comment(models.Model):
         related_name="comments",
     )
     comment = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-created",)
 
     def __str__(self) -> str:
         """Return first 50 chars of comment."""

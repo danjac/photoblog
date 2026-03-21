@@ -97,6 +97,7 @@ DATABASES = {
         "DATABASE_URL",
         default="postgresql://postgres:password@127.0.0.1:5432/postgres",  # pragma: allowlist secret
     )
+    | {"ATOMIC_REQUESTS": True}
 }
 
 if env.bool("USE_CONNECTION_POOL", default=True):

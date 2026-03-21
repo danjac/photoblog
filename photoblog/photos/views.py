@@ -29,7 +29,7 @@ def photo_list(request: HttpRequest) -> TemplateResponse:
     return render_paginated_response(
         request,
         "photos/photo_list.html",
-        Photo.objects.order_by("-created"),
+        Photo.objects.only("pk", "title", "image").order_by("-created"),
     )
 
 
@@ -37,9 +37,11 @@ def photo_list(request: HttpRequest) -> TemplateResponse:
 @login_required
 def photo_detail(request: HttpRequest, pk: int) -> TemplateResponse:
     """Display a single photo."""
-    photo = get_object_or_404(Photo, pk=pk)
+    photo = get_object_or_404(Photo.objects.select_related("user"), pk=pk)
     comment_form = CommentForm() if request.user.is_authenticated else None
-    comments = Comment.objects.filter(photo=photo).order_by("-created")
+    comments = (
+        Comment.objects.filter(photo=photo).select_related("user").order_by("-created")
+    )
     return render_paginated_response(
         request,
         "photos/photo_detail.html",

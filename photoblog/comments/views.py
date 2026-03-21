@@ -39,7 +39,7 @@ def comment_create(request: HttpRequest, photo_id: int) -> RenderOrRedirectRespo
 @require_form_methods
 def comment_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     """Edit a comment."""
-    comment = get_object_or_404(Comment, pk=pk)
+    comment = get_object_or_404(Comment.objects.select_related("photo"), pk=pk)
     if comment.user != request.user:
         raise PermissionDenied
     if request.method == "POST":

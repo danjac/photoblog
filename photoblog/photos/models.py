@@ -17,8 +17,11 @@ class Photo(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True)
     image = sorl.thumbnail.ImageField(upload_to="photos/")
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-created",)
 
     def __str__(self) -> str:
         """Return the photo's title."""

@@ -12,7 +12,7 @@ from django.views.decorators.http import require_safe
 from photoblog.comments.forms import CommentForm
 from photoblog.comments.models import Comment
 from photoblog.http.decorators import require_form_methods
-from photoblog.paginator import render_paginated_response
+from photoblog.paginator import PaginationConfig, render_paginated_response
 from photoblog.partials import render_partial_response
 from photoblog.photos.forms import PhotoForm
 from photoblog.photos.models import Photo
@@ -45,8 +45,7 @@ def photo_detail(request: HttpRequest, pk: int) -> TemplateResponse:
         "photos/photo_detail.html",
         comments,
         extra_context={"photo": photo, "comment_form": comment_form},
-        per_page=10,
-        target="comment-list",
+        config=PaginationConfig(target="comment-list", partial="comment-list"),
     )
 
 

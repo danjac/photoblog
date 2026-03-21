@@ -16,6 +16,12 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 ## Project Layout
 
+> **Documentation convention:** code examples in `docs/` and `.agents/skills/djstudio/` use these placeholders — substitute with your actual values:
+> - `my_package` → `photoblog` (root Python package, used in imports and file paths)
+> - `my_app` → an arbitrary Django sub-app within `my_package` (e.g. `users`, `posts`, `comments`)
+> - `my_project` → `photoblog` (project root directory, Docker image name, service name)
+> - `my_domain.com` → your actual domain name
+
 ```
 config/             # Django settings, URLs, ASGI/WSGI
 photoblog/              # Main application package
@@ -103,6 +109,9 @@ actively, not as background reading.
 | AlpineJS component              | `docs/Alpine.md` |
 | Authentication / allauth        | `docs/Authentication.md` |
 | File uploads / media storage    | `docs/File-Storage.md` |
+| Static files / CDN caching      | `docs/Static-Files.md` |
+| Caching (Redis, per-view, low-level) | `docs/Caching.md` |
+| Custom template tag or filter   | `docs/Django-Templates.md` |
 | Sending email (transactional / dev) | `docs/Sending-Emails.md` |
 | Testing patterns                | `docs/Testing.md` |
 | Any of the above                | `docs/Project-Structure.md` |
@@ -169,6 +178,7 @@ Invoke with `/djstudio <subcommand>` in Claude Code.
 | `gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
 | `a11y` | Accessibility audit: WCAG 2.1 AA |
 | `deadcode` | Remove unused Python code and static assets |
+| `full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
 
 **Deployment**
 

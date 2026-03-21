@@ -156,7 +156,7 @@ spec:
 
 ```yaml
 # Database cleanup
-args: ["shell", "--command", "from myapp.models import OldRecord; OldRecord.objects.filter(created__lt=now()-timedelta(days=90).delete()"]
+args: ["shell", "--command", "from my_package.models import OldRecord; OldRecord.objects.filter(created__lt=now()-timedelta(days=90).delete()"]
 
 # RSS feed refresh
 args: ["refresh_feeds", "--workers=4"]
@@ -343,7 +343,7 @@ uv add opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
 
 ```python
 # settings.py
-OTEL_SERVICE_NAME = "myapp"
+OTEL_SERVICE_NAME = "my_project"
 OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ```
 
@@ -356,7 +356,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector:4317"
 ## Backup
 
 Automated daily backups are optional and set up separately after initial deployment.
-See `docs/Backups.md` for the full setup and restore guide, or run `/djstudio enable-db-backups`
+See `docs/Database-Backups.md` for the full setup and restore guide, or run `/djstudio enable-db-backups`
 to be guided through the process interactively.
 
 In brief: a Kubernetes CronJob runs `pg_dump` nightly and uploads compressed dumps to a

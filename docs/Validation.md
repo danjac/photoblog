@@ -12,10 +12,10 @@ load and on validation failure, with the full page rendered only on first visit:
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 
-from myapp.http.decorators import require_form_methods
-from myapp.http.request import AuthenticatedHttpRequest
-from myapp.http.response import RenderOrRedirectResponse
-from myapp.partials import render_partial_response
+from my_package.http.decorators import require_form_methods
+from my_package.http.request import AuthenticatedHttpRequest
+from my_package.http.response import RenderOrRedirectResponse
+from my_package.partials import render_partial_response
 
 
 @login_required
@@ -41,8 +41,9 @@ def edit_item(
     )
 ```
 
-The template defines a `{% partialdef form %}` block containing the form markup. On
-an HTMX POST with a validation error, `render_partial_response` returns only that
+The template defines a `{% partialdef form inline %}` block containing the form
+markup. The `inline` keyword renders the block in place on a full-page load; on an
+HTMX POST with a validation error, `render_partial_response` returns only that
 partial so the form re-renders in place with error messages. On success, redirect
 (Post/Redirect/Get) as normal.
 

@@ -1,6 +1,12 @@
 # Django Tasks
 
 This project uses `django-tasks-db` for background tasks instead of Celery.
+Django 6 ships a built-in background task protocol — `django-tasks-db` is the
+database-backed implementation.
+
+References:
+- [Django background tasks documentation](https://docs.djangoproject.com/en/6.0/topics/db/background-tasks/)
+- [django-tasks-db on PyPI](https://pypi.org/project/django-tasks-db/)
 
 ## Installation
 
@@ -27,7 +33,7 @@ TASKS = {
 ## Defining Tasks
 
 ```python
-# myapp/tasks.py
+# my_package/tasks.py
 from django.tasks import task
 
 # sync example
@@ -52,7 +58,7 @@ async def my_task(*, item_id: int) -> str:
 
 ```python
 # From views or management commands
-from myapp.tasks import my_task
+from my_package.tasks import my_task
 
 # Enqueue with kwargs
 my_task.enqueue(item_id=123)
@@ -72,9 +78,9 @@ Tasks are triggered by Kubernetes cron jobs defined in `helm/site/values.yaml`. 
 job runs a management command that enqueues tasks; the worker processes them in parallel.
 
 ```python
-# myapp/management/commands/process_items.py
+# my_package/management/commands/process_items.py
 from django.core.management import BaseCommand
-from myapp import tasks
+from my_package import tasks
 
 class Command(BaseCommand):
     help = "Enqueue pending items for processing"

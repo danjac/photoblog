@@ -29,26 +29,32 @@ The `{% block scripts %}` block is rendered just before `</body>` — use it for
 
 ## partialdef / partial
 
-`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders it. This is the primary mechanism for HTMX partial swaps.
+`partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders a previously defined fragment by name. This is the primary mechanism for HTMX partial swaps.
+
+Use `inline` when the partial IS the content — i.e. the block should render in place on a full-page load AND be extractable by `render_partial_response` for HTMX swaps. Without `inline`, `{% partialdef %}` defines the fragment but does not render it — you need a separate `{% partial name %}` call to render it.
+
+**Page-level template (use `inline`):**
 
 ```html
-<!-- myapp/items_list.html -->
+<!-- my_app/items_list.html -->
 {% extends "base.html" %}
 
 {% block content %}
   <div id="item-list">
-    {% partial item-list %}
+    {% partialdef item-list inline %}
+      {% for item in items %}
+        <p>{{ item.name }}</p>
+      {% endfor %}
+    {% endpartialdef %}
   </div>
 {% endblock content %}
-
-{% partialdef item-list %}
-  {% for item in items %}
-    <p>{{ item.name }}</p>
-  {% endfor %}
-{% endpartialdef %}
 ```
 
-On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load the whole template renders. See `docs/HTMX.md` for the view-side pattern.
+On an HTMX request targeting `#item-list`, `render_partial_response` returns only the `item-list` partial. On a full-page load `inline` renders the block in place. See `docs/HTMX.md` for the view-side pattern.
+
+**Component template (no `inline`):**
+
+Component templates such as `browse.html`, `paginate.html`, and `sidebar.html` define partials without `inline` because they are always rendered via `{% fragment %}` or `{% partial %}` — never directly. The caller controls what gets rendered.
 
 ## fragment Tag
 
@@ -150,14 +156,14 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 `paginate.html` renders a paginated list with previous/next links using DaisyUI `join` buttons. Include it via `{% fragment %}`:
 
 ```html
-{% fragment "paginate.html" target=pagination_target %}
+{% fragment "paginate.html" %}
   {% for item in page %}
     <p>{{ item.name }}</p>
   {% endfor %}
 {% endfragment %}
 ```
 
-The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_target }}`. The view uses `render_paginated_response` which sets `page`, `pagination_target`, and related context automatically — see `docs/HTMX.md`.
+The `links` partial inside `paginate.html` renders HTMX-enabled prev/next links targeting `#{{ pagination_config.target }}`. The view uses `render_paginated_response` which sets `page`, `paginator`, and `pagination_config` in context automatically — see `docs/Pagination.md`.
 
 ## Browse List
 
@@ -277,3 +283,90 @@ Override the container constraint with negative margins:
 ## Cookie Banner
 
 `{% cookie_banner %}` is a template tag rendered in `base.html`. It uses HTMX to dismiss itself. Remove the tag from `base.html` to disable it.
+
+---
+
+## Custom Template Tags and Filters
+
+Use `/djstudio create-tag` and `/djstudio create-filter` to add new tags and filters.
+
+### Where they live
+
+| Scope | File |
+|-------|------|
+| Project-wide | `<package_name>/templatetags.py` (ships with every project) |
+| App-specific | `<package_name>/<app_name>/templatetags/<app_name>.py` |
+
+Always append to an existing file — never recreate it. App-level files need a
+`templatetags/__init__.py` alongside them.
+
+### Shipped tags
+
+| Tag | Type | Purpose |
+|-----|------|---------|
+| `{% active_app 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.app_name` matches |
+| `{% active_url 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.url_name` matches |
+| `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
+| `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |
+| `{% title_tag %}` | `simple_tag` | Composable `<title>` tag |
+
+### Choosing a tag type
+
+Pick the simplest type that fits:
+
+| Type | Use when |
+|------|----------|
+| `@register.simple_tag` | Returns a value; no template rendering needed |
+| `@register.simple_tag(takes_context=True)` | Needs `request` or context variables |
+| `@register.simple_block_tag` | Wraps or transforms a block of template content (Django 6+) |
+| `@register.inclusion_tag("t.html")` | Renders a sub-template and returns its output |
+| `@register.filter` | Transforms a single value in a template expression |
+
+Reach for `simple_block_tag` before a custom `Node` subclass — the built-in
+`fragment` tag is a working example of `simple_block_tag`.
+
+### Tags that produce HTML
+
+Always use `format_html` — it escapes every interpolated value and returns a
+`SafeString`. Never build HTML with f-strings or string concatenation on
+user-supplied data:
+
+```python
+from django.utils.html import format_html
+
+@register.simple_tag
+def icon(name: str) -> "SafeString":
+    return format_html('<svg class="icon icon-{}"></svg>', name)
+```
+
+For lists of HTML fragments, use `format_html_join` — it calls `format_html` on each
+item and joins the results:
+
+```python
+from django.utils.html import format_html_join
+
+@register.simple_tag
+def badge_list(items: list[str]) -> "SafeString":
+    return format_html_join("", '<span class="badge">{}</span>', ((i,) for i in items))
+```
+
+**IMPORTANT — XSS risk:** `mark_safe` (Python) and `{{ value|safe }}` (template
+filter) both disable autoescaping entirely. They are equivalent and equally dangerous
+on user-supplied data. Neither is needed on the output of `format_html`, which already
+calls `mark_safe` internally. The only valid use is when you have pre-sanitized a
+string externally (e.g. with a library like `nh3`) or via `conditional_escape` in a
+`needs_autoescape` filter. **Never pass user-supplied data to `mark_safe` or `|safe`.**
+
+### Testing
+
+Test the function directly — do not instantiate `Template`/`Context` unless full
+rendering is genuinely required:
+
+```python
+from my_package.templatetags import my_filter
+
+def test_my_filter():
+    assert my_filter("hello") == "HELLO"
+```
+
+For `inclusion_tag`, assert the returned context dict, not the rendered HTML.

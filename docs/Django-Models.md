@@ -73,11 +73,11 @@ adding the comment.
 
 ## Full-Text Search
 
-Use the `Searchable` mixin from `myapp/db/search.py` for PostgreSQL full-text
+Use the `Searchable` mixin from `my_package/db/search.py` for PostgreSQL full-text
 search:
 
 ```python
-from myapp.db.search import Searchable
+from my_package.db.search import Searchable
 
 
 class ItemQuerySet(Searchable, models.QuerySet):
@@ -113,18 +113,18 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    dependencies = [("myapp", "0001_initial")]
+    dependencies = [("my_app", "0001_initial")]
 
     operations = [
         migrations.RunSQL(
             sql="""
-CREATE TRIGGER myapp_update_search_trigger
-BEFORE INSERT OR UPDATE OF title, description ON myapp_item
+CREATE TRIGGER my_app_update_search_trigger
+BEFORE INSERT OR UPDATE OF title, description ON my_app_item
 FOR EACH ROW EXECUTE PROCEDURE tsvector_update_trigger(
     search_vector, 'pg_catalog.simple', title, description);
-UPDATE myapp_item SET search_vector = NULL;""",
+UPDATE my_app_item SET search_vector = NULL;""",
             reverse_sql=(
-                "DROP TRIGGER IF EXISTS myapp_update_search_trigger ON myapp_item;"
+                "DROP TRIGGER IF EXISTS my_app_update_search_trigger ON my_app_item;"
             ),
         ),
     ]

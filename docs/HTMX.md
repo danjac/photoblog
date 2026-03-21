@@ -19,7 +19,7 @@ HTMX_CONFIG = {
 
 ## CSRF
 
-All HTMX POST/PUT/DELETE requests must include the CSRF token via `hx-headers`. The `{{ csrf_header }}` context variable holds the correct header name (from `settings.CSRF_HEADER_NAME`):
+All HTMX POST/PUT/DELETE requests must include the CSRF token via `hx-headers`. The `{{ csrf_header }}` context variable holds the header name derived from `settings.CSRF_HEADER_NAME`. It is injected into every template by the `csrf_header` context processor in `my_package/context_processors.py`, which is registered in `config/settings.py` by default.
 
 ```html
 <form hx-post="{% url 'submit' %}"
@@ -85,10 +85,10 @@ This project ships two utilities for the common HTMX view patterns. Prefer these
 
 ### `render_partial_response` - partial swap on target match
 
-`{{ package_name }}.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
+`my_package.partials.render_partial_response` renders the full template normally, but when the `HX-Target` header matches `target` it appends `#partial` to the template name, triggering Django 6's named-partial rendering.
 
 ```python
-from {{ package_name }}.partials import render_partial_response
+from my_package.partials import render_partial_response
 
 def my_form_view(request):
     form = MyForm(request.POST or None)
@@ -98,40 +98,65 @@ def my_form_view(request):
         return redirect("index")
     return render_partial_response(
         request,
-        "myapp/my_form.html",
+        "my_app/my_form.html",
         {"form": form},
         target="my-form",   # matches hx-target="#my-form" in the template
-        partial="form",     # renders "myapp/my_form.html#form" on HTMX requests
+        partial="form",     # renders "my_app/my_form.html#form" on HTMX requests
     )
 ```
 
-The template defines a `{% partialdef form %}` block that contains just the form markup. On a full-page load the entire template renders; on an HTMX form submit only the `form` partial is returned and swapped in.
+The template defines a `{% partialdef form inline %}` block containing the form markup. The `inline` keyword renders the block in place on a full-page load; on an HTMX submit `render_partial_response` returns only the `form` partial.
 
 ### `render_paginated_response` - paginated list with no COUNT query
 
-`{{ package_name }}.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
+`my_package.paginator.render_paginated_response` wraps `render_partial_response` with pagination. It uses the project's custom `Paginator` which avoids `COUNT(*)` queries by fetching one extra row to detect whether a next page exists.
 
 ```python
-from {{ package_name }}.paginator import render_paginated_response
+from my_package.paginator import render_paginated_response
 
 def items_list(request):
     return render_paginated_response(
         request,
-        "myapp/items_list.html",
+        "my_app/items_list.html",
         Item.objects.all(),
     )
 ```
 
-The view always renders `myapp/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `page_size`, and `pagination_target`.
+The view always renders `my_app/items_list.html` on the first load. When HTMX requests the next page with `hx-target="#pagination"`, only the `pagination` partial is returned. Context automatically includes `page`, `paginator`, and `pagination_config`.
 
-Default keyword arguments (override as needed):
+Pass a `PaginationConfig` to customise behaviour (target, partial name, page size, or
+paginator class). For numbered pagination and infinite scroll patterns see
+`docs/Pagination.md`.
 
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `param` | `"page"` | Query-string key for the page number |
-| `target` | `"pagination"` | Expected `HX-Target` value |
-| `partial` | `"pagination"` | Named partial to render on HTMX requests |
-| `per_page` | `settings.DEFAULT_PAGE_SIZE` | Items per page |
+## Middleware
+
+Three custom middleware classes in `my_package/middleware.py` handle HTMX-specific behaviour. They must be placed **after** `django_htmx.middleware.HtmxMiddleware` in `MIDDLEWARE`.
+
+### `HtmxCacheMiddleware`
+
+Sets `Vary: HX-Request` on HTMX responses so caches serve the correct variant to HTMX vs normal requests. See [HTMX caching docs](https://htmx.org/docs/#caching).
+
+### `HtmxMessagesMiddleware`
+
+Appends pending Django messages to HTMX HTML responses as an [out-of-band swap](https://htmx.org/attributes/hx-swap-oob/) (`hx-swap-oob="true"`) targeting the `#messages` container in `base.html`. This means any view that calls `messages.success(...)` before a partial response will automatically display the toast — no extra template code required.
+
+The middleware skips responses that already carry an HTMX redirect header (`HX-Location`, `HX-Redirect`, `HX-Refresh`) because the browser is about to navigate away.
+
+### `HtmxRedirectMiddleware`
+
+Converts standard HTTP 3xx redirects into `HX-Location` responses when the request came from HTMX. Without this, HTMX would follow the redirect internally and swap the redirected page's HTML into the current target — usually not what you want.
+
+With this middleware, a normal `return redirect(...)` in a view does the right thing for both full-page and HTMX requests:
+
+```python
+def my_form_view(request):
+    form = MyForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Saved.")
+        return redirect("index")  # becomes HX-Location for HTMX, full redirect otherwise
+    ...
+```
 
 ## Common Patterns
 
@@ -171,6 +196,53 @@ Default keyword arguments (override as needed):
 </form>
 ```
 
+### hx-swap Patterns
+
+HTMX supports several swap strategies beyond the default `innerHTML`. See [hx-swap docs](https://htmx.org/attributes/hx-swap/) for the full list.
+
+#### Delete a list item in-place
+
+```html
+<button hx-delete="{% url 'item-delete' item.pk %}"
+        hx-target="#item-{{ item.pk }}"
+        hx-swap="delete"
+        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+  Delete
+</button>
+```
+
+`hx-swap="delete"` removes the target element from the DOM after a successful response. No response body is required.
+
+#### Fire-and-forget (suppress DOM update)
+
+```html
+<button hx-post="{% url 'track' %}"
+        hx-swap="none"
+        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+  Track click
+</button>
+```
+
+`hx-swap="none"` sends the request but performs no DOM swap. Use for analytics, logging, or side-effect-only actions.
+
+#### Scroll and show modifiers
+
+Modifiers appended to the swap strategy control scroll or viewport position after the swap:
+
+```html
+<!-- Scroll to the top of the page after replacing results -->
+<form hx-post="{% url 'search' %}"
+      hx-target="#results"
+      hx-swap="outerHTML show:top">
+</form>
+
+<!-- Append messages and scroll to the bottom of the container -->
+<div id="messages"
+     hx-post="{% url 'send-message' %}"
+     hx-swap="beforeend scroll:bottom">
+</div>
+```
+
 ## Loading Indicator CSS
 
 ```css
@@ -187,3 +259,11 @@ Default keyword arguments (override as needed):
 4. Debounce search inputs: `hx-trigger="keyup changed delay:300ms"`.
 5. Use `hx-swap="outerHTML"` to replace a form with its re-rendered self on validation errors.
 6. Use `hx-swap="delete"` to dismiss banners or remove list items after a destructive action.
+
+## References
+
+- [HTMX Documentation](https://htmx.org/docs/)
+- [hx-swap](https://htmx.org/attributes/hx-swap/)
+- [hx-trigger](https://htmx.org/attributes/hx-trigger/)
+- [hx-boost](https://htmx.org/attributes/hx-boost/)
+- [django-htmx](https://django-htmx.readthedocs.io/)

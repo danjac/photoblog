@@ -9,7 +9,7 @@ an appropriate method guard. Never leave a view accepting any method by default.
 
 ```python
 from django.contrib.auth.decorators import login_required
-from myapp.http.decorators import require_form_methods, require_DELETE
+from my_package.http.decorators import require_form_methods, require_DELETE
 from django.views.decorators.http import require_safe, require_POST
 ```
 
@@ -23,7 +23,7 @@ from django.views.decorators.http import require_safe, require_POST
 The project provides two custom decorators:
 
 ```python
-# myapp/http/decorators.py
+# my_package/http/decorators.py
 from django.views.decorators.http import require_http_methods
 
 require_form_methods = require_http_methods(["GET", "HEAD", "POST"])
@@ -33,7 +33,7 @@ require_DELETE = require_http_methods(["DELETE"])
 ## Custom Response Classes
 
 ```python
-# myapp/http/response.py
+# my_package/http/response.py
 import http
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -55,7 +55,7 @@ class HttpResponseConflict(HttpResponse):
 ## Extended HttpRequest
 
 ```python
-# myapp/http/request.py
+# my_package/http/request.py
 from django.http import HttpRequest as DjangoHttpRequest
 from django_htmx.middleware import HtmxDetails
 
@@ -68,7 +68,7 @@ class AuthenticatedHttpRequest(HttpRequest):
         user: User
 ```
 
-Always type-annotate request parameters with `myapp.http.request.HttpRequest`.
+Always type-annotate request parameters with `my_package.http.request.HttpRequest`.
 Use `AuthenticatedHttpRequest` in views protected by
 `@login_required` (from `django.contrib.auth.decorators`).
 
@@ -78,7 +78,7 @@ Use `AuthenticatedHttpRequest` in views protected by
 from django.template.response import TemplateResponse
 from django.views.decorators.http import require_safe
 
-from myapp.http.request import HttpRequest
+from my_package.http.request import HttpRequest
 
 
 @require_safe
@@ -118,7 +118,7 @@ Use `render_partial_response` for views with HTMX inline swaps — returns the
 full page on first load and the named partial block on subsequent HTMX requests:
 
 ```python
-from myapp.partials import render_partial_response
+from my_package.partials import render_partial_response
 
 
 def item_list(request: HttpRequest) -> TemplateResponse:
@@ -138,7 +138,7 @@ template authoring conventions.
 ## Paginated Views
 
 ```python
-from myapp.paginator import render_paginated_response
+from my_package.paginator import render_paginated_response
 
 
 def item_list(request: HttpRequest) -> TemplateResponse:
@@ -148,6 +148,9 @@ def item_list(request: HttpRequest) -> TemplateResponse:
         Item.objects.all(),
     )
 ```
+
+For numbered pagination, infinite scroll, and `PaginationConfig` options see
+`docs/Pagination.md`.
 
 ## Async Views
 
@@ -205,12 +208,12 @@ string that needs it.
 ## URL Configuration
 
 ```python
-# myapp/<app_name>/urls.py
+# my_package/my_app/urls.py
 from django.urls import path
 
-from myapp.<app_name> import views
+from my_package.my_app import views
 
-app_name = "<app_name>"
+app_name = "my_app"
 
 urlpatterns = [
     path("items/", views.item_list, name="item_list"),
@@ -221,5 +224,5 @@ urlpatterns = [
 Register in `config/urls.py`:
 
 ```python
-path("<app_name>/", include("myapp.<app_name>.urls")),
+path("my_app/", include("my_package.my_app.urls")),
 ```

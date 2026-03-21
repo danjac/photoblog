@@ -45,7 +45,7 @@
 {# Default input #}
 {% partialdef input %}
   {% partial label %}
-  {% render_field field class="w-full input" %}
+  {% render_field field class="w-full max-w-sm input" %}
 {% endpartialdef input %}
 
 {# Simple text and file inputs - same as default #}
@@ -58,19 +58,19 @@
 {# Date #}
 {% partialdef dateinput %}
   {% partial label %}
-  {% render_field field class="w-full input" type="date" %}
+  {% render_field field class="w-full max-w-sm input" type="date" %}
 {% endpartialdef dateinput %}
 
 {# Date + time #}
 {% partialdef datetimeinput %}
   {% partial label %}
-  {% render_field field class="w-full input" type="datetime-local" %}
+  {% render_field field class="w-full max-w-sm input" type="datetime-local" %}
 {% endpartialdef datetimeinput %}
 
 {# Textarea #}
 {% partialdef textarea %}
   {% partial label %}
-  {% render_field field class="w-full textarea" %}
+  {% render_field field class="w-full max-w-sm textarea" %}
 {% endpartialdef textarea %}
 
 {# Checkbox #}
@@ -95,7 +95,7 @@
 {# Password with show/hide toggle #}
 {% partialdef passwordinput %}
   {% partial label %}
-  <div x-data="{ show: false }" class="relative">
+  <div x-data="{ show: false }" class="relative max-w-sm">
     {% render_field field class="pr-10 w-full input" x-ref="password" %}
     <button
       type="button"
@@ -113,13 +113,13 @@
 {# Select dropdown #}
 {% partialdef select %}
   {% partial label %}
-  {% render_field field class="w-full select" %}
+  {% render_field field class="w-full max-w-sm select" %}
 {% endpartialdef select %}
 
 {# Multi-select #}
 {% partialdef selectmultiple %}
   {% partial label %}
-  {% render_field field class="w-full select" %}
+  {% render_field field class="w-full max-w-sm select" %}
 {% endpartialdef selectmultiple %}
 
 {# django-money MoneyWidget (amount + currency select) #}

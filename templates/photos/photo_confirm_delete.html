@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load heroicons %}
 
 {% block content %}
   {% include "header.html" with title="Delete Photo" %}
@@ -6,7 +7,10 @@
     <p>Are you sure you want to delete <strong>{{ photo }}</strong>?</p>
     <form method="post" class="flex gap-3 mt-6">
       {% csrf_token %}
-      <button type="submit" class="btn btn-danger">Delete</button>
+      <button type="submit" class="btn btn-error">
+        {% heroicon_mini "trash" aria_hidden="true" %}
+        Delete
+      </button>
       <a href="{% url 'photos:photo_detail' photo.pk %}"
          class="btn btn-secondary">Cancel</a>
     </form>

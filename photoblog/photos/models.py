@@ -1,13 +1,24 @@
 import sorl.thumbnail
 from django.conf import settings
+from django.contrib.postgres.search import SearchVectorField
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
 
+from photoblog.db.search import Searchable
+
+
+class PhotoQuerySet(Searchable, models.QuerySet["Photo"]):
+    """QuerySet for Photo with full-text search support."""
+
+    default_search_fields = ("search_vector",)
+
 
 class Photo(models.Model):
     """A user-uploaded photo."""
+
+    objects: PhotoQuerySet = PhotoQuerySet.as_manager()  # type: ignore[assignment]
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -17,6 +28,7 @@ class Photo(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True)
     image = sorl.thumbnail.ImageField(upload_to="photos/")
+    search_vector = SearchVectorField(null=True, editable=False)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)
 

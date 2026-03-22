@@ -1,7 +1,18 @@
+import io
+
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from PIL import Image as PilImage
 
 from photoblog.photos.tests.factories import PhotoFactory
+
+
+def _make_image():
+    buf = io.BytesIO()
+    PilImage.new("RGB", (10, 10), color="blue").save(buf, format="PNG")
+    buf.seek(0)
+    return SimpleUploadedFile("test.png", buf.read(), content_type="image/png")
 
 
 @pytest.mark.django_db
@@ -16,6 +27,11 @@ class TestPhotoList:
             reverse("photos:photo_list"),
             headers={"HX-Request": "true", "HX-Target": "photo-list"},
         )
+        assert response.status_code == 200
+
+    def test_search(self, client, auth_user):
+        PhotoFactory(title="uniqueword")
+        response = client.get(reverse("photos:photo_list"), {"search": "uniqueword"})
         assert response.status_code == 200
 
     def test_redirect_if_not_logged_in(self, client):
@@ -55,6 +71,13 @@ class TestPhotoCreate:
         response = client.post(reverse("photos:photo_create"), data={})
         assert response.status_code == 200
 
+    def test_post_valid(self, client, auth_user):
+        response = client.post(
+            reverse("photos:photo_create"),
+            data={"title": "My Photo", "image": _make_image()},
+        )
+        assert response.status_code == 302
+
     def test_redirect_if_not_logged_in(self, client):
         response = client.get(reverse("photos:photo_create"))
         assert response.status_code == 302
@@ -89,6 +112,14 @@ class TestPhotoEdit:
 
     def test_redirect_if_not_logged_in(self, client, photo):
         response = client.get(reverse("photos:photo_edit", args=[photo.pk]))
+        assert response.status_code == 302
+
+    def test_post_valid(self, client, auth_user):
+        photo = PhotoFactory(user=auth_user)
+        response = client.post(
+            reverse("photos:photo_edit", args=[photo.pk]),
+            data={"title": "Updated", "image": _make_image()},
+        )
         assert response.status_code == 302
 
     def test_permission_denied_if_not_owner(self, client, auth_user, other_user_photo):

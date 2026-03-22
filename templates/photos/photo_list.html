@@ -1,12 +1,25 @@
 {% extends "base.html" %}
-{% load heroicons thumbnail %}
+{% load heroicons i18n thumbnail %}
 
 {% block content %}
-  {% include "header.html" with title="Photos" %}
+  {% fragment "header.html" title=_("Photos") %}
+    <form method="get" action="{{ request.path }}" class="flex justify-center items-center space-x-2 sm:justify-start">
+      <label class="input">
+        {% heroicon_mini "magnifying-glass" class="opacity-50 size-4 shrink-0" aria_hidden="true" %}
+        <input
+          type="search"
+          name="{{ request.search.param }}"
+          value="{{ request.search.value }}"
+          placeholder="{% translate "Search photos..." %}"
+        >
+      </label>
+      {% if request.search %}<a href="{{ request.path }}" class="btn btn-ghost btn-sm">{% translate "Clear" %}</a>{% endif %}
+    </form>
+  {% endfragment %}
   <div class="mt-6">
     <a href="{% url 'photos:photo_create' %}" class="btn btn-primary">
       {% heroicon_mini "plus" aria_hidden="true" %}
-      Add Photo
+      {% translate "Add Photo" %}
     </a>
   </div>
   {% with pagination_target="photo-list" %}

@@ -155,6 +155,14 @@ class TestReActiveUrl:
         result = re_active_url(ctx, "password/(change|set)", "account_change_password")
         assert result.url == "/account/password/change/"
 
+    def test_invalid_viewname_falls_back_to_string(self):
+        result = re_active_url(
+            _nav_context(path="/some/path/"),
+            "some/pattern",
+            "nonexistent_view_xyz_abc",
+        )
+        assert result.url == "nonexistent_view_xyz_abc"
+
 
 class TestFragment:
     def test_raises_when_no_template_in_context(self, mocker):

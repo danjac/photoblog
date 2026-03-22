@@ -28,11 +28,12 @@ if TYPE_CHECKING:
 @login_required
 def photo_list(request: HttpRequest) -> TemplateResponse:
     """Display a paginated list of all photos."""
-    return render_paginated_response(
-        request,
-        "photos/photo_list.html",
-        Photo.objects.only("pk", "title", "image").order_by("-created"),
-    )
+    photos = Photo.objects.only("pk", "title", "image")
+    if request.search:
+        photos = photos.search(request.search.value).order_by("-rank", "-created")
+    else:
+        photos = photos.order_by("-created")
+    return render_paginated_response(request, "photos/photo_list.html", photos)
 
 
 @require_safe

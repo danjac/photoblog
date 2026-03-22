@@ -393,7 +393,7 @@ SECURE_CSP = {
     ],
     "script-src": SCRIPT_SCP,
     "script-src-elem": SCRIPT_SCP,
-    "img-src": [CSP.SELF, CSP_DATA],
+    "img-src": [CSP.SELF, CSP_DATA, "blob:"],
     "media-src": [CSP.SELF],
 }
 

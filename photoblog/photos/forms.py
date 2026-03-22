@@ -3,6 +3,7 @@ from typing import ClassVar
 from django import forms
 
 from photoblog.photos.models import Photo
+from photoblog.photos.widgets import ThumbnailWidget
 
 
 class PhotoForm(forms.ModelForm):
@@ -10,4 +11,5 @@ class PhotoForm(forms.ModelForm):
 
     class Meta:
         model = Photo
-        fields: ClassVar[list[str]] = ["title", "description", "image"]
+        fields = ("title", "description", "image")
+        widgets: ClassVar[dict] = {"image": ThumbnailWidget}

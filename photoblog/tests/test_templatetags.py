@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 from django.template import TemplateSyntaxError
+from django.template.exceptions import TemplateDoesNotExist
 
 from photoblog.http.request import RequestContext
 from photoblog.templatetags import (
@@ -14,6 +15,7 @@ from photoblog.templatetags import (
     fragment,
     meta_tags,
     title_tag,
+    try_include,
 )
 
 
@@ -152,3 +154,39 @@ class TestFragment:
         context.template = None
         with pytest.raises(TemplateSyntaxError):
             fragment(context, "some content", "messages.html")
+
+
+class TestTryInclude:
+    def test_raises_when_no_template_in_context(self, mocker):
+        context = mocker.Mock()
+        context.template = None
+        with pytest.raises(TemplateSyntaxError):
+            try_include(context, "primary.html", "fallback.html")
+
+    def test_renders_primary_when_found(self, mocker):
+        context = mocker.MagicMock()
+        tmpl = mocker.Mock()
+        tmpl.render.return_value = "primary content"
+        context.template.engine.get_template.return_value = tmpl
+        result = try_include(context, "primary.html", "fallback.html")
+        context.template.engine.get_template.assert_called_once_with("primary.html")
+        assert result == "primary content"
+
+    def test_falls_back_when_primary_not_found(self, mocker):
+        context = mocker.MagicMock()
+        fallback_tmpl = mocker.Mock()
+        fallback_tmpl.render.return_value = "fallback content"
+        context.template.engine.get_template.side_effect = [
+            TemplateDoesNotExist("primary.html"),
+            fallback_tmpl,
+        ]
+        result = try_include(context, "primary.html", "fallback.html")
+        assert result == "fallback content"
+
+    def test_extra_context_pushed(self, mocker):
+        context = mocker.MagicMock()
+        tmpl = mocker.Mock()
+        tmpl.render.return_value = "content"
+        context.template.engine.get_template.return_value = tmpl
+        try_include(context, "primary.html", "fallback.html", foo="bar")
+        context.push.assert_called_once_with(foo="bar")

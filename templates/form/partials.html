@@ -1,8 +1,8 @@
 {% load heroicons i18n thumbnail widget_tweaks %}
 
-{% fragment "form/field.html#fieldset" %}
+{% fragment "form/partials.html#fieldset" %}
   {% with widget_type=field|widget_type %}
-    {% include "form/field.html#"|add:widget_type %}
+    {% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}
   {% endwith %}
 {% endfragment %}
 
@@ -48,48 +48,17 @@
   {% render_field field class="input" %}
 {% endpartialdef input %}
 
-{# Simple text and file inputs - same as default #}
-{% partialdef textinput %}{% partial input %}{% endpartialdef %}
-{% partialdef emailinput %}{% partial input %}{% endpartialdef %}
-{% partialdef fileinput %}{% partial input %}{% endpartialdef %}
-{% partialdef clearablefileinput %}{% partial input %}{% endpartialdef %}
-{% partialdef urlinput %}{% partial input %}{% endpartialdef %}
-
-{# Image field with thumbnail preview — static src for initial render, :src for Alpine updates #}
-{% partialdef thumbnailwidget %}
+{# File input (explicit widget=FileInput) #}
+{% partialdef fileinput %}
   {% partial label %}
-  {% with image=field.form.instance.image %}
-    <div
-      x-data="{ previewUrl: null }"
-      @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
-    >
-      {% if image %}
-        {% thumbnail image "340x240" crop="center" as im %}
-          <img
-            src="{{ im.url }}"
-            :src="previewUrl ?? '{{ im.url }}'"
-            alt="{% translate "Preview" %}"
-            width="{{ im.width }}"
-            height="{{ im.height }}"
-            class="mb-2 rounded-lg"
-          />
-        {% empty %}
-        {% endthumbnail %}
-      {% else %}
-        <template x-if="previewUrl">
-          <img
-            :src="previewUrl"
-            alt="{% translate "Preview" %}"
-            width="340"
-            height="240"
-            class="mb-2 rounded-lg"
-          />
-        </template>
-      {% endif %}
-      {% render_field field class="file-input" %}
-    </div>
-  {% endwith %}
-{% endpartialdef thumbnailwidget %}
+  {% render_field field class="file-input" %}
+{% endpartialdef fileinput %}
+
+{# Clearable file input - FileField / ImageField default widget #}
+{% partialdef clearablefileinput %}
+  {% partial label %}
+  {% render_field field class="file-input" %}
+{% endpartialdef clearablefileinput %}
 
 {# Date #}
 {% partialdef dateinput %}
@@ -158,10 +127,38 @@
   {% render_field field class="select" %}
 {% endpartialdef selectmultiple %}
 
-{# django-money MoneyWidget (amount + currency select) #}
-{% partialdef moneywidget %}
+{# Image field with sorl thumbnail preview and Alpine.js live preview on file select #}
+{% partialdef thumbnailwidget %}
   {% partial label %}
-  <div class="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-    {% render_field field %}
-  </div>
-{% endpartialdef moneywidget %}
+  {% with image=field.form.instance.image %}
+    <div
+      x-data="{ previewUrl: null }"
+      @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+    >
+      {% if image %}
+        {% thumbnail image "340x240" crop="center" as im %}
+          <img
+            src="{{ im.url }}"
+            :src="previewUrl ?? '{{ im.url }}'"
+            alt="{% translate "Preview" %}"
+            width="{{ im.width }}"
+            height="{{ im.height }}"
+            class="mb-2 rounded-lg"
+          />
+        {% empty %}
+        {% endthumbnail %}
+      {% else %}
+        <template x-if="previewUrl">
+          <img
+            :src="previewUrl"
+            alt="{% translate "Preview" %}"
+            width="340"
+            height="240"
+            class="mb-2 rounded-lg"
+          />
+        </template>
+      {% endif %}
+      {% render_field field class="file-input" %}
+    </div>
+  {% endwith %}
+{% endpartialdef thumbnailwidget %}

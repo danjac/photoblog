@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from django import template
 from django.conf import settings
 from django.shortcuts import resolve_url
+from django.template.exceptions import TemplateDoesNotExist
 from django.utils.html import format_html, format_html_join
 
 if TYPE_CHECKING:
@@ -164,4 +165,32 @@ def fragment(
     tmpl = context.template.engine.get_template(template_name)
 
     with context.push(content=content, **extra_context):
+        return tmpl.render(context)
+
+
+@register.simple_tag(takes_context=True)
+def try_include(
+    context: Context, template_name: str, fallback: str, **extra_context
+) -> str:
+    """Include a template, falling back to ``fallback`` if not found.
+
+    Useful for optional per-widget overrides where a sensible default exists.
+    Extra keyword arguments are pushed onto the context for the render.
+
+    Example:
+
+        {% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}
+        {% try_include "tmpl_a.html" "tmpl_b.html" foo=bar %}
+    """
+    if context.template is None:
+        raise template.TemplateSyntaxError(
+            "Can only be used inside a template context."
+        )
+
+    engine = context.template.engine
+    try:
+        tmpl = engine.get_template(template_name)
+    except TemplateDoesNotExist:
+        tmpl = engine.get_template(fallback)
+    with context.push(**extra_context):
         return tmpl.render(context)

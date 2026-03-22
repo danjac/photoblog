@@ -12,7 +12,7 @@ pytestmark = [pytest.mark.e2e, pytest.mark.django_db(transaction=True)]
 def test_login_valid_credentials(page: Page, e2e_user, live_server):
     login_url = f"{live_server.url}{reverse('account_login')}"
     page.goto(login_url)
-    page.locator('[name="login"]').fill(e2e_user.username)
+    page.locator('[name="login"]').fill(e2e_user.email)
     page.locator('[name="password"]').fill("testpass")
     page.get_by_role("button", name="Sign In").click()
     photos_url = f"{live_server.url}{reverse('photos:photo_list')}"
@@ -22,7 +22,7 @@ def test_login_valid_credentials(page: Page, e2e_user, live_server):
 def test_login_invalid_credentials(page: Page, e2e_user, live_server):
     login_url = f"{live_server.url}{reverse('account_login')}"
     page.goto(login_url)
-    page.locator('[name="login"]').fill(e2e_user.username)
+    page.locator('[name="login"]').fill(e2e_user.email)
     page.locator('[name="password"]').fill("wrongpassword")
     page.get_by_role("button", name="Sign In").click()
     expect(page).to_have_url(login_url)

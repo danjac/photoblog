@@ -3,15 +3,34 @@
 Free map embedding via [OpenStreetMap](https://www.openstreetmap.org/) and geocoding
 via [geopy](https://geopy.readthedocs.io/) (Nominatim). No API key required for either.
 
+## Contents
+
+- [CSP](#csp)
+- [Model fields](#model-fields)
+- [Geocoding task](#geocoding-task)
+- [Triggering geocoding on save](#triggering-geocoding-on-save)
+- [Template embed](#template-embed)
+
 ## CSP
 
-Add `frame-src` to `SECURE_CSP` in `config/settings.py` to allow the OSM iframe:
+Define a maps CSP variant in `config/settings.py` that extends the base policy
+with `frame-src` for the OSM iframe:
 
 ```python
-SECURE_CSP = {
+# config/settings.py
+SECURE_CSP_MAPS = {**SECURE_CSP, "frame-src": ["https://www.openstreetmap.org"]}
+```
+
+Apply it per-view with `@csp_override` — do not add `frame-src` globally:
+
+```python
+from django.conf import settings
+from django.views.decorators.csp import csp_override
+
+
+@csp_override(settings.SECURE_CSP_MAPS)
+def venue_detail(request, pk):
     ...
-    "frame-src": ["https://www.openstreetmap.org"],
-}
 ```
 
 ## Model fields

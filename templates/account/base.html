@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load heroicons i18n %}
+
+{% partialdef menu_item %}
+  <li>
+    <a href="{{ match.url }}" class="{{ extra_class }}{{ match.css_class }}">
+      {% heroicon_mini icon class="size-4 shrink-0" aria_hidden="true" %}
+      {{ label }}
+    </a>
+  </li>
+{% endpartialdef menu_item %}
+
+{% partialdef menu_items %}
+  {% with icon="arrow-left" label=_("Back to site") %}
+    {% active_url 'index' as match %}
+    {% partial menu_item %}
+  {% endwith %}
+
+  {% with icon="envelope" label=_("Email") %}
+    {% active_url 'account_email' as match %}
+    {% partial menu_item %}
+  {% endwith %}
+
+  {% with icon="lock-closed" label=_("Password") %}
+    {% active_url 'account_change_password' as match %}
+    {% re_active_url 'password/(change|set)' match.url as match %}
+    {% partial menu_item %}
+  {% endwith %}
+
+  {% with icon="link" label=_("Connections") %}
+    {% active_url 'socialaccount_connections' as match %}
+    {% partial menu_item %}
+  {% endwith %}
+
+{% endpartialdef menu_items %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    {# Mobile: dropdown #}
+    <div class="mb-6 lg:hidden" x-data="{ open: false }">
+      <button
+        type="button"
+        class="justify-between w-full btn btn-ghost"
+        @click="open = !open"
+        :aria-expanded="open"
+      >
+        {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
+        {% translate "Account Settings" %}
+        {% heroicon_mini "chevron-down" class="ml-auto size-4 shrink-0" aria_hidden="true" %}
+      </button>
+      <ul
+        class="mt-1 w-full rounded-lg border menu border-base-200 bg-base-100"
+        x-show="open"
+        x-cloak
+        x-transition
+        @click.outside="open = false"
+      >
+        {% partial menu_items %}
+      </ul>
+    </div>
+
+    {# Desktop: sidebar + content #}
+    <div class="lg:flex lg:gap-8">
+      <aside class="hidden lg:block lg:w-56 shrink-0">
+        <ul class="menu">
+          {% partial menu_items %}
+        </ul>
+      </aside>
+      <div class="flex-1 min-w-0">
+  {% else %}
+    <div class="py-12 mx-auto max-w-md">
+  {% endif %}
+
+  {% block settings_content %}
+  {% endblock settings_content %}
+
+  {% if user.is_authenticated %}
+    </div>
+    </div>
+  {% else %}
+    </div>
+  {% endif %}
+{% endblock content %}

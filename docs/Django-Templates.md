@@ -1,6 +1,20 @@
 # Templates
 
-This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/Tailwind.md` for the class reference.
+This project uses Django templates with HTMX, including the `partialdef` pattern for reusable template fragments. Components use DaisyUI classes — see `docs/Design.md` for the class reference.
+
+## Contents
+
+- [Base Templates](#base-templates)
+- [partialdef / partial](#partialdef--partial)
+- [fragment Tag](#fragment-tag)
+- [Forms](#forms)
+- [Pagination](#pagination)
+- [Browse List](#browse-list)
+- [Messages](#messages)
+- [Navigation](#navigation)
+- [Layout Patterns](#layout-patterns)
+- [Cookie Banner](#cookie-banner)
+- [Custom Template Tags and Filters](#custom-template-tags-and-filters)
 
 ## Base Templates
 
@@ -31,6 +45,20 @@ The `{% block scripts %}` block is rendered just before `</body>` — use it for
 
 `partialdef` ([built into Django 6](https://docs.djangoproject.com/en/6.0/ref/templates/language/#template-partials)) defines a named fragment inside a template. `partial` renders a previously defined fragment by name. This is the primary mechanism for HTMX partial swaps.
 
+**`{% partial %}` takes exactly one argument — the partial name. It does NOT support `with`.**
+Pass context via `{% with %}` before the call instead:
+
+```html
+{# WRONG — with is not supported #}
+{% partial menu_item with icon="envelope" label="Email" %}
+
+{# CORRECT — set context first, then call partial #}
+{% with icon="envelope" label=_("Email") %}
+  {% active_url 'account_email' as match %}
+  {% partial menu_item %}
+{% endwith %}
+```
+
 Use `inline` when the partial IS the content — i.e. the block should render in place on a full-page load AND be extractable by `render_partial_response` for HTMX swaps. Without `inline`, `{% partialdef %}` defines the fragment but does not render it — you need a separate `{% partial name %}` call to render it.
 
 **Page-level template (use `inline`):**
@@ -58,20 +86,20 @@ Component templates such as `browse.html`, `paginate.html`, and `sidebar.html` d
 
 ### Extracting shared partials into partials.html
 
-When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% fragment "partials.html#block-name" %}`.
+When several templates share the same `{% partialdef %}` blocks (e.g. a card layout, a status badge, a shared action menu), extract them into a dedicated `partials.html` file. Callers include the partial via `{% partial "partials.html#block-name" %}`.
 
 Conventional locations:
 
 | Scope | File |
 |-------|------|
 | Project-wide | `templates/partials.html` |
-| Domain-specific | `templates/form/partials.html`, `templates/my_app/partials.html` |
+| Domain-specific | `templates/forms/partials.html`, `templates/my_app/partials.html` |
 
-`form/partials.html` follows this pattern — it holds all form-field widget partials and is included indirectly by Django's field renderer.
+`forms/partials.html` follows this pattern — it holds all form-field widget partials and is included indirectly by Django's field renderer.
 
 ## fragment Tag
 
-`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `form/partials.html` and `paginate.html`:
+`{% fragment "template.html#partial" %}...{% endfragment %}` includes a template and passes the enclosed content as `{{ content }}`. Used internally by `forms/partials.html` and `paginate.html`:
 
 ```html
 {% fragment "form.html" htmx=True target="my-form" %}
@@ -81,91 +109,7 @@ Conventional locations:
 
 ## Forms
 
-### Rendering fields
-
-Use `{{ field.as_field_group }}` to render a form field with its label, errors, and help text. The project ships `templates/form/partials.html` which dispatches to a per-widget `partialdef` based on the field's widget type:
-
-```html
-{% for field in form %}
-  {{ field.as_field_group }}
-{% endfor %}
-```
-
-For explicit field order:
-
-```html
-{{ form.title.as_field_group }}
-{{ form.body.as_field_group }}
-```
-
-### HTMX form wrapper
-
-`form.html` renders a `<form>` element. Include it via `{% fragment %}`, passing the form fields as `{{ content }}`:
-
-```html
-{% fragment "form.html" htmx=True target="my-form" %}
-  {{ form.title.as_field_group }}
-  {{ form.body.as_field_group }}
-  {% fragment "form.html#buttons" %}
-    <button type="submit" class="btn btn-primary">Save</button>
-  {% endfragment %}
-{% endfragment %}
-```
-
-Key variables:
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `action` | `request.path` | Form action URL |
-| `method` | `"post"` | HTTP method |
-| `htmx` | — | Enable HTMX attributes |
-| `hx_swap` | `"outerHTML"` | HTMX swap strategy |
-| `hx_target` | `"this"` | HTMX target selector |
-| `multipart` | — | Enable file upload encoding |
-
-### Field template structure
-
-`form/partials.html` renders each field inside a DaisyUI `fieldset`:
-
-```html
-<fieldset class="fieldset">
-  <legend class="fieldset-legend">Email</legend>
-  <input id="id_email" type="email" class="input w-full" ...>
-  <ul class="text-sm font-semibold text-error">...</ul>
-  <p class="label">Help text</p>
-</fieldset>
-```
-
-### Widget type dispatch
-
-`form/partials.html` dispatches to a `{% partialdef %}` block by lowercasing the widget's class name via `{% try_include "form/partials.html#"|add:widget_type "form/partials.html#input" %}`. If no matching partial exists, it falls back to the `input` partial. Built-in widgets with explicit partials:
-
-| Widget | Partial | DaisyUI class |
-|--------|---------|---------------|
-| `Textarea` | `textarea` | `textarea` |
-| `CheckboxInput` | `checkboxinput` | `checkbox` |
-| `CheckboxSelectMultiple` | `checkboxselectmultiple` | — |
-| `PasswordInput` | `passwordinput` | `input` |
-| `Select` | `select` | `select` |
-| `SelectMultiple` | `selectmultiple` | `select` |
-| `DateInput` | `dateinput` | `input` (type="date") |
-| `DateTimeInput` | `datetimeinput` | `input` (type="datetime-local") |
-
-All other widgets (e.g. `TextInput`, `EmailInput`, `FileInput`, `URLInput`) fall back to the `input` partial automatically.
-
-### Custom widget partials
-
-If you add a custom widget with non-default rendering, add a matching `{% partialdef %}` block to `templates/form/partials.html`. The partial name is the widget's class name, lowercased. Use `{% partial label %}`, `{% partial errors %}`, and `{% partial help_text %}` to keep rendering consistent. Widgets that render identically to a plain `<input>` need no partial — the fallback handles them.
-
-### Adding widget attributes
-
-Use `django-widget-tweaks` to add classes or attributes from the template:
-
-```html
-{% load widget_tweaks %}
-{% render_field form.email class="input w-full" placeholder="you@example.com" %}
-{% render_field form.bio class="textarea w-full" rows="4" %}
-```
+For form rendering patterns, widget dispatch, and custom widgets, see `docs/Django-Forms.md`.
 
 ## Pagination
 
@@ -244,17 +188,46 @@ The component uses Alpine for the mobile menu and dropdown — DaisyUI provides 
 
 ### Active item highlighting
 
-Use `active_app` or `active_url` template tags for active state:
+Use `active_url` or `active_app` template tags for active state. Both return an `ActiveUrl`
+dataclass with `.url`, `.is_active`, and `.css_class` (resolved active/inactive CSS string).
+
+**`active_url`** — resolves a named URL and checks `request.path`:
+
+```html
+{% active_url 'podcasts:subscriptions' as sub %}
+<a href="{{ sub.url }}" class="{{ sub.css_class }}">Subscriptions</a>
+```
+
+**`re_active_url`** — matches the current path against a pattern, with an explicit `url` for the href.
+Use when one nav item should be active across multiple URL patterns:
+
+```html
+{% active_url 'account_change_password' as pw %}
+{% re_active_url 'password/(change|set)' pw.url as pw %}
+<a href="{{ pw.url }}" class="{{ pw.css_class }}">Password</a>
+```
+
+**`active_app`** — returns a CSS class string based on `request.resolver_match.app_name`:
 
 ```html
 <a href="{% url 'podcasts:subscriptions' %}"
-   class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors {% active_app 'podcasts' %}">
+   class="flex items-center gap-3 {% active_app 'podcasts' %}">
 ```
 
-| Tag | Matches against | Use for |
+Combined with `{% partial %}` and `{% with %}` for reusable nav items:
+
+```html
+{% with icon="envelope" label=_("Email") %}
+  {% active_url 'account_email' as match %}
+  {% partial menu_item %}
+{% endwith %}
+```
+
+| Tag | Matches against | Returns |
 |-----|----------------|---------|
-| `{% active_app 'app' %}` | `request.resolver_match.app_name` | All pages within an app |
-| `{% active_url 'name' %}` | `request.resolver_match.url_name` | A specific named view |
+| `{% active_url 'name' *args **kwargs %}` | `request.path == reverse(name)` | `ActiveUrl` |
+| `{% re_active_url 'pattern' url='' %}` | `re.search(pattern, request.path)` | `ActiveUrl` |
+| `{% active_app 'app' %}` | `request.resolver_match.app_name` | CSS class string |
 
 ### Adding a sidebar layout
 
@@ -320,8 +293,9 @@ Always append to an existing file — never recreate it. App-level files need a
 
 | Tag | Type | Purpose |
 |-----|------|---------|
-| `{% active_app 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.app_name` matches |
-| `{% active_url 'name' %}` | `simple_tag` | CSS class when `request.resolver_match.url_name` matches |
+| `{% active_app 'name' %}` | `simple_tag` | CSS class string when `request.resolver_match.app_name` matches |
+| `{% active_url 'name' *args **kwargs %}` | `simple_tag` | `ActiveUrl` dataclass; `.url`, `.is_active`, `.css_class` |
+| `{% re_active_url 'pattern' url='' %}` | `simple_tag` | `ActiveUrl` dataclass matched by regex against `request.path` |
 | `{% fragment "t.html" %}...{% endfragment %}` | `simple_block_tag` | Include a template with `{{ content }}` slot |
 | `{% try_include "t.html" "fallback.html" key=val %}` | `simple_tag` | Include a template, falling back if not found; optional extra context |
 | `{% cookie_banner %}` | `inclusion_tag` | GDPR cookie consent banner |

@@ -14,6 +14,7 @@ from photoblog.templatetags import (
     cookie_banner,
     fragment,
     meta_tags,
+    re_active_url,
     title_tag,
     try_include,
 )
@@ -91,10 +92,11 @@ class TestAbsoluteUri:
         assert result == f"http://{site.domain}/"
 
 
-def _nav_context(app_name: str = "", url_name: str = "") -> Mock:
+def _nav_context(app_name: str = "", url_name: str = "", path: str = "/") -> Mock:
     ctx = Mock()
     ctx.request.resolver_match.app_name = app_name
     ctx.request.resolver_match.url_name = url_name
+    ctx.request.path = path
     return ctx
 
 
@@ -122,30 +124,61 @@ class TestActiveApp:
 
 
 class TestActiveUrl:
-    def test_active_when_url_matches(self):
-        assert (
-            active_url(_nav_context(url_name="account_email"), "account_email")
-            == _NAV_ACTIVE_CLASSES
-        )
+    def test_active_when_path_matches(self, rf):
+        req = rf.get("/account/email/")
+        ctx = Mock()
+        ctx.request = req
+        result = active_url(ctx, "account_email")
+        assert result.is_active is True
+        assert result.url == "/account/email/"
+        assert result.css_class == _NAV_ACTIVE_CLASSES
 
-    def test_active_when_any_url_matches(self):
-        assert (
-            active_url(
-                _nav_context(url_name="account_change_password"),
-                "account_email",
-                "account_change_password",
-            )
-            == _NAV_ACTIVE_CLASSES
+    def test_inactive_when_path_differs(self, rf):
+        req = rf.get("/")
+        ctx = Mock()
+        ctx.request = req
+        result = active_url(ctx, "account_email")
+        assert result.is_active is False
+        assert result.url == "/account/email/"
+        assert result.css_class == _NAV_INACTIVE_CLASSES
+
+    def test_invalid_viewname_returns_empty_url(self, rf):
+        req = rf.get("/")
+        ctx = Mock()
+        ctx.request = req
+        result = active_url(ctx, "nonexistent_view_xyz")
+        assert result.url == ""
+        assert result.is_active is False
+
+
+class TestReActiveUrl:
+    def test_active_when_pattern_matches(self):
+        result = re_active_url(
+            _nav_context(path="/account/password/change/"), "password/(change|set)"
         )
+        assert result.is_active is True
+        assert result.css_class == _NAV_ACTIVE_CLASSES
+
+    def test_active_on_second_pattern_match(self):
+        result = re_active_url(
+            _nav_context(path="/account/password/set/"), "password/(change|set)"
+        )
+        assert result.is_active is True
 
     def test_inactive_when_no_match(self):
-        assert (
-            active_url(_nav_context(url_name="index"), "account_email")
-            == _NAV_INACTIVE_CLASSES
+        result = re_active_url(
+            _nav_context(path="/account/email/"), "password/(change|set)"
         )
+        assert result.is_active is False
+        assert result.css_class == _NAV_INACTIVE_CLASSES
 
-    def test_inactive_for_empty_url_name(self):
-        assert active_url(_nav_context(), "account_email") == _NAV_INACTIVE_CLASSES
+    def test_passes_through_url(self):
+        result = re_active_url(
+            _nav_context(path="/"),
+            "password/(change|set)",
+            url="/account/password/change/",
+        )
+        assert result.url == "/account/password/change/"
 
 
 class TestFragment:

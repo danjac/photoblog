@@ -61,21 +61,22 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 
 **Python style**: See `docs/Python-Style-Guide.md`. Critical gotcha: `pyupgrade --py314` rewrites `except (E1, E2):` to `except E1, E2:` (PEP 758) — **do not revert this**; it is correct Python 3.14 syntax.
 
-**UI components**: Use [DaisyUI](https://daisyui.com/components/) for all component styling. Check daisyui.com/components before writing new markup — the component you need likely already exists. See `docs/Tailwind.md` and `docs/Django-Templates.md`.
+**UI components**: Use [DaisyUI](https://daisyui.com/components/) for all component styling. Check daisyui.com/components before writing new markup — the component you need likely already exists. See `docs/Design.md` and `docs/Django-Templates.md`.
 
 **Icons**: Use `heroicons[django]` (already in `pyproject.toml`) for all icons. Never use character entities or emoji as icons. See `docs/Design.md`.
 
 **Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/Frontend-Dependencies.md` for the full format and workflow.
 
 **Form rendering** — use the first option that fits:
-1. `{{ form.field.as_field_group }}` — explicit field order
-2. `{% for field in form %} {{ field.as_field_group }} {% endfor %}` — all fields, default order
-3. `{{ form }}` — all fields via configured renderer
+1. `{{ form }}` — all fields, default order
+2. `{{ form.field.as_field_group }}` — explicit field order or subset
 
-Never use `{{ form.as_div }}` or `{% include "form/partials.html" %}`.
-See `docs/Django-Templates.md`.
+Never use `{{ form.as_div }}` or `{% include "forms/partials.html" %}`.
+See `docs/Django-Forms.md`.
 
 **Internationalisation**: All user-visible text must be wrapped in translation functions. See `docs/Django.md` for usage.
+
+**Documentation**: When updating a `docs/` file, keep its `## Contents` table of contents in sync. If a doc lacks a ToC and has 8+ `##` sections or 250+ lines, add one below the intro paragraph.
 
 ## Working Conventions
 
@@ -95,10 +96,11 @@ actively, not as background reading.
 | Django views                    | `docs/Django-Views.md` |
 | Django models / querysets       | `docs/Django-Models.md` |
 | Django templates (partials, fragments, pagination) | `docs/Django-Templates.md` |
-| Django forms                    | `docs/Django-Templates.md`, `docs/Validation.md` |
-| Validating request params or external data | `docs/Validation.md` |
+| Django forms, widgets, form rendering       | `docs/Django-Forms.md` |
+| Validating request params in views          | `docs/Django-Views.md` |
+| Validating external API responses (pydantic) | `docs/API-Integration.md` |
 | Django admin                    | `docs/Django.md` |
-| UI components (buttons, modals, layout)         | `docs/Design.md`, `docs/Tailwind.md` |
+| UI components (buttons, modals, layout)         | `docs/Design.md` |
 | Accessibility                   | `docs/Accessibility.md` |
 | Internationalisation / i18n     | `docs/Django.md` |
 | Adding a Python dependency      | `docs/Packages.md` |
@@ -107,6 +109,8 @@ actively, not as background reading.
 | Background task                 | `docs/Django-Tasks.md` |
 | HTMX interaction                | `docs/HTMX.md` |
 | AlpineJS component              | `docs/Alpine.md` |
+| Lightbox, drag-drop, upload preview       | `docs/UI-Recipes.md` |
+| Maps / geocoding (OpenStreetMap + geopy)  | `docs/Maps.md` |
 | Authentication / allauth        | `docs/Authentication.md` |
 | File uploads / media storage    | `docs/File-Storage.md` |
 | Static files / CDN caching      | `docs/Static-Files.md` |
@@ -155,13 +159,6 @@ Invoke with `/djstudio <subcommand>` in Claude Code.
 | `create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
 | `create-tag [<app_name>] [<module>]` | Add a template tag |
 | `create-filter [<app_name>] [<module>]` | Add a template filter |
-
-**Documentation**
-
-| Subcommand | Purpose |
-| ---------- | ------- |
-| `docs <topic>` | Look up or create project documentation |
-| `daisyui <component>` | Fetch DaisyUI component docs with project conventions |
 
 **Localisation**
 

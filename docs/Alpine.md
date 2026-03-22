@@ -2,6 +2,21 @@
 
 Alpine.js provides reactive JavaScript behavior without writing JavaScript files.
 
+## Contents
+
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Common Patterns](#common-patterns)
+- [Transitions](#transitions)
+- [References (x-ref)](#references-x-ref)
+- [Init and Watch](#init-and-watch)
+- [Passing Server Data to Alpine](#passing-server-data-to-alpine)
+- [Icon-Only Buttons](#icon-only-buttons)
+- [Component Root Identification](#component-root-identification)
+- [Array and Counter Mutations](#array-and-counter-mutations)
+- [Best Practices](#best-practices)
+- [Script Loading Order](#script-loading-order)
+
 ## Installation
 
 Alpine.js is bundled locally in `static/vendor/`. To update it or add new JS dependencies, see `docs/Frontend-Dependencies.md`.
@@ -337,6 +352,8 @@ it via a `<script src="...">` tag in `{% block scripts %}`. Do **not** add
 ```
 
 See: https://alpinejs.dev/globals/alpine-data
+
+For common recipes using Alpine (e.g. photo lightbox, drag-and-drop), see `docs/UI-Recipes.md`.
 
 ## Script Loading Order
 

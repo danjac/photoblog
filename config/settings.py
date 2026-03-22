@@ -569,7 +569,7 @@ GDPR_COOKIE_NAME = "accept-cookies"
 
 # Default page size for paginated views
 
-DEFAULT_PAGE_SIZE = 30
+DEFAULT_PAGE_SIZE = 12
 
 # HTMX configuration
 # https://htmx.org/docs/#config

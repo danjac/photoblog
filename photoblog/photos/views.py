@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -7,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.views.decorators.csp import csp_override
 from django.views.decorators.http import require_safe
 
 from photoblog.comments.forms import CommentForm
@@ -51,6 +53,7 @@ def photo_detail(request: HttpRequest, pk: int) -> TemplateResponse:
     )
 
 
+@csp_override(settings.SECURE_CSP_UPLOAD)
 @login_required
 @require_form_methods
 def photo_create(request: HttpRequest) -> RenderOrRedirectResponse:
@@ -74,12 +77,13 @@ def photo_create(request: HttpRequest) -> RenderOrRedirectResponse:
     )
 
 
+@csp_override(settings.SECURE_CSP_UPLOAD)
 @login_required
 @require_form_methods
 def photo_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     """Edit an existing photo."""
     photo = get_object_or_404(Photo, pk=pk)
-    if photo.user != request.user:
+    if not request.user.has_perm("photos.change_photo", photo):
         raise PermissionDenied
     if request.method == "POST":
         form = PhotoForm(request.POST, request.FILES, instance=photo)
@@ -103,7 +107,7 @@ def photo_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
 def photo_delete(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     """Delete a photo."""
     photo = get_object_or_404(Photo, pk=pk)
-    if photo.user != request.user:
+    if not request.user.has_perm("photos.delete_photo", photo):
         raise PermissionDenied
     if request.method == "POST":
         photo.delete()

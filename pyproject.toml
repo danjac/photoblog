@@ -43,6 +43,7 @@ dependencies = [
   "django-storages[s3]>=1.14.4",
   "sorl-thumbnail>=13.0.0",
   "pillow>=12.1.1",
+  "rules>=3.5",
 ]
 [dependency-groups]
 dev = [

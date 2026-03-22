@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load heroicons i18n thumbnail %}
+{% load heroicons i18n rules thumbnail %}
 
 {% block content %}
   {% include "header.html" with title=photo.title %}
@@ -11,18 +11,24 @@
     {% if photo.description %}
       <p class="mt-4 prose text-base-content/70">{{ photo.description|linebreaksbr }}</p>
     {% endif %}
-    {% if photo.user == user %}
+    {% has_perm "photos.change_photo" user photo as can_edit_photo %}
+    {% has_perm "photos.delete_photo" user photo as can_delete_photo %}
+    {% if can_edit_photo or can_delete_photo %}
       <div class="flex gap-3 mt-6">
-        <a href="{% url 'photos:photo_edit' photo.pk %}"
-           class="btn btn-secondary">
-          {% heroicon_mini "pencil-square" aria_hidden="true" %}
-          Edit
-        </a>
-        <a href="{% url 'photos:photo_delete' photo.pk %}"
-           class="btn btn-error">
-          {% heroicon_mini "trash" aria_hidden="true" %}
-          Delete
-        </a>
+        {% if can_edit_photo %}
+          <a href="{% url 'photos:photo_edit' photo.pk %}"
+             class="btn btn-secondary">
+            {% heroicon_mini "pencil-square" aria_hidden="true" %}
+            Edit
+          </a>
+        {% endif %}
+        {% if can_delete_photo %}
+          <a href="{% url 'photos:photo_delete' photo.pk %}"
+             class="btn btn-error">
+            {% heroicon_mini "trash" aria_hidden="true" %}
+            Delete
+          </a>
+        {% endif %}
       </div>
     {% endif %}
     {% if comment_form %}
@@ -65,23 +71,29 @@
           <p class="font-semibold">{{ comment.user.username }}</p>
           <p class="mt-1">{{ comment.comment|linebreaksbr }}</p>
           <p class="mt-2 text-sm text-base-content/60">{{ comment.created }}</p>
-          {% if comment.user == user %}
+          {% has_perm "comments.change_comment" user comment as can_edit_comment %}
+          {% has_perm "comments.delete_comment" user comment as can_delete_comment %}
+          {% if can_edit_comment or can_delete_comment %}
             <div class="flex gap-2 mt-6">
-              <a href="{% url 'comments:comment_edit' comment.pk %}"
-                 class="btn btn-sm btn-secondary">
-                {% heroicon_mini "pencil-square" aria_hidden="true" %}
-                {% translate "Edit" %}
-              </a>
-              <button type="button"
-                      class="btn btn-sm btn-error"
-                      hx-delete="{% url 'comments:comment_delete' comment.pk %}"
-                      hx-confirm='{% translate "Are you sure you want to delete this comment?" %}'
-                      hx-target="#comment-{{ comment.pk }}"
-                      hx-swap="delete"
-                      hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
-                {% heroicon_mini "trash" aria_hidden="true" %}
-                {% translate "Delete" %}
-              </button>
+              {% if can_edit_comment %}
+                <a href="{% url 'comments:comment_edit' comment.pk %}"
+                   class="btn btn-sm btn-secondary">
+                  {% heroicon_mini "pencil-square" aria_hidden="true" %}
+                  {% translate "Edit" %}
+                </a>
+              {% endif %}
+              {% if can_delete_comment %}
+                <button type="button"
+                        class="btn btn-sm btn-error"
+                        hx-delete="{% url 'comments:comment_delete' comment.pk %}"
+                        hx-confirm='{% translate "Are you sure you want to delete this comment?" %}'
+                        hx-target="#comment-{{ comment.pk }}"
+                        hx-swap="delete"
+                        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+                  {% heroicon_mini "trash" aria_hidden="true" %}
+                  {% translate "Delete" %}
+                </button>
+              {% endif %}
             </div>
           {% endif %}
         </div>

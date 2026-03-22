@@ -59,6 +59,7 @@ INSTALLED_APPS: list[str] = [
     "django_tasks_db",
     "health_check",
     "heroicons",
+    "rules",
     "widget_tweaks",
     "photoblog",
     "photoblog.comments",
@@ -235,6 +236,7 @@ CONTACT_EMAIL = env("CONTACT_EMAIL", default=SERVER_EMAIL)
 AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = [
+    "rules.permissions.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
@@ -393,9 +395,12 @@ SECURE_CSP = {
     ],
     "script-src": SCRIPT_SCP,
     "script-src-elem": SCRIPT_SCP,
-    "img-src": [CSP.SELF, CSP_DATA, "blob:"],
+    "img-src": [CSP.SELF, CSP_DATA],
     "media-src": [CSP.SELF],
 }
+
+# CSP policy for views that use URL.createObjectURL() (file upload previews).
+SECURE_CSP_UPLOAD = {**SECURE_CSP, "img-src": [CSP.SELF, CSP_DATA, "blob:"]}
 
 # Tasks
 # https://docs.djangoproject.com/en/6.0/topics/tasks/

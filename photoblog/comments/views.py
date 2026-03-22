@@ -40,7 +40,7 @@ def comment_create(request: HttpRequest, photo_id: int) -> RenderOrRedirectRespo
 def comment_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     """Edit a comment."""
     comment = get_object_or_404(Comment.objects.select_related("photo"), pk=pk)
-    if comment.user != request.user:
+    if not request.user.has_perm("comments.change_comment", comment):
         raise PermissionDenied
     if request.method == "POST":
         form = CommentForm(request.POST, instance=comment)
@@ -62,7 +62,7 @@ def comment_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
 def comment_delete(request: HttpRequest, pk: int) -> HttpResponse:
     """Delete a comment."""
     comment = get_object_or_404(Comment, pk=pk)
-    if comment.user != request.user:
+    if not request.user.has_perm("comments.delete_comment", comment):
         raise PermissionDenied
     comment.delete()
     messages.success(request, _("Comment deleted."))

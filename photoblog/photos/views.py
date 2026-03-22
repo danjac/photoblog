@@ -18,10 +18,26 @@ from photoblog.paginator import PaginationConfig, render_paginated_response
 from photoblog.partials import render_partial_response
 from photoblog.photos.forms import PhotoForm
 from photoblog.photos.models import Photo
+from photoblog.users.models import User
 
 if TYPE_CHECKING:
     from photoblog.http.request import HttpRequest
     from photoblog.http.response import RenderOrRedirectResponse
+
+
+@require_safe
+@login_required
+def user_photo_list(request: HttpRequest, username: str) -> TemplateResponse:
+    """Display a paginated list of photos by a specific user."""
+    user = get_object_or_404(User, username=username, is_active=True)
+    return render_paginated_response(
+        request,
+        "photos/user_photo_list.html",
+        Photo.objects.filter(user=user)
+        .only("pk", "title", "image")
+        .order_by("-created"),
+        extra_context={"submitter": user},
+    )
 
 
 @require_safe

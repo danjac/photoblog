@@ -22,29 +22,5 @@
       {% translate "Add Photo" %}
     </a>
   </div>
-  {% with pagination_target="photo-list" %}
-    <div class="mt-6">
-      {% fragment "grid.html" target="photo-list" %}
-        {% for photo in page.object_list %}
-          {% fragment "grid.html#item" %}
-            <a href="{% url 'photos:photo_detail' photo.pk %}" class="shadow-sm transition-shadow hover:shadow-md card bg-base-200">
-              <figure>
-                {% thumbnail photo.image "400x300" crop="center" as im %}
-                  <img src="{{ im.url }}" alt="{{ photo.title }}" class="object-cover w-full" loading="lazy" width="{{ im.width }}" height="{{ im.height }}" />
-                {% endthumbnail %}
-              </figure>
-              <div class="p-4 card-body">
-                <h3 class="text-base card-title">{{ photo.title }}</h3>
-              </div>
-            </a>
-          {% endfragment %}
-        {% empty %}
-          {% fragment "grid.html#empty" %}
-            <p class="text-base-content/60">No photos yet.</p>
-          {% endfragment %}
-        {% endfor %}
-      {% endfragment %}
-    </div>
-    {% include "paginate.html" %}
-  {% endwith %}
+  {% include "photos/partials.html#photo_list" %}
 {% endblock content %}

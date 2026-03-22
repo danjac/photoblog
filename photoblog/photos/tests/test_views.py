@@ -40,6 +40,26 @@ class TestPhotoList:
 
 
 @pytest.mark.django_db
+class TestUserPhotoList:
+    def test_get(self, client, auth_user):
+        PhotoFactory(user=auth_user)
+        response = client.get(
+            reverse("photos:user_photo_list", args=[auth_user.username])
+        )
+        assert response.status_code == 200
+
+    def test_404(self, client, auth_user):
+        response = client.get(reverse("photos:user_photo_list", args=["nobody"]))
+        assert response.status_code == 404
+
+    def test_redirect_if_not_logged_in(self, client, photo):
+        response = client.get(
+            reverse("photos:user_photo_list", args=[photo.user.username])
+        )
+        assert response.status_code == 302
+
+
+@pytest.mark.django_db
 class TestPhotoDetail:
     def test_get(self, client, auth_user, photo):
         response = client.get(reverse("photos:photo_detail", args=[photo.pk]))

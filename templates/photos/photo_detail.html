@@ -13,6 +13,8 @@
     {% endif %}
     {% has_perm "photos.change_photo" user photo as can_edit_photo %}
     {% has_perm "photos.delete_photo" user photo as can_delete_photo %}
+    {% url 'photos:user_photo_list' photo.user.username as user_photos_url %}
+    <p class="mt-4">{% blocktranslate with username=photo.user.username %}Posted by <a href="{{ user_photos_url }}" class="link">{{ username }}</a>{% endblocktranslate %}</p>
     {% if can_edit_photo or can_delete_photo %}
       <div class="flex gap-3 mt-6">
         {% if can_edit_photo %}

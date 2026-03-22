@@ -83,14 +83,6 @@ def absolute_uri(site: Site, path: str, *args, **kwargs) -> str:
     return f"{scheme}://{site.domain}{url}"
 
 
-_NAV_ACTIVE_CLASSES = (
-    "bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
-)
-_NAV_INACTIVE_CLASSES = (
-    "text-muted-700 hover:bg-muted-100 dark:text-muted-200 dark:hover:bg-muted-800"
-)
-
-
 @dataclass(frozen=True, kw_only=True)
 class ActiveUrl:
     """Result of ``active_url`` and ``re_active_url`` template tags.
@@ -102,8 +94,8 @@ class ActiveUrl:
 
     url: str
     is_active: bool
-    active_class: str
-    inactive_class: str
+    active_class: str = ""
+    inactive_class: str = ""
 
     @property
     def css_class(self) -> str:
@@ -112,46 +104,23 @@ class ActiveUrl:
 
 
 @register.simple_tag(takes_context=True)
-def active_app(
-    context: RequestContext,
-    *app_names: str,
-    active: str = _NAV_ACTIVE_CLASSES,
-    inactive: str = _NAV_INACTIVE_CLASSES,
-) -> str:
-    """Return active nav link CSS classes if the current app matches.
-
-    Compares against ``request.resolver_match.app_name``. Pass multiple names
-    to match any app in a group. Override ``active`` or ``inactive`` to use
-    different CSS classes for a specific nav item.
-
-    Example:
-        {% active_app 'podcasts' %}
-        {% active_app 'podcasts' 'episodes' %}
-        {% active_app 'podcasts' active='bg-secondary-50 text-secondary-700' %}
-    """
-    match = context.request.resolver_match
-    return active if match is not None and match.app_name in app_names else inactive
-
-
-@register.simple_tag(takes_context=True)
 def active_url(
     context: RequestContext,
     viewname: str,
     *args: object,
-    active: str = _NAV_ACTIVE_CLASSES,
-    inactive: str = _NAV_INACTIVE_CLASSES,
+    active_class: str = "",
+    inactive_class: str = "",
     **url_kwargs: object,
 ) -> ActiveUrl:
     """Resolve a URL and return an ActiveUrl indicating whether it is current.
 
     Takes the same positional and keyword arguments as the ``url`` tag. Compares
     the resolved URL against ``request.path`` to determine active state.
-    Use ``obj.url`` for the href and ``obj.css_class`` for the nav class.
-    With ``as``, access ``.is_active`` for conditional logic.
+    Use ``obj.url`` for the href and ``obj.css_class`` for the active/inactive class.
 
     Example:
-        {% active_url 'account_email' as email %}
-        {% active_url 'post_detail' post.pk as post_link %}
+        {% active_url 'account_email' active_class=active_class as match %}
+        {% active_url 'post_detail' post.pk active_class=active_class as match %}
     """
     try:
         url = reverse(viewname, args=args, kwargs=url_kwargs)
@@ -159,7 +128,10 @@ def active_url(
         url = ""
     is_active = bool(url) and context.request.path == url
     return ActiveUrl(
-        url=url, is_active=is_active, active_class=active, inactive_class=inactive
+        url=url,
+        is_active=is_active,
+        active_class=active_class,
+        inactive_class=inactive_class,
     )
 
 
@@ -167,24 +139,30 @@ def active_url(
 def re_active_url(
     context: RequestContext,
     pattern: str,
-    url: str = "",
+    viewname: str = "",
     *,
-    active: str = _NAV_ACTIVE_CLASSES,
-    inactive: str = _NAV_INACTIVE_CLASSES,
+    active_class: str = "",
+    inactive_class: str = "",
 ) -> ActiveUrl:
     """Match current path against a pattern and return an ActiveUrl.
 
     Use when a nav item should be active across multiple URL patterns. Pass
-    ``url`` explicitly for the href since a pattern does not define a single URL.
+    a viewname as the second argument to resolve the href URL.
 
     Example:
-        {% active_url 'account_change_password' as pw %}
-        {% re_active_url 'password/(change|set)' pw.url as pw %}
+        {% re_active_url 'password/(change|set)' 'account_change_password' active_class=active_class as pw %}
         <a href="{{ pw.url }}" class="{{ pw.css_class }}">Password</a>
     """
+    try:
+        url = reverse(viewname) if viewname else ""
+    except NoReverseMatch:
+        url = viewname
     is_active = bool(re.search(pattern, context.request.path))
     return ActiveUrl(
-        url=url, is_active=is_active, active_class=active, inactive_class=inactive
+        url=url,
+        is_active=is_active,
+        active_class=active_class,
+        inactive_class=inactive_class,
     )
 
 

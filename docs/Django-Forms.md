@@ -213,19 +213,40 @@ Use `django-widget-tweaks` to add classes or attributes from the template:
 
 ### Thumbnail Widget
 
-For `ImageField` forms, use a `thumbnailwidget` partial that shows the current image
-and an Alpine.js-powered preview of the newly selected file:
+`ThumbnailWidget` is a `FileInput` subclass that renders a sorl thumbnail preview
+of the current image and an Alpine.js-powered preview of a newly selected file.
+Create the widget class in your project:
+
+```python
+from django.forms.widgets import FileInput
+
+
+class ThumbnailWidget(FileInput):
+    """File input widget that renders a sorl thumbnail preview in forms/partials.html."""
+```
+
+Use it via `Meta.widgets`:
+
+```python
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ("title", "description", "image")
+        widgets: ClassVar[dict] = {"image": ThumbnailWidget}
+```
+
+Add the `thumbnailwidget` partialdef to `forms/partials.html`:
 
 ```html
-{# forms/partials.html #}
-
+{# Thumbnail widget — ImageField with sorl preview + Alpine new-file preview #}
 {% partialdef thumbnailwidget %}
+  {% load thumbnail %}
   {% partial label %}
-  {% with image=field.form.instance.image %}
-    <div
-      x-data="{ previewUrl: null }"
-      @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
-    >
+  <div
+    x-data="{ previewUrl: null }"
+    @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+  >
+    {% with image=field.field.widget.image %}
       {% if image %}
         {% thumbnail image "340x240" crop="center" as im %}
           <img
@@ -236,28 +257,23 @@ and an Alpine.js-powered preview of the newly selected file:
             height="{{ im.height }}"
             class="mb-2 rounded-lg"
           />
-        {% empty %}
         {% endthumbnail %}
       {% else %}
         <template x-if="previewUrl">
-          <img
-            :src="previewUrl"
-            alt="{% translate "Preview" %}"
-            width="340"
-            height="240"
-            class="mb-2 rounded-lg"
-          />
+          <img :src="previewUrl" alt="{% translate "Preview" %}" width="340" height="240" class="mb-2 rounded-lg" />
         </template>
       {% endif %}
-      {% render_field field class="file-input" %}
-    </div>
-  {% endwith %}
+    {% endwith %}
+    {% render_field field class="file-input" %}
+  </div>
 {% endpartialdef thumbnailwidget %}
 ```
 
-Replace `field.form.instance.image` with the actual field accessor for your model.
-Use `widget_type` to dispatch to this partial automatically, or call
-`{% partial thumbnailwidget %}` directly.
+Then render normally:
+
+```html
+{{ form.image.as_field_group }}
+```
 
 **CSP note:** `URL.createObjectURL` generates a `blob:` URL. Views that serve upload
 forms must use `@csp_override(settings.SECURE_CSP_UPLOAD)`. Define the upload CSP

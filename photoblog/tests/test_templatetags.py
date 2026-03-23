@@ -155,13 +155,29 @@ class TestReActiveUrl:
         result = re_active_url(ctx, "password/(change|set)", "account_change_password")
         assert result.url == "/account/password/change/"
 
-    def test_invalid_viewname_falls_back_to_string(self):
-        result = re_active_url(
-            _nav_context(path="/some/path/"),
-            "some/pattern",
-            "nonexistent_view_xyz_abc",
+    def test_resolves_viewname_with_url_args(self, rf, mocker):
+        mocker.patch(
+            "photoblog.templatetags.reverse",
+            return_value="/posts/42/",
         )
-        assert result.url == "nonexistent_view_xyz_abc"
+        req = rf.get("/posts/42/")
+        ctx = Mock()
+        ctx.request = req
+        result = re_active_url(ctx, r"posts/\d+", "post_detail", 42)
+        assert result.url == "/posts/42/"
+        assert result.is_active is True
+
+    def test_resolves_viewname_with_url_kwargs(self, rf, mocker):
+        mocker.patch(
+            "photoblog.templatetags.reverse",
+            return_value="/posts/42/",
+        )
+        req = rf.get("/posts/42/")
+        ctx = Mock()
+        ctx.request = req
+        result = re_active_url(ctx, r"posts/\d+", "post_detail", pk=42)
+        assert result.url == "/posts/42/"
+        assert result.is_active is True
 
 
 class TestFragment:

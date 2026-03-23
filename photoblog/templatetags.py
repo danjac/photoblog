@@ -2,7 +2,7 @@ import functools
 import json
 import re
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django import template
 from django.conf import settings
@@ -107,10 +107,10 @@ class ActiveUrl:
 def active_url(
     context: RequestContext,
     viewname: str,
-    *args: object,
+    *args: Any,
     active_class: str = "",
     inactive_class: str = "",
-    **url_kwargs: object,
+    **url_kwargs: Any,
 ) -> ActiveUrl:
     """Resolve a URL and return an ActiveUrl indicating whether it is current.
 
@@ -122,10 +122,7 @@ def active_url(
         {% active_url 'account_email' active_class=active_class as match %}
         {% active_url 'post_detail' post.pk active_class=active_class as match %}
     """
-    try:
-        url = reverse(viewname, args=args, kwargs=url_kwargs)
-    except NoReverseMatch:
-        url = ""
+    url = _resolve_url(viewname, args, url_kwargs)
     is_active = bool(url) and context.request.path == url
     return ActiveUrl(
         url=url,
@@ -140,23 +137,23 @@ def re_active_url(
     context: RequestContext,
     pattern: str,
     viewname: str = "",
-    *,
+    *args: Any,
     active_class: str = "",
     inactive_class: str = "",
+    **url_kwargs: Any,
 ) -> ActiveUrl:
     """Match current path against a pattern and return an ActiveUrl.
 
     Use when a nav item should be active across multiple URL patterns. Pass
-    a viewname as the second argument to resolve the href URL.
+    a viewname as the second argument to resolve the href URL. Accepts the
+    same positional and keyword arguments as the ``url`` tag.
 
     Example:
         {% re_active_url 'password/(change|set)' 'account_change_password' active_class=active_class as pw %}
+        {% re_active_url 'posts/\\d+' 'post_detail' post.pk active_class=active_class as pw %}
         <a href="{{ pw.url }}" class="{{ pw.css_class }}">Password</a>
     """
-    try:
-        url = reverse(viewname) if viewname else ""
-    except NoReverseMatch:
-        url = viewname
+    url = _resolve_url(viewname, args, url_kwargs)
     is_active = bool(re.search(pattern, context.request.path))
     return ActiveUrl(
         url=url,
@@ -228,3 +225,13 @@ def try_include(
         tmpl = engine.get_template(fallback)
     with context.push(**extra_context):
         return tmpl.render(context)
+
+
+def _resolve_url(viewname: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> str:
+    """Resolve a URL by viewname, returning empty string on failure."""
+    if not viewname:
+        return ""
+    try:
+        return reverse(viewname, args=args, kwargs=kwargs)
+    except NoReverseMatch:
+        return ""

@@ -1,23 +1,21 @@
 import dataclasses
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, runtime_checkable
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger
-from django.db.models import Model, QuerySet
 from django.utils.functional import cached_property
 
 from photoblog.partials import render_partial_response
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from django.db.models import QuerySet
     from django.template.response import TemplateResponse
 
     from photoblog.http.request import HttpRequest
 
-T = TypeVar("T")
-T_Model = TypeVar("T_Model", bound=Model)
-
-ObjectList: TypeAlias = Sequence[T | T_Model] | QuerySet[T_Model]
+    ObjectList: TypeAlias = Sequence | QuerySet
 
 
 @runtime_checkable

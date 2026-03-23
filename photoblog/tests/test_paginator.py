@@ -217,6 +217,16 @@ class TestRenderPaginatedResponse:
         )
         assert response.context_data["paginator"].per_page == 2
 
+    def test_queryset_compatible(self, rf):
+        """QuerySet must be accepted — QuerySet doesn't inherit Sequence in django-stubs."""
+        from photoblog.users.models import User
+
+        request = self._make_request(rf)
+        response = render_paginated_response(
+            request, "template.html", User.objects.none()
+        )
+        assert response.context_data["page"].number == 1
+
     def test_custom_page_param(self, rf):
         request = rf.get("/", {"p": "2"})
         request.htmx = HtmxDetails(request)

@@ -5,86 +5,104 @@ from django.core.paginator import Paginator as DjangoPaginator
 from django_htmx.middleware import HtmxDetails
 
 from photoblog.paginator import (
+    Page,
     PaginationConfig,
     Paginator,
+    ZeroCountPaginator,
     render_paginated_response,
     validate_page_number,
 )
 
 
+class TestPageProtocol:
+    def test_zero_count_page_satisfies_protocol(self):
+        assert isinstance(ZeroCountPaginator([1, 2], 10).get_page(1), Page)
+
+    def test_django_page_satisfies_protocol(self):
+        assert isinstance(DjangoPaginator([1, 2], 10).get_page(1), Page)
+
+
+class TestPaginatorProtocol:
+    def test_zero_count_paginator_satisfies_protocol(self):
+        assert isinstance(ZeroCountPaginator([], 10), Paginator)
+
+    def test_django_paginator_satisfies_protocol(self):
+        assert isinstance(DjangoPaginator([], 10), Paginator)
+
+
 class TestPage:
     def test_is_empty(self):
-        page = Paginator([], 10).get_page(1)
-        assert repr(page) == "<Page 1>"
+        page = ZeroCountPaginator([], 10).get_page(1)
+        assert repr(page) == "<ZeroCountPage 1>"
         assert len(page) == 0
-        assert page.has_next is False
-        assert page.has_previous is False
-        assert page.has_other_pages is False
+        assert page.has_next() is False
+        assert page.has_previous() is False
+        assert page.has_other_pages() is False
 
     def test_single_page(self):
-        page = Paginator([1, 2], 10).get_page(1)
+        page = ZeroCountPaginator([1, 2], 10).get_page(1)
         assert len(page) == 2
-        assert page.has_next is False
-        assert page.has_previous is False
-        assert page.has_other_pages is False
+        assert page.has_next() is False
+        assert page.has_previous() is False
+        assert page.has_other_pages() is False
 
     def test_has_next(self):
-        page = Paginator([1, 2, 3], 2).get_page(1)
-        assert page.has_next is True
-        assert page.has_previous is False
-        assert page.has_other_pages is True
-        assert page.next_page_number == 2
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page(1)
+        assert page.has_next() is True
+        assert page.has_previous() is False
+        assert page.has_other_pages() is True
+        assert page.next_page_number() == 2
         with pytest.raises(EmptyPage):
-            _ = page.previous_page_number
+            _ = page.previous_page_number()
 
     def test_has_previous(self):
-        page = Paginator([1, 2, 3], 2).get_page(2)
-        assert page.has_previous is True
-        assert page.has_next is False
-        assert page.has_other_pages is True
-        assert page.previous_page_number == 1
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page(2)
+        assert page.has_previous() is True
+        assert page.has_next() is False
+        assert page.has_other_pages() is True
+        assert page.previous_page_number() == 1
         with pytest.raises(EmptyPage):
-            _ = page.next_page_number
+            _ = page.next_page_number()
 
     def test_getitem(self):
-        page = Paginator([1, 2, 3], 2).get_page(1)
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page(1)
         assert page[0] == 1
 
     def test_repr(self):
-        page = Paginator([1], 10).get_page(1)
-        assert repr(page) == "<Page 1>"
+        page = ZeroCountPaginator([1], 10).get_page(1)
+        assert repr(page) == "<ZeroCountPage 1>"
 
 
-class TestPaginator:
+class TestZeroCountPaginator:
     def test_get_page_int(self):
-        page = Paginator([1, 2, 3], 2).get_page(2)
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page(2)
         assert len(page) == 1
         assert page.number == 2
-        assert page.has_next is False
-        assert page.has_previous is True
+        assert page.has_next() is False
+        assert page.has_previous() is True
 
     def test_get_page_str(self):
-        page = Paginator([1, 2, 3], 2).get_page("2")
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page("2")
         assert page.number == 2
 
     def test_get_page_empty_str_defaults_to_1(self):
-        page = Paginator([1, 2, 3], 2).get_page("")
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page("")
         assert page.number == 1
-        assert page.has_next is True
+        assert page.has_next() is True
 
     def test_get_page_bad_str_defaults_to_1(self):
-        page = Paginator([1, 2, 3], 2).get_page("bad")
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page("bad")
         assert page.number == 1
 
     def test_get_page_zero_defaults_to_1(self):
-        page = Paginator([1, 2, 3], 2).get_page(0)
+        page = ZeroCountPaginator([1, 2, 3], 2).get_page(0)
         assert page.number == 1
 
     def test_get_page_empty_list(self):
-        page = Paginator([], 2).get_page(1)
+        page = ZeroCountPaginator([], 2).get_page(1)
         assert len(page) == 0
-        assert page.has_next is False
-        assert page.has_previous is False
+        assert page.has_next() is False
+        assert page.has_previous() is False
 
 
 class TestValidatePageNumber:
@@ -120,7 +138,7 @@ class TestPaginationConfig:
         assert config.paginator is None
 
     def test_custom_values(self):
-        paginator = Paginator([], 10)
+        paginator = ZeroCountPaginator([], 10)
         config = PaginationConfig(
             param="p",
             target="my-list",
@@ -156,7 +174,7 @@ class TestRenderPaginatedResponse:
             request,
             "template.html",
             [1, 2, 3],
-            config=PaginationConfig(paginator=Paginator([1, 2, 3], 2)),
+            config=PaginationConfig(paginator=ZeroCountPaginator([1, 2, 3], 2)),
         )
         assert response.context_data["page"].number == 2
 
@@ -203,7 +221,7 @@ class TestRenderPaginatedResponse:
         request = rf.get("/", {"p": "2"})
         request.htmx = HtmxDetails(request)
         items = list(range(10))
-        config = PaginationConfig(param="p", paginator=Paginator(items, 3))
+        config = PaginationConfig(param="p", paginator=ZeroCountPaginator(items, 3))
         response = render_paginated_response(
             request, "template.html", items, config=config
         )

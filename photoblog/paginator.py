@@ -29,7 +29,7 @@ class Page(Protocol):
     def number(self) -> int: ...  # noqa: D102
 
     @property
-    def object_list(self) -> Sequence: ...  # noqa: D102
+    def object_list(self) -> ObjectList: ...  # noqa: D102
 
     def has_next(self) -> bool: ...  # noqa: D102
 

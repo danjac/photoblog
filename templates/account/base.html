@@ -42,12 +42,12 @@
 {% block content %}
   {% if user.is_authenticated %}
     {# Mobile: dropdown #}
-    <div class="mb-6 lg:hidden" x-data="{ open: false }">
+    <div class="mb-6 lg:hidden" x-data="dropdown()" @click.outside="close()" @keyup.escape.window="close()">
       <button
         type="button"
         class="justify-between w-full btn btn-ghost"
-        @click="open = !open"
-        :aria-expanded="open"
+        @click="toggle()"
+        :aria-expanded="open.toString()"
       >
         {% heroicon_mini "cog-6-tooth" class="size-4 shrink-0" aria_hidden="true" %}
         {% translate "Account Settings" %}
@@ -58,7 +58,6 @@
         x-show="open"
         x-cloak
         x-transition
-        @click.outside="open = false"
       >
         {% partial menu_items %}
       </ul>

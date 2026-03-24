@@ -22,6 +22,7 @@
     </main>
     {% block scripts %}
       <script src="{% static 'indicator.js' %}"></script>
+      <script src="{% static 'dropdown.js' %}"></script>
       <script>
         document.addEventListener('htmx:beforeRequest', (evt) => {
           evt.detail.target?.setAttribute('aria-busy', 'true');

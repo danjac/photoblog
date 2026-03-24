@@ -1,13 +1,11 @@
 {% load heroicons i18n %}
+{% get_available_languages as languages %}
+{% get_current_language as current_language %}
 <header
   class="sticky top-0 z-10 border-b navbar border-base-300 bg-base-100/80 backdrop-blur-lg"
-  x-data="{ showMobileMenu: false, showUserDropdown: false }"
-  x-init="
-          $watch('showMobileMenu', v => { if (v) showUserDropdown = false; });
-          $watch('showUserDropdown', v => { if (v) showMobileMenu = false; });
-         "
-  @htmx:before-request.window="showMobileMenu = false; showUserDropdown = false"
-  @keyup.escape.window="showMobileMenu = false; showUserDropdown = false"
+  x-data="{ showMobileMenu: false }"
+  @htmx:before-request.window="showMobileMenu = false"
+  @keyup.escape.window="showMobileMenu = false"
 >
   <div class="navbar-start">
     <a
@@ -18,16 +16,51 @@
     </a>
   </div>
   <div class="gap-1 navbar-end">
+    <div class="relative" x-data="dropdown()" @click.outside="close()" @keyup.escape.window="close()">
+      <button
+        type="button"
+        class="gap-2 btn btn-ghost"
+        :aria-expanded="open.toString()"
+        aria-label="{% translate "Select language" %}"
+        @click="toggle()"
+      >
+        {% heroicon_mini "globe-alt" class="size-5 shrink-0" aria_hidden="true" %}
+        <span class="hidden sm:inline">{{ current_language|upper }}</span>
+        {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
+      </button>
+      <ul
+        class="absolute right-0 z-20 p-2 mt-1 w-40 border shadow-xl menu bg-base-100 rounded-box border-base-300"
+        x-cloak
+        x-show="open"
+        x-transition.scale.origin.top
+        role="menu"
+      >
+        {% for lang_code, lang_name in languages %}
+          <li role="menuitem">
+            <form method="post" action="{% url 'set_language' %}" hx-disable="true">
+              {% csrf_token %}
+              <input type="hidden" name="language" value="{{ lang_code }}">
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button type="submit" class="w-full{% if lang_code == current_language %} font-semibold{% endif %}">
+                {{ lang_name }}
+              </button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
     {% if user.is_authenticated %}
       <div
         class="relative"
-        @click.outside="showUserDropdown = false"
+        x-data="dropdown()"
+        @click.outside="close()"
+        @keyup.escape.window="close()"
       >
         <button
           type="button"
           class="gap-2 btn btn-ghost"
-          :aria-expanded="showUserDropdown.toString()"
-          @click="showUserDropdown = !showUserDropdown"
+          :aria-expanded="open.toString()"
+          @click="toggle()"
         >
           {% heroicon_mini "user-circle" class="size-5 shrink-0" aria_hidden="true" %}
           <span class="hidden sm:inline">{{ user.username }}</span>
@@ -36,7 +69,7 @@
         <ul
           class="absolute right-0 z-20 p-2 mt-1 w-56 border shadow-xl menu bg-base-100 rounded-box border-base-300"
           x-cloak
-          x-show="showUserDropdown"
+          x-show="open"
           x-transition.scale.origin.top
           role="menu"
         >

@@ -7,8 +7,8 @@ configuring secrets, and deploying the application end-to-end.
 
 ## Required reading
 
-- `docs/Infrastructure.md`
-- `docs/Deployment.md`
+- `docs/infrastructure.md`
+- `docs/deployment.md`
 
 ---
 
@@ -434,12 +434,11 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 **Mailgun sender domain** (the `mg.yourdomain.com` subdomain for outbound email):
 > Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or press Enter to skip:
 
-**Admin URL** — generate a random human-readable slug if the user skips.
-Use the word list and Python snippet in `resources/wordlist.md`:
+**Admin URL** — generate a random human-readable slug if the user skips:
 
-```python
-slug = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}"
-default_admin_url = f"{slug}/"
+```bash
+slug=$(python .agents/skills/resources/random-slug.py)
+default_admin_url="${slug}/"
 ```
 
 Then prompt:

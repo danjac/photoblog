@@ -6,7 +6,7 @@ Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
 ## Required reading
 
-- `docs/Deployment.md`
+- `docs/deployment.md`
 
 ---
 
@@ -52,11 +52,10 @@ runbooks that reference the current admin path:
 > Do you want to rotate the Django admin URL? Changing it will invalidate any
 > bookmarks or scripts that use the current path. (y/n)
 
-If **yes**, generate a new random human-readable slug using the word list in
-`resources/wordlist.md`:
+If **yes**, generate a new random human-readable slug:
 
-```python
-new_admin_url = f"{random.choice(ADJECTIVES)}-{random.choice(NOUNS)}/"
+```bash
+new_admin_url="$(python .agents/skills/resources/random-slug.py)/"
 ```
 
 Present the pending changes before touching anything:

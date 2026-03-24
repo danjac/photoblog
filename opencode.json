@@ -1,9 +1,101 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "command": {
+    "dj-a11y": {
+      "template": ".agents/skills/dj-a11y/SKILL.md",
+      "description": "Accessibility audit: WCAG 2.1 AA \u2014 forms, icons, HTMX, Alpine, semantic HTML"
+    },
+    "dj-create-app": {
+      "template": ".agents/skills/dj-create-app/SKILL.md",
+      "description": "Scaffold a complete Django app"
+    },
+    "dj-create-command": {
+      "template": ".agents/skills/dj-create-command/SKILL.md",
+      "description": "Add a management command with tests"
+    },
+    "dj-create-cron": {
+      "template": ".agents/skills/dj-create-cron/SKILL.md",
+      "description": "Schedule a management command as a Kubernetes cron job"
+    },
+    "dj-create-crud": {
+      "template": ".agents/skills/dj-create-crud/SKILL.md",
+      "description": "Generate full CRUD views, templates, URLs, and tests for a model"
+    },
+    "dj-create-e2e": {
+      "template": ".agents/skills/dj-create-e2e/SKILL.md",
+      "description": "Write Playwright E2E test(s) for a described user interaction"
+    },
+    "dj-create-filter": {
+      "template": ".agents/skills/dj-create-filter/SKILL.md",
+      "description": "Add a template filter with correct escaping flags"
+    },
+    "dj-create-model": {
+      "template": ".agents/skills/dj-create-model/SKILL.md",
+      "description": "Design and write a Django model with factory, fixture, and model tests"
+    },
+    "dj-create-tag": {
+      "template": ".agents/skills/dj-create-tag/SKILL.md",
+      "description": "Add a template tag (simple_tag, simple_block_tag, inclusion_tag, Node)"
+    },
+    "dj-create-task": {
+      "template": ".agents/skills/dj-create-task/SKILL.md",
+      "description": "Add a background task using django-tasks-db"
+    },
+    "dj-create-view": {
+      "template": ".agents/skills/dj-create-view/SKILL.md",
+      "description": "Add a view, template, and URL"
+    },
+    "dj-deadcode": {
+      "template": ".agents/skills/dj-deadcode/SKILL.md",
+      "description": "Remove unused Python code, Django templates and static assets"
+    },
+    "dj-enable-db-backups": {
+      "template": ".agents/skills/dj-enable-db-backups/SKILL.md",
+      "description": "Enable automated daily PostgreSQL backups to a private Object Storage bucket"
+    },
+    "dj-feedback": {
+      "template": ".agents/skills/dj-feedback/SKILL.md",
+      "description": "File a GitHub issue against the django-studio repo"
+    },
+    "dj-full-coverage": {
+      "template": ".agents/skills/dj-full-coverage/SKILL.md",
+      "description": "Enable 100% coverage gate and write tests for all uncovered lines"
+    },
+    "dj-gdpr": {
+      "template": ".agents/skills/dj-gdpr/SKILL.md",
+      "description": "GDPR compliance audit: PII in models, erasure, consent, logging"
+    },
+    "dj-launch": {
+      "template": ".agents/skills/dj-launch/SKILL.md",
+      "description": "Interactive first-deploy wizard: provisions infra, configures secrets, deploys"
+    },
+    "dj-launch-observability": {
+      "template": ".agents/skills/dj-launch-observability/SKILL.md",
+      "description": "Deploy the observability stack (Grafana + Prometheus + Loki)"
+    },
+    "dj-perf": {
+      "template": ".agents/skills/dj-perf/SKILL.md",
+      "description": "Performance audit: N+1 queries, missing indexes, caching, async"
+    },
+    "dj-rotate-secrets": {
+      "template": ".agents/skills/dj-rotate-secrets/SKILL.md",
+      "description": "Rotate auto-generated and third-party Helm secrets and redeploy"
+    },
+    "dj-secure": {
+      "template": ".agents/skills/dj-secure/SKILL.md",
+      "description": "Security audit: settings, views, XSS, CSRF, IDOR, SQL injection"
+    },
+    "dj-sync": {
+      "template": ".agents/skills/dj-sync/SKILL.md",
+      "description": "Pull latest template changes via Copier and resolve merge conflicts"
+    },
+    "dj-translate": {
+      "template": ".agents/skills/dj-translate/SKILL.md",
+      "description": "Extract strings, translate via Claude, compile .mo catalogue"
+    },
     "djstudio": {
       "template": ".agents/skills/djstudio/SKILL.md",
-      "description": "Project assistant for django-studio generated projects"
+      "description": ""
     }
   }
 }

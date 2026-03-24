@@ -65,6 +65,10 @@
       "template": ".agents/skills/dj-gdpr/SKILL.md",
       "description": "GDPR compliance audit: PII in models, erasure, consent, logging"
     },
+    "dj-help": {
+      "template": ".agents/skills/dj-help/SKILL.md",
+      "description": "List all dj-* commands or show help for a specific command"
+    },
     "dj-launch": {
       "template": ".agents/skills/dj-launch/SKILL.md",
       "description": "Interactive first-deploy wizard: provisions infra, configures secrets, deploys"

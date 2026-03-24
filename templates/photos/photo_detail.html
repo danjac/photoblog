@@ -39,6 +39,7 @@
                 class="btn btn-primary"
                 x-show="!open"
                 x-cloak
+                :aria-expanded="open.toString()"
                 @click="open = true">
           {% heroicon_mini "plus" aria_hidden="true" %}
           {% translate "Add comment" %}
@@ -66,7 +67,7 @@
       </div>
     {% endif %}
   </div>
-  <div id="comment-list" class="mt-6">
+  <div id="comment-list" class="mt-6" aria-live="polite">
     {% fragment "paginate.html" target="comment-list" %}
       {% for comment in page %}
         <div id="comment-{{ comment.pk }}" class="p-4 mt-4 rounded-lg bg-base-200 prose">

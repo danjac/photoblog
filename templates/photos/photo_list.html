@@ -6,6 +6,7 @@
     <form method="get" action="{{ request.path }}" class="flex justify-center items-center space-x-2 sm:justify-start">
       <label class="input">
         {% heroicon_mini "magnifying-glass" class="opacity-50 size-4 shrink-0" aria_hidden="true" %}
+        <span class="sr-only">{% translate "Search photos" %}</span>
         <input
           type="search"
           name="{{ request.search.param }}"

@@ -34,7 +34,8 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Image thumbnails                                          | [`sorl-thumbnail`](https://sorl-thumbnail.readthedocs.io/) | `uv add sorl-thumbnail`   |
 | Multi-tenancy                                             | [`django-tenants`](https://django-tenants.readthedocs.io/) | `uv add django-tenants`   |
 | HTTP API client                                           | [`aiohttp`](https://docs.aiohttp.org/) | `uv add aiohttp`          |
-| WebSockets / real-time                                    | [`channels`](https://channels.readthedocs.io/) + [`daphne`](https://pypi.org/project/daphne/) | `uv add channels daphne`  |
+| Server-push / event streaming (notifications, live feed)  | `psycopg` LISTEN/NOTIFY (built-in)    | no extra package          |
+| WebSockets / real-time (bidirectional)                    | [`channels`](https://channels.readthedocs.io/) + [`channels-redis`](https://pypi.org/project/channels-redis/) | `uv add channels channels-redis` |
 | Querystring filtering                                     | [`django-filter`](https://django-filter.readthedocs.io/) | `uv add django-filter`    |
 | Audit logging                                             | [`django-auditlog`](https://django-auditlog.readthedocs.io/) | `uv add django-auditlog`  |
 | Payments                                                  | [`stripe`](https://docs.stripe.com/api?lang=python) | `uv add stripe`           |
@@ -51,6 +52,7 @@ State your findings explicitly when suggesting a package — don't just name it.
 | Date parsing & relative deltas                            | [`python-dateutil`](https://dateutil.readthedocs.io/) | `uv add python-dateutil`  |
 | Scientific computing                                      | [`scipy`](https://scipy.org/) + [`numpy`](https://numpy.org/) | `uv add scipy numpy`      |
 | Machine learning                                          | [`scikit-learn`](https://scikit-learn.org/) | `uv add scikit-learn`     |
+| Rich text editor (admin + forms)                          | [`django-prose-editor`](https://django-prose-editor.readthedocs.io/) | `uv add "django-prose-editor[sanitize]"` |
 | HTML sanitization                                         | [`nh3`](https://pypi.org/project/nh3/) | `uv add nh3`              |
 | Complex authorization (code-defined rules)                | [`django-rules`](https://pypi.org/project/django-rules/) | `uv add django-rules`     |
 | Complex authorization (runtime per-object DB permissions) | [`django-guardian`](https://django-guardian.readthedocs.io/) | `uv add django-guardian`  |
@@ -61,9 +63,17 @@ State your findings explicitly when suggesting a package — don't just name it.
   Redis cache backend (already configured).
 - **aiohttp**: use for async HTTP calls to third-party APIs. See
   `docs/API-Integration.md` for the `USER_AGENT` setting, error handling, and testing patterns.
-- **channels + daphne**: replace the Uvicorn ASGI server with Daphne
-  (`daphne config.asgi:application`). Add `"channels"` to `INSTALLED_APPS`
-  and configure `ASGI_APPLICATION`.
+- **psycopg LISTEN/NOTIFY**: for server-push scenarios (user notifications, live
+  feed updates, progress events) — no extra package needed. `psycopg` is already
+  installed. Use `async with conn.notifies() as notifies:` in an async view or
+  background task. Sends a notification from Python with
+  `await conn.execute("NOTIFY channel, 'payload'")` or from SQL with
+  `NOTIFY channel`. Pair with Server-Sent Events (SSE) for a lightweight
+  push-to-browser pattern without WebSockets.
+- **channels**: for genuine bidirectional WebSocket needs. Add `"channels"` to
+  `INSTALLED_APPS` and set `ASGI_APPLICATION`. Uvicorn already supports
+  WebSockets — no need to switch to Daphne. Use `channels-redis` as the channel
+  layer (`uv add channels-redis`); Redis is already in the stack.
 - **django-money**: pairs with `py-moneyed`. Use `MoneyField` on models;
   arithmetic respects currency. `MoneyWidget` renders an amount input and a
   currency select side-by-side. See `docs/Django-Forms.md#moneywidget` for the
@@ -80,6 +90,13 @@ State your findings explicitly when suggesting a package — don't just name it.
 - **markdown-it-py**: preferred Markdown renderer. Use the `mdit-py-plugins`
   extras for footnotes, tasklists, etc. Pair with `nh3` to sanitize the
   rendered HTML before serving.
+- **django-prose-editor**: ProseMirror/Tiptap-based rich text editor. Add
+  `"django_prose_editor"` to `INSTALLED_APPS`. Use `ProseEditorField` instead
+  of `TextField` for rich text model fields; it renders the editor automatically
+  in admin and forms. The `[sanitize]` extra uses `nh3` to sanitize HTML on
+  save — always install with this extra. Configure allowed extensions
+  (`Bold`, `Italic`, `BulletList`, `Link`, etc.) per field via the `extensions`
+  argument.
 - **nh3**: Rust-backed HTML sanitizer (successor to `bleach`). Use to strip
   unsafe tags/attributes from user-supplied or rendered Markdown content before
   inserting into templates.

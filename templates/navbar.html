@@ -1,5 +1,6 @@
 {% load heroicons i18n %}
 {% get_available_languages as languages %}
+{% get_language_info_list for languages as language_info_list %}
 {% get_current_language as current_language %}
 <header
   class="sticky top-0 z-10 border-b navbar border-base-300 bg-base-100/80 backdrop-blur-lg"
@@ -17,6 +18,13 @@
   </div>
   <div class="gap-1 navbar-end">
     <div class="relative" x-data="dropdown()" @click.outside="close()" @keyup.escape.window="close()">
+      {% for lang in language_info_list %}
+        <form id="set-language-{{ lang.code }}" method="post" action="{% url 'set_language' %}" hx-disable="true" hidden>
+          {% csrf_token %}
+          <input type="hidden" name="language" value="{{ lang.code }}">
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        </form>
+      {% endfor %}
       <button
         type="button"
         class="gap-2 btn btn-ghost"
@@ -35,16 +43,11 @@
         x-transition.scale.origin.top
         role="menu"
       >
-        {% for lang_code, lang_name in languages %}
+        {% for lang in language_info_list %}
           <li role="menuitem">
-            <form method="post" action="{% url 'set_language' %}" hx-disable="true">
-              {% csrf_token %}
-              <input type="hidden" name="language" value="{{ lang_code }}">
-              <input type="hidden" name="next" value="{{ request.get_full_path }}">
-              <button type="submit" class="w-full{% if lang_code == current_language %} font-semibold{% endif %}">
-                {{ lang_name }}
-              </button>
-            </form>
+            <button type="submit" form="set-language-{{ lang.code }}" class="w-full{% if lang.code == current_language %} font-semibold{% endif %}">
+              {{ lang.name_local }}
+            </button>
           </li>
         {% endfor %}
       </ul>

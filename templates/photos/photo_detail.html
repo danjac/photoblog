@@ -21,14 +21,14 @@
           <a href="{% url 'photos:photo_edit' photo.pk %}"
              class="btn btn-secondary">
             {% heroicon_mini "pencil-square" aria_hidden="true" %}
-            Edit
+            {% translate "Edit" %}
           </a>
         {% endif %}
         {% if can_delete_photo %}
           <a href="{% url 'photos:photo_delete' photo.pk %}"
              class="btn btn-error">
             {% heroicon_mini "trash" aria_hidden="true" %}
-            Delete
+            {% translate "Delete" %}
           </a>
         {% endif %}
       </div>
@@ -101,7 +101,7 @@
           {% endif %}
         </div>
       {% empty %}
-        <p class="text-base-content/60">No comments yet.</p>
+        <p class="text-base-content/60">{% translate "No comments yet." %}</p>
       {% endfor %}
     {% endfragment %}
     {% include "paginate.html" %}

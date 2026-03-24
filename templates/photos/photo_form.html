@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% load heroicons %}
+{% load heroicons i18n %}
 
 {% block content %}
-  {% include "header.html" with title="Photo" %}
+  {% translate "Photo" as page_title %}
+  {% include "header.html" with title=page_title %}
   {% partialdef photo-form inline %}
     <div id="photo-form">
       {% fragment "form.html" htmx=True hx_target="#photo-form" multipart=True %}
@@ -12,11 +13,11 @@
         {% fragment "form.html#buttons" %}
           <button type="submit" class="btn btn-primary">
             {% heroicon_mini "check" aria_hidden="true" %}
-            Save
+            {% translate "Save" %}
           </button>
           <a href="{% url 'photos:photo_list' %}" class="btn btn-secondary">
             {% heroicon_mini "x-mark" aria_hidden="true" %}
-            Cancel
+            {% translate "Cancel" %}
           </a>
         {% endfragment %}
       {% endfragment %}

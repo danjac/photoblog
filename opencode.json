@@ -67,7 +67,7 @@
     },
     "dj-help": {
       "template": ".agents/skills/dj-help/SKILL.md",
-      "description": "List all dj-* commands or show help for a specific command"
+      "description": "List all slash commands or show help for a specific command"
     },
     "dj-launch": {
       "template": ".agents/skills/dj-launch/SKILL.md",

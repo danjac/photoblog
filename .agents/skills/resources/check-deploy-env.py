@@ -5,24 +5,17 @@ Loads .env (takes precedence over shell environment), then reports missing
 required and optional vars by name only — never prints values.
 
 Usage:
-    python .agents/skills/resources/check-deploy-env.py
+    uv run python .agents/skills/resources/check-deploy-env.py
 
 Exit code 1 if any required vars are missing.
 """
 
-import os
 import sys
-from pathlib import Path
 
-# Load .env (overrides shell env for same keys)
-try:
-    for raw in Path(".env").read_text().splitlines():
-        entry = raw.strip()
-        if entry and not entry.startswith("#") and "=" in entry:
-            k, _, v = entry.partition("=")
-            os.environ[k.strip()] = v.strip()
-except FileNotFoundError:
-    pass
+from environs import Env
+
+env = Env()
+env.read_env()
 
 REQUIRED = ["HETZNER_TOKEN", "CLOUDFLARE_TOKEN"]
 OPTIONAL = [
@@ -34,8 +27,8 @@ OPTIONAL = [
     "OTLP_ENDPOINT",
 ]
 
-missing_req = [v for v in REQUIRED if not os.environ.get(v)]
-missing_opt = [v for v in OPTIONAL if not os.environ.get(v)]
+missing_req = [v for v in REQUIRED if not env.str(v, default="").strip()]
+missing_opt = [v for v in OPTIONAL if not env.str(v, default="").strip()]
 
 for v in missing_req:
     print(f"MISSING (required): {v}")

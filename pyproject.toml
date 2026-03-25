@@ -206,5 +206,12 @@ include = ["photoblog"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"
 
+[tool.pysentry.defaults]
+severity = "medium"
+# fail_on = "high"
+
+[tool.pysentry.sources]
+# enabled = ["pypa", "osv", "pypi"]
+
 [tool.pysentry.ignore]
 ids = ["GHSA-5239-wwwm-4pmq"]  # pygments ReDoS in AdlLexer (local access only, no fix available)

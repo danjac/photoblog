@@ -15,9 +15,9 @@ class HttpRequest(DjangoHttpRequest):
     """Extended HttpRequest with typed user, HTMX, and search attributes."""
 
     if TYPE_CHECKING:
-        user: User | AnonymousUser
         htmx: HtmxDetails
         search: SearchDetails
+        user: User | AnonymousUser
 
 
 class AuthenticatedHttpRequest(HttpRequest):

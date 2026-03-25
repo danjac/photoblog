@@ -44,6 +44,7 @@ dependencies = [
   "sorl-thumbnail>=13.0.0",
   "pillow>=12.1.1",
   "rules>=3.5",
+  "requests==2.33.0",
 ]
 [dependency-groups]
 dev = [
@@ -200,7 +201,10 @@ known-first-party = ["photoblog"]
 [tool.django-stubs]
 django_settings_module = "config.settings"
 
-[tool.pyright]
+[tool.basedpyright]
 include = ["photoblog"]
 exclude = ["**/migrations/*.py", "**/tests/**/*.py"]
 typeCheckingMode = "basic"
+
+[tool.pysentry.ignore]
+ids = ["GHSA-5239-wwwm-4pmq"]  # pygments ReDoS in AdlLexer (local access only, no fix available)

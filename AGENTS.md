@@ -102,7 +102,7 @@ actively, not as background reading.
 | Django admin                    | `docs/django.md` |
 | UI components (buttons, modals, layout)         | `docs/design.md` |
 | Accessibility                   | `docs/accessibility.md` |
-| Internationalisation / i18n     | `docs/django.md` |
+| Internationalisation / i18n     | `docs/localization.md` |
 | Adding a Python dependency      | `docs/packages.md` |
 | Adding a JS/CSS dependency      | `docs/frontend-dependencies.md` |
 | Any feature handling user data, accounts, or PII | `docs/gdpr.md` |
@@ -110,6 +110,7 @@ actively, not as background reading.
 | Channels, SSE, WebSockets       | `docs/channels.md` |
 | HTMX interaction                | `docs/htmx.md` |
 | AlpineJS component              | `docs/alpine.md` |
+| Dropdown menus                            | `docs/ui-recipes.md` |
 | Lightbox, drag-drop, upload preview       | `docs/ui-recipes.md` |
 | Maps / geocoding (OpenStreetMap + geopy)  | `docs/maps.md` |
 | Authentication / allauth        | `docs/authentication.md` |

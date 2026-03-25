@@ -4,9 +4,103 @@ Composite patterns combining Alpine.js, HTMX, Tailwind, and Django templates.
 
 ## Contents
 
+- [Dropdown menu](#dropdown-menu)
 - [Photo Lightbox](#photo-lightbox)
 - [Drag and Drop](#drag-and-drop)
 - [Multiple File Upload](#multiple-file-upload)
+
+## Dropdown menu
+
+A reusable Alpine `dropdown()` component for action menus and navigation dropdowns.
+Uses `$dispatch` so opening one dropdown automatically closes all others on the page.
+
+Register it once in your base template's `{% block scripts %}` block:
+
+```html
+{% block scripts %}
+  {{ block.super }}
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('dropdown', () => ({
+        open: false,
+        toggle() {
+          this.open = !this.open;
+          if (this.open) this.$dispatch('dropdown-open');
+        },
+        close() { this.open = false; },
+      }));
+    });
+  </script>
+{% endblock scripts %}
+```
+
+### Basic usage
+
+```html
+<div
+  class="relative"
+  x-data="dropdown()"
+  @click.outside="close()"
+  @keyup.escape.window="close()"
+  @dropdown-open.window="if ($event.target !== $el) close()"
+  @htmx:before-request.window="close()"
+>
+  <button
+    type="button"
+    class="btn btn-ghost"
+    :aria-expanded="open.toString()"
+    @click="toggle()"
+  >
+    Options
+    {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
+  </button>
+  <ul
+    class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
+    x-cloak
+    x-show="open"
+    x-transition.scale.origin.top
+    role="menu"
+  >
+    <li role="menuitem"><a href="#">Action</a></li>
+  </ul>
+</div>
+```
+
+`@dropdown-open.window` closes this dropdown when any other opens (`$event.target !== $el`). `@htmx:before-request.window` closes it on any HTMX navigation.
+
+### Form actions inside a dropdown
+
+When a dropdown item needs to submit a POST form (e.g. logout, language switch), do
+not nest the `<form>` inside the `x-show` list — place it with `hidden` outside the
+list and reference it from the button via `form="..."`. Add `hx-disable="true"` so
+HTMX does not intercept these full-page POSTs.
+
+```html
+{# Form lives outside x-show, referenced by id #}
+<form id="my-action-form" method="post" action="{% url 'my:action' %}" hx-disable="true" hidden>
+  {% csrf_token %}
+  {# any hidden inputs #}
+</form>
+
+<div
+  class="relative"
+  x-data="dropdown()"
+  @click.outside="close()"
+  @keyup.escape.window="close()"
+>
+  <button type="button" :aria-expanded="open.toString()" @click="toggle()" class="btn btn-ghost">
+    Label
+  </button>
+  <ul class="absolute right-0 z-20 p-2 mt-1 w-48 border shadow-xl menu bg-base-100 rounded-box border-base-300"
+      x-cloak x-show="open" x-transition.scale.origin.top role="menu">
+    <li role="menuitem">
+      <button type="submit" form="my-action-form">{% translate "Do action" %}</button>
+    </li>
+  </ul>
+</div>
+```
+
+---
 
 ## Photo Lightbox
 

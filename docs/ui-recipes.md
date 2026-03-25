@@ -23,6 +23,19 @@ Register it once in your base template's `{% block scripts %}` block:
     document.addEventListener('alpine:init', () => {
       Alpine.data('dropdown', () => ({
         open: false,
+        init() {
+          this._onDropdownOpen = this.onDropdownOpen.bind(this);
+          this._onHtmxRequest = this.close.bind(this);
+          window.addEventListener('dropdown-open', this._onDropdownOpen);
+          window.addEventListener('htmx:beforeRequest', this._onHtmxRequest);
+        },
+        destroy() {
+          window.removeEventListener('dropdown-open', this._onDropdownOpen);
+          window.removeEventListener('htmx:beforeRequest', this._onHtmxRequest);
+        },
+        onDropdownOpen(e) {
+          if (e.target !== this.$el) this.close();
+        },
         toggle() {
           this.open = !this.open;
           if (this.open) this.$dispatch('dropdown-open');
@@ -33,6 +46,8 @@ Register it once in your base template's `{% block scripts %}` block:
   </script>
 {% endblock scripts %}
 ```
+
+`init()` wires up two window listeners: one closes this dropdown when any other opens, one closes on HTMX navigation. `destroy()` removes them to prevent leaks when the element is removed from the DOM.
 
 ### Basic usage
 
@@ -63,8 +78,6 @@ Register it once in your base template's `{% block scripts %}` block:
   </ul>
 </div>
 ```
-
-Closing on HTMX navigation and when another dropdown opens are handled automatically by the `dropdown()` component.
 
 ### Form actions inside a dropdown
 

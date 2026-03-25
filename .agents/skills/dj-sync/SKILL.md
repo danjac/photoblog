@@ -9,14 +9,27 @@ any merge conflicts interactively.
 
 ### 1. Run Copier update
 
+Before running Copier, back up the auto-generated files to a project-scoped
+directory so they are not overwritten if multiple projects are synced at the
+same time:
+
+```bash
+mkdir -p /tmp/photoblog
+cp -f .claude/settings.json /tmp/photoblog/settings.json.bak 2>/dev/null || true
+cp -f .mcp.json /tmp/photoblog/mcp.json.bak 2>/dev/null || true
+cp -f opencode.json /tmp/photoblog/opencode.json.bak 2>/dev/null || true
+```
+
+Then run Copier:
+
 ```bash
 uvx copier update --trust
 ```
 
 This pulls the latest template into the project and stages the merged files.
-If there are no conflicts, skip to Step 4.
+If there are no conflicts, skip to Step 3.
 
-### 2. Detect conflicts
+### 2. Detect and resolve conflicts
 
 Check for merge conflicts introduced by the update:
 
@@ -30,8 +43,6 @@ List any files with conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`):
 grep -rn "<<<<<<" . --include="*.py" --include="*.html" --include="*.jinja" \
     --include="*.yml" --include="*.toml" --include="*.md" 2>/dev/null
 ```
-
-### 3. Resolve each conflict interactively
 
 For every conflicted file:
 
@@ -49,6 +60,26 @@ For every conflicted file:
 4. Apply the user's decision and remove the conflict markers.
 
 Repeat until no conflict markers remain.
+
+### 3. Restore local overrides in generated files
+
+Diff the auto-generated backups against the freshly regenerated files:
+
+```bash
+diff /tmp/photoblog/settings.json.bak .claude/settings.json
+diff /tmp/photoblog/mcp.json.bak .mcp.json
+diff /tmp/photoblog/opencode.json.bak opencode.json
+```
+
+For each file with a non-empty diff:
+
+1. Show the diff to the user.
+2. Identify which lines are new template additions vs. local customizations
+   the user had made (e.g. extra `permissions.allow` entries, extra MCP
+   servers such as `kubernetes`).
+3. Ask the user which local customizations to restore, then apply them.
+
+If the backup files don't exist (first sync on a fresh project), skip this step.
 
 ### 4. Verify
 

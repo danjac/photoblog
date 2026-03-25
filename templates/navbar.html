@@ -17,7 +17,10 @@
     </a>
   </div>
   <div class="gap-1 navbar-end">
-    <div class="relative" x-data="dropdown()" @click.outside="close()" @keyup.escape.window="close()" @dropdown-open.window="if ($event.target !== $el) close()" @htmx:before-request.window="close()">
+    <div class="relative" x-data="dropdown()"
+         @click.outside="close()"
+         @keyup.escape.window="close()"
+         @dropdown-open.window="if ($event.target !== $el) close()" @htmx:before-request.window="close()">
       {% for lang in language_info_list %}
         <form id="set-language-{{ lang.code }}" method="post" action="{% url 'set_language' %}" hx-disable="true" hidden>
           {% csrf_token %}

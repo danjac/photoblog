@@ -9,7 +9,6 @@ configuring secrets, and deploying the application end-to-end.
 
 - `docs/infrastructure.md`
 - `docs/deployment.md`
-- `resources/deploy-env-vars.md` — deployment env var reference (shared)
 
 ---
 
@@ -39,15 +38,13 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 > - **Hetzner Cloud API token** — console.hetzner.cloud → Security → API Tokens → Generate (Read & Write)
 > - **Cloudflare API token** — dash.cloudflare.com → Profile → API Tokens (Zone permissions)
 >
-> **Required for email:**
-> - **Mailgun API key** — mailgun.com → Sending → Domains → API Keys
->
 > **Optional:**
+> - Mailgun API key — mailgun.com → Sending → Domains → API Keys (for outbound email)
 > - Mailgun DKIM value (for DNS-based email verification via Cloudflare)
-> - Hetzner object storage credentials (if `use_storage` is enabled)
-> - Sentry DSN, OTLP endpoint (for observability)
+> - Hetzner object storage credentials (for file/media storage)
+> - Sentry DSN (for error tracking — from your Sentry project settings)
 >
-> See `resources/deploy-env-vars.md` for exact locations. Say **ready** when you have them.
+> Say **ready** when you have them.
 
 ---
 
@@ -292,7 +289,7 @@ Wait for apply to complete. If it fails for a different reason, show the error a
 
 ---
 
-## Step 3 — Object Storage (skip if terraform/storage/ does not exist)
+## Step 3 — Object Storage (optional — skip if user does not want file/media storage)
 
 **Check:** Read `terraform/storage/terraform.tfvars` if it exists.
 
@@ -433,15 +430,16 @@ Save this as `<site_name>` for use in Step 6c.
 
 **Meta author, description, keywords** — prompt for each, allow empty to skip.
 
-### Observability credentials
+### Sentry DSN
 
-Read `secrets.sentryUrl` and `secrets.openTelemetryUrl` from `values.secret.yaml`.
-If either is empty and the user wants observability:
+Read `secrets.sentryUrl` from `values.secret.yaml`.
+If empty and the user wants error tracking:
 
 > **Action required:** Open `helm/site/values.secret.yaml` and fill in
-> `secrets.sentryUrl` and/or `secrets.openTelemetryUrl`, then say **continue**.
+> `secrets.sentryUrl` with your Sentry DSN, then say **continue**.
 
-If the user skips, leave them empty — observability will not be configured.
+If the user skips, leave it empty. The OTLP endpoint (`secrets.openTelemetryUrl`)
+is configured later by `/dj-launch-observability` — do not prompt for it here.
 
 ### Mailgun API key
 
@@ -579,16 +577,7 @@ Tell the user:
 If **y**, patch `.mcp.json`:
 
 ```bash
-python3 -c "
-import json, pathlib
-p = pathlib.Path('.mcp.json')
-config = json.loads(p.read_text())
-config['mcpServers']['kubernetes'] = {
-    'command': 'npx',
-    'args': ['-y', 'mcp-server-kubernetes']
-}
-p.write_text(json.dumps(config, indent=2) + '\n')
-"
+uv run python .agents/skills/resources/add-kube-mcp.py
 ```
 
 Tell the user:

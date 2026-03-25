@@ -42,7 +42,7 @@
 {% block content %}
   {% if user.is_authenticated %}
     {# Mobile: dropdown #}
-    <div class="mb-6 lg:hidden" x-data="dropdown()" @click.outside="close()" @keyup.escape.window="close()" @dropdown-open.window="if ($event.target !== $el) close()" @htmx:before-request.window="close()">
+    <div class="mb-6 lg:hidden" x-data="dropdown()" @click.outside="close()" @keyup.escape.window="close()">
       <button
         type="button"
         class="justify-between w-full btn btn-ghost"

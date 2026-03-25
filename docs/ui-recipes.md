@@ -42,8 +42,6 @@ Register it once in your base template's `{% block scripts %}` block:
   x-data="dropdown()"
   @click.outside="close()"
   @keyup.escape.window="close()"
-  @dropdown-open.window="if ($event.target !== $el) close()"
-  @htmx:before-request.window="close()"
 >
   <button
     type="button"
@@ -66,7 +64,7 @@ Register it once in your base template's `{% block scripts %}` block:
 </div>
 ```
 
-`@dropdown-open.window` closes this dropdown when any other opens (`$event.target !== $el`). `@htmx:before-request.window` closes it on any HTMX navigation.
+Closing on HTMX navigation and when another dropdown opens are handled automatically by the `dropdown()` component.
 
 ### Form actions inside a dropdown
 

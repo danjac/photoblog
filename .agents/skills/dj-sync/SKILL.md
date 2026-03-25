@@ -20,11 +20,8 @@ cp -f .mcp.json /tmp/photoblog/mcp.json.bak 2>/dev/null || true
 cp -f opencode.json /tmp/photoblog/opencode.json.bak 2>/dev/null || true
 ```
 
-Then run Copier:
-
-```bash
-uvx copier update --trust
-```
+The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,
+and `opencode.json` to `<tmpdir>/<project-slug>/` before regenerating them.
 
 This pulls the latest template into the project and stages the merged files.
 If there are no conflicts, skip to Step 3.
@@ -66,9 +63,10 @@ Repeat until no conflict markers remain.
 Diff the auto-generated backups against the freshly regenerated files:
 
 ```bash
-diff /tmp/photoblog/settings.json.bak .claude/settings.json
-diff /tmp/photoblog/mcp.json.bak .mcp.json
-diff /tmp/photoblog/opencode.json.bak opencode.json
+BACKUP_DIR=$(uv run python .agents/skills/dj-sync/resources/get-backup-dir.py)
+diff "$BACKUP_DIR/settings.json.bak" .claude/settings.json
+diff "$BACKUP_DIR/mcp.json.bak" .mcp.json
+diff "$BACKUP_DIR/opencode.json.bak" opencode.json
 ```
 
 For each file with a non-empty diff:

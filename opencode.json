@@ -95,11 +95,7 @@
     },
     "dj-translate": {
       "template": ".agents/skills/dj-translate/SKILL.md",
-      "description": "Extract strings, translate via Claude, compile .mo catalogue"
-    },
-    "djstudio": {
-      "template": ".agents/skills/djstudio/SKILL.md",
-      "description": ""
+      "description": "Extract strings, translate via agent, compile .mo catalogue"
     }
   }
 }

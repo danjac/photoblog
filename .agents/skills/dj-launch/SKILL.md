@@ -213,7 +213,15 @@ Ask the user:
 If **yes**:
 
 Ask:
-> Enter your Mailgun sender domain (e.g. `mg.example.com`):
+> Enter your full Mailgun sender domain (e.g. `mg.example.com`):
+
+Save the full sender domain (e.g. `mg.example.com`) for use in Step 4
+(`app.mailgunSenderDomain` in `values.secret.yaml`).
+
+Extract the subdomain prefix (everything before the first `.`) and set
+`mailgun_subdomain` in `terraform/cloudflare/terraform.tfvars`. For example,
+`mg.example.com` → `mailgun_subdomain = "mg"`. The Cloudflare zone handles
+the base domain, so only the prefix is needed in tfvars.
 
 Ask:
 > Enter your Mailgun DKIM value (from Mailgun → Sending → Domains → DNS Records →
@@ -236,7 +244,7 @@ If user answers **no**, skip. Tell the user:
 ### 2f. Write terraform.tfvars and apply
 
 Write `terraform/cloudflare/terraform.tfvars` with all collected values, including
-`mailgun_dkim_value` and `mailgun_mx_servers` if collected in 2e.
+`mailgun_subdomain`, `mailgun_dkim_value`, and `mailgun_mx_servers` if collected in 2e.
 
 Then:
 ```bash
@@ -376,6 +384,19 @@ Fetch automatically — never prompt for these:
 - `secrets.cloudflare.cert` ← `just terraform-value cloudflare origin_cert_pem`
 - `secrets.cloudflare.key` ← `just terraform-value cloudflare origin_key_pem`
 
+**Verify the origin certificate signature** after writing it to `values.secret.yaml`.
+A single corrupted base64 character will cause Cloudflare 526 errors that are nearly
+impossible to diagnose (all metadata checks pass, only crypto verification fails):
+
+```bash
+curl -s https://developers.cloudflare.com/ssl/static/origin_ca_rsa_root.pem -o /tmp/cf_root.pem
+terraform -chdir=terraform/cloudflare output -raw origin_cert_pem > /tmp/origin_cert.pem
+openssl verify -CAfile /tmp/cf_root.pem /tmp/origin_cert.pem
+```
+
+The output must be `/tmp/origin_cert.pem: OK`. If verification fails, re-read the cert
+from terraform output and write it again — do not proceed until it verifies.
+
 If `terraform/storage/` exists:
 - `secrets.hetznerStorageBucket` ← `just terraform-value storage bucket_name`
 - `secrets.hetznerStorageEndpoint` ← `just terraform-value storage endpoint_url`
@@ -404,8 +425,9 @@ For each, only prompt if currently `CHANGE_ME` or empty:
 **Contact email:**
 > Enter the public contact email address:
 
-**Mailgun sender domain** (the `mg.yourdomain.com` subdomain for outbound email):
-> Enter your Mailgun sender domain (e.g. `mg.yourdomain.com`), or press Enter to skip:
+**Mailgun sender domain** — if the user provided a Mailgun sender domain in Step 2e,
+set `app.mailgunSenderDomain` to the full domain (e.g. `mg.example.com`). If Mailgun
+was not configured in Step 2e, skip.
 
 **Admin URL** — generate a random human-readable slug if the user skips:
 
@@ -415,9 +437,9 @@ default_admin_url="${slug}/"
 ```
 
 Then prompt:
-> Enter a custom Django admin URL path (press Enter for `<generated-slug>/`):
+> Enter a custom Django admin URL path (or type **skip** for `<generated-slug>/`):
 
-- If the user presses Enter (empty input), use the generated slug (e.g. `calm-peak/`).
+- If the user types **skip** (or empty input), use the generated slug (e.g. `calm-peak/`).
 - If the user types a value, use that value.
 - Only fall back to `admin/` if the user explicitly types `admin/`.
 
@@ -428,7 +450,7 @@ Tell the user which URL was chosen — they will need this to access Django admi
 
 Save this as `<site_name>` for use in Step 6c.
 
-**Meta author, description, keywords** — prompt for each, allow empty to skip.
+**Meta author, description, keywords** — prompt for each; the user can type **skip** to leave empty.
 
 ### Sentry DSN
 
@@ -482,6 +504,39 @@ app/worker containers — it does not deploy Postgres, Redis, Secrets, or other 
 for the first time. Follow the full sequence below.
 
 ### 6a. Build and push the Docker image
+
+**Pre-check: gh token scope**
+
+```bash
+gh auth status 2>&1 | grep -q 'write:packages'
+```
+
+If `write:packages` is missing, stop and tell the user:
+
+> Your gh token is missing the `write:packages` scope. Fix it by running:
+>
+>     gh auth refresh -h github.com -s write:packages
+>
+> This opens a browser to re-authorize. Say **continue** when done.
+
+Wait for the user to confirm, then re-check.
+
+**Pre-check: stale ghcr.io package**
+
+```bash
+gh api "user/packages/container/<repo>" 2>/dev/null
+```
+
+If the package exists but `just gh build` fails with `permission_denied: write_package`,
+a previous failed build may have created a ghcr.io package with no repository linked.
+Tell the user:
+
+> A stale ghcr.io package exists from a previous failed build.
+> Go to: https://github.com/users/<owner>/packages/container/<repo>/settings
+> Under "Actions repository access", click "Add Repository" and add `<owner>/<repo>`
+> with Write role. Say **continue** when done.
+
+**Build:**
 
 Tell the user:
 > **Step 1/3 — Building Docker image via GitHub Actions...**
@@ -548,7 +603,6 @@ Then tell the user:
 > Your app is live at https://<domain>
 >
 > Next steps:
-> - Run `just rdj migrate` to apply database migrations
 > - Run `just rdj createsuperuser` to create an admin account
 > - Visit https://<domain>/<admin-url> to access the Django admin
 

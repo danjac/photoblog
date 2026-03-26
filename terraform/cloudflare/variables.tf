@@ -35,7 +35,13 @@ variable "enable_www_redirect" {
 variable "grafana_subdomain" {
   description = "Subdomain for Grafana UI (e.g. 'grafana' → grafana.example.com). Leave empty to skip."
   type        = string
-  default     = "grafana"
+  default     = ""
+}
+
+variable "mailgun_subdomain" {
+  description = "Subdomain for Mailgun sending (e.g. 'mg' → mg.example.com). Leave empty to skip Mailgun DNS."
+  type        = string
+  default     = "mg"
 }
 
 variable "mailgun_dkim_value" {

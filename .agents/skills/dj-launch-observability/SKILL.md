@@ -55,6 +55,23 @@ printing it. Tell the user:
 
 ---
 
+## Step 1b — Grafana DNS record
+
+Read `terraform/cloudflare/terraform.tfvars`. If `grafana_subdomain` is not set or
+is empty, set it to `"grafana"` and set `monitor_ip` to the server IP:
+
+```bash
+monitor_ip=$(just terraform-value hetzner server_public_ip)
+```
+
+Then re-apply the Cloudflare terraform to create the Grafana DNS record:
+
+```bash
+just terraform cloudflare apply -auto-approve
+```
+
+---
+
 ## Step 2 — Deploy
 
 ```bash
@@ -84,11 +101,25 @@ Now that the observability stack is deployed, configure the app to send telemetr
 
 Read `secrets.openTelemetryUrl` from `helm/site/values.secret.yaml`.
 
-If it is empty, write the cluster-internal OTLP endpoint:
+If it is empty, discover the OTLP collector service name dynamically:
+
+```bash
+just kube get svc -A | grep otel
+```
+
+Use the discovered service name and namespace to build the endpoint URL. The
+typical result is:
 
 ```
-http://opentelemetry-collector.monitoring.svc.cluster.local:4318
+http://otel-gateway.default.svc.cluster.local:4318
 ```
+
+If no otel service is found, tell the user:
+
+> No OTLP collector service found in the cluster. Verify the observability
+> chart deployed correctly with `just kube get pods -n monitoring`.
+
+Write the discovered endpoint to `secrets.openTelemetryUrl`.
 
 Then push the updated config and redeploy:
 

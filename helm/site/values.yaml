@@ -106,7 +106,7 @@ cronjobs:
 
 # Database backups - disabled by default, see docs/database-backups.md to enable
 backup:
-  enabled: false
+  enabled: true
   schedule: "0 3 * * *"
   retention: 7
   awsCliImage: "amazon/aws-cli:2.34.11"

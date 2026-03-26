@@ -66,11 +66,11 @@
                 {% endblocktranslate %}
             </p>
             <p class="prose dark:prose-invert">
-                {% blocktranslate trimmed %}
-                    If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href="https://www.internetcookies.com"
+                {% blocktranslate trimmed with url="https://www.internetcookies.com" %}
+                    If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href="{{ url }}"
                                                                                                                                        target="_blank"
                                                                                                                                        rel="noopener"
-                                                                                                                                       class="link">https://www.internetcookies.com</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices.
+                                                                                                                                       class="link">{{ url }}</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices.
                 {% endblocktranslate %}
             </p>
             <h2 class="text-lg font-semibold lg:text-xl">{% translate "Links to Other Websites" %}</h2>

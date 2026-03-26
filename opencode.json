@@ -29,6 +29,10 @@
       "template": ".agents/skills/dj-create-filter/SKILL.md",
       "description": "Add a template filter with correct escaping flags"
     },
+    "dj-create-migration": {
+      "template": ".agents/skills/dj-create-migration/SKILL.md",
+      "description": "Create an empty Django data migration (Python or SQL) for an app"
+    },
     "dj-create-model": {
       "template": ".agents/skills/dj-create-model/SKILL.md",
       "description": "Design and write a Django model with factory, fixture, and model tests"

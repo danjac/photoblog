@@ -6,11 +6,13 @@
     <div class="text-center hero-content">
       <div class="max-w-2xl">
         <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
-          Capture. Share. Remember.
+          {% translate "Capture. Share. Remember." %}
         </h1>
         <p class="py-6 text-lg text-base-content/70">
-          A personal space to showcase your photography. Browse stunning images,
-          discover curated collections, and connect through the art of visual storytelling.
+          {% blocktranslate trimmed %}
+            A personal space to showcase your photography. Browse stunning images,
+            discover curated collections, and connect through the art of visual storytelling.
+          {% endblocktranslate %}
         </p>
         <div class="flex flex-wrap gap-4 justify-center">
           {% if user.is_authenticated %}
@@ -30,11 +32,13 @@
       <div class="card-body">
         <div class="flex items-center space-x-4">
           {% heroicon_outline "sparkles" class="w-8 h-8 text-primary" aria_hidden="true" %}
-          <h2 class="card-title">Featured Photos</h2>
+          <h2 class="card-title">{% translate "Featured Photos" %}</h2>
         </div>
         <p class="text-base-content/70">
-          Explore a curated selection of stunning imagery from talented photographers around the world.
-          From sweeping landscapes to intimate portraits, discover work that inspires and captivates.
+          {% blocktranslate trimmed %}
+            Explore a curated selection of stunning imagery from talented photographers around the world.
+            From sweeping landscapes to intimate portraits, discover work that inspires and captivates.
+          {% endblocktranslate %}
         </p>
       </div>
     </div>
@@ -43,11 +47,13 @@
       <div class="card-body">
         <div class="flex items-center space-x-4">
           {% heroicon_outline "folder-open" class="w-8 h-8 text-secondary" aria_hidden="true" %}
-          <h2 class="card-title">Collections</h2>
+          <h2 class="card-title">{% translate "Collections" %}</h2>
         </div>
         <p class="text-base-content/70">
-          Browse themed collections organized by genre, location, and mood. Whether you're seeking
-          travel inspiration or looking to revisit a favorite subject, our collections make discovery effortless.
+          {% blocktranslate trimmed %}
+            Browse themed collections organized by genre, location, and mood. Whether you're seeking
+            travel inspiration or looking to revisit a favorite subject, our collections make discovery effortless.
+          {% endblocktranslate %}
         </p>
       </div>
     </div>
@@ -56,11 +62,13 @@
       <div class="card-body">
         <div class="flex items-center space-x-4">
           {% heroicon_outline "arrow-up-circle" class="w-8 h-8 text-accent" aria_hidden="true" %}
-          <h2 class="card-title">Latest Uploads</h2>
+          <h2 class="card-title">{% translate "Latest Uploads" %}</h2>
         </div>
         <p class="text-base-content/70">
-          Stay up to date with fresh additions from our community. New photos are uploaded daily,
-          ensuring there's always something new to explore and appreciate.
+          {% blocktranslate trimmed %}
+            Stay up to date with fresh additions from our community. New photos are uploaded daily,
+            ensuring there's always something new to explore and appreciate.
+          {% endblocktranslate %}
         </p>
       </div>
     </div>

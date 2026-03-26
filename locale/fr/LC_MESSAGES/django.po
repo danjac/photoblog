@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-24 23:19+0000\n"
+"POT-Creation-Date: 2026-03-26 12:55+0000\n"
 "PO-Revision-Date: 2026-03-25\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
@@ -180,6 +180,7 @@ msgstr "Demander un nouveau code"
 #: templates/account/confirm_email_verification_code.html:24
 #: templates/account/delete_account.html:28
 #: templates/comments/comment_form.html:16
+#: templates/photos/photo_confirm_delete.html:15
 #: templates/photos/photo_detail.html:63 templates/photos/photo_form.html:20
 msgid "Cancel"
 msgstr "Annuler"
@@ -633,7 +634,7 @@ msgstr "Accepter les cookies et fermer la bannière"
 msgid "Accept and close"
 msgstr "Accepter et fermer"
 
-#: templates/error_base.html:5
+#: templates/error_base.html:6
 msgid "Error"
 msgstr "Erreur"
 
@@ -649,51 +650,83 @@ msgstr "Afficher/masquer le mot de passe"
 msgid "Preview"
 msgstr "Aperçu"
 
-#: templates/home.html:17
+#: templates/home.html:9
+msgid "Capture. Share. Remember."
+msgstr "Capturer. Partager. Se souvenir."
+
+#: templates/home.html:12
+msgid "A personal space to showcase your photography. Browse stunning images, discover curated collections, and connect through the art of visual storytelling."
+msgstr "Un espace personnel pour présenter votre photographie. Parcourez de superbes images, découvrez des collections soigneusement sélectionnées et connectez-vous à travers l'art du récit visuel."
+
+#: templates/home.html:19
 msgid "My Account"
 msgstr "Mon compte"
 
-#: templates/home.html:18
+#: templates/home.html:20
 msgid "Browse Photos"
 msgstr "Parcourir les photos"
 
-#: templates/home.html:20
+#: templates/home.html:22
 msgid "Get started"
 msgstr "Commencer"
 
-#: templates/home.html:21 templates/navbar.html:109 templates/navbar.html:163
+#: templates/home.html:23 templates/navbar.html:113 templates/navbar.html:167
 msgid "Sign in"
 msgstr "Se connecter"
+
+#: templates/home.html:35
+msgid "Featured Photos"
+msgstr "Photos en vedette"
+
+#: templates/home.html:38
+msgid "Explore a curated selection of stunning imagery from talented photographers around the world. From sweeping landscapes to intimate portraits, discover work that inspires and captivates."
+msgstr "Explorez une sélection soignée d'images époustouflantes de photographes talentueux du monde entier. Des paysages panoramiques aux portraits intimes, découvrez des œuvres qui inspirent et captivent."
+
+#: templates/home.html:50
+msgid "Collections"
+msgstr "Collections"
+
+#: templates/home.html:53
+msgid "Browse themed collections organized by genre, location, and mood. Whether you're seeking travel inspiration or looking to revisit a favorite subject, our collections make discovery effortless."
+msgstr "Parcourez des collections thématiques organisées par genre, lieu et ambiance. Que vous recherchiez de l'inspiration de voyage ou que vous souhaitiez revisiter un sujet favori, nos collections rendent la découverte sans effort."
+
+#: templates/home.html:65
+msgid "Latest Uploads"
+msgstr "Dernières publications"
+
+#: templates/home.html:68
+msgid "Stay up to date with fresh additions from our community. New photos are uploaded daily, ensuring there's always something new to explore and appreciate."
+msgstr "Restez à jour avec les nouvelles additions de notre communauté. De nouvelles photos sont publiées quotidiennement, garantissant qu'il y a toujours quelque chose de nouveau à explorer et apprécier."
 
 #: templates/messages.html:18
 msgid "Dismiss"
 msgstr "Fermer"
 
-#: templates/navbar.html:31
+#: templates/navbar.html:35
 msgid "Select language"
 msgstr "Sélectionner la langue"
 
-#: templates/navbar.html:81
+#: templates/navbar.html:85
 msgid "Account settings"
 msgstr "Paramètres du compte"
 
-#: templates/navbar.html:92
+#: templates/navbar.html:96
 msgid "Site admin"
 msgstr "Administration du site"
 
-#: templates/navbar.html:102
+#: templates/navbar.html:106
 msgid "Sign out"
 msgstr "Se déconnecter"
 
-#: templates/navbar.html:112 templates/navbar.html:168
+#: templates/navbar.html:116 templates/navbar.html:172
 msgid "Sign up"
 msgstr "S'inscrire"
 
-#: templates/navbar.html:119
+#: templates/navbar.html:123
 msgid "Toggle navigation menu"
 msgstr "Afficher/masquer le menu de navigation"
 
-#: templates/navbar.html:133 templates/navbar.html:149
+#: templates/navbar.html:137 templates/navbar.html:153
 msgid "Mobile navigation"
 msgstr "Navigation mobile"
 
@@ -725,10 +758,32 @@ msgstr "Suivant"
 msgid "Last Page"
 msgstr "Dernière page"
 
+#: templates/photos/partials.html:21
+msgid "No photos yet."
+msgstr "Aucune photo pour l'instant."
+
+#: templates/photos/photo_confirm_delete.html:5
+msgid "Delete Photo"
+msgstr "Supprimer la photo"
+
+#: templates/photos/photo_confirm_delete.html:7
+#, python-format
+msgid "Are you sure you want to delete <strong>%(photo)s</strong>?"
+msgstr "Êtes-vous sûr de vouloir supprimer <strong>%(photo)s</strong> ?"
+
+#: templates/photos/photo_confirm_delete.html:12
+#: templates/photos/photo_detail.html:31 templates/photos/photo_detail.html:97
+msgid "Delete"
+msgstr "Supprimer"
+
 #: templates/photos/photo_detail.html:17
 #, python-format
 msgid "Posted by <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
 msgstr "Publié par <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
+
+#: templates/photos/photo_detail.html:24 templates/photos/photo_detail.html:85
+msgid "Edit"
+msgstr "Modifier"
 
 #: templates/photos/photo_detail.html:45
 msgid "Add comment"
@@ -738,17 +793,9 @@ msgstr "Ajouter un commentaire"
 msgid "Submit"
 msgstr "Envoyer"
 
-#: templates/photos/photo_detail.html:85
-msgid "Edit"
-msgstr "Modifier"
-
 #: templates/photos/photo_detail.html:92
 msgid "Are you sure you want to delete this comment?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce commentaire ?"
-
-#: templates/photos/photo_detail.html:97
-msgid "Delete"
-msgstr "Supprimer"
 
 #: templates/photos/photo_detail.html:104
 msgid "No comments yet."
@@ -782,6 +829,110 @@ msgstr "Ajouter une photo"
 #, python-format
 msgid "Photos submitted by %(submitter)s"
 msgstr "Photos soumises par %(submitter)s"
+
+#: templates/privacy.html:5 templates/privacy.html:9
+msgid "Privacy"
+msgstr "Confidentialité"
+
+#: templates/privacy.html:13
+#, python-format
+msgid "This privacy policy (\"policy\") will help you understand how <strong>%(name)s</strong> (\"us\", \"we\", \"our\") uses and protects the data you provide to us when you visit and use <strong>http://%(domain)s</strong> (\"site\", \"service\")."
+msgstr "Cette politique de confidentialité (« politique ») vous aidera à comprendre comment <strong>%(name)s</strong> (« nous », « notre ») utilise et protège les données que vous nous fournissez lorsque vous visitez et utilisez <strong>http://%(domain)s</strong> (« site », « service »)."
+
+#: templates/privacy.html:19
+msgid "We reserve the right to change this policy at any given time, of which you will be promptly updated. If you want to make sure that you are up to date with the latest changes, we advise you to frequently visit this page."
+msgstr "Nous nous réservons le droit de modifier cette politique à tout moment, dont vous serez rapidement informé. Si vous souhaitez vous assurer d'être au courant des dernières modifications, nous vous conseillons de consulter fréquemment cette page."
+
+#: templates/privacy.html:23
+msgid "What User Data We Collect"
+msgstr "Quelles données utilisateur nous collectons"
+
+#: templates/privacy.html:24
+msgid "When you visit the site, we may collect the following data:"
+msgstr "Lorsque vous visitez le site, nous pouvons collecter les données suivantes :"
+
+#: templates/privacy.html:26
+msgid "Your IP address."
+msgstr "Votre adresse IP."
+
+#: templates/privacy.html:27
+msgid "Your email address."
+msgstr "Votre adresse e-mail."
+
+#: templates/privacy.html:28
+msgid "Data profile regarding your online behavior on our site."
+msgstr "Profil de données concernant votre comportement en ligne sur notre site."
+
+#: templates/privacy.html:30
+msgid "Why We Collect Your Data"
+msgstr "Pourquoi nous collectons vos données"
+
+#: templates/privacy.html:31
+msgid "We are collecting your data for several reasons:"
+msgstr "Nous collectons vos données pour plusieurs raisons :"
+
+#: templates/privacy.html:33
+msgid "To better understand your needs."
+msgstr "Pour mieux comprendre vos besoins."
+
+#: templates/privacy.html:34
+msgid "To improve our services and products."
+msgstr "Pour améliorer nos services et produits."
+
+#: templates/privacy.html:35
+msgid "To send you promotional emails containing the information we think you will find interesting."
+msgstr "Pour vous envoyer des e-mails promotionnels contenant des informations que nous pensons susceptibles de vous intéresser."
+
+#: templates/privacy.html:36
+msgid "To customize our site according to your online behavior and personal preferences."
+msgstr "Pour personnaliser notre site en fonction de votre comportement en ligne et de vos préférences personnelles."
+
+#: templates/privacy.html:38
+msgid "Safeguarding and Securing the Data"
+msgstr "Protection et sécurisation des données"
+
+#: templates/privacy.html:40
+#, python-format
+msgid "<strong>%(name)s</strong> is committed to securing your data and keeping it confidential. <strong>%(name)s</strong> has done all in its power to prevent data theft, unauthorized access, and disclosure by implementing the latest technologies and software, which help us safeguard all the information we collect online."
+msgstr "<strong>%(name)s</strong> s'engage à sécuriser vos données et à les garder confidentielles. <strong>%(name)s</strong> a fait tout ce qui était en son pouvoir pour prévenir le vol de données, l'accès non autorisé et la divulgation en mettant en œuvre les dernières technologies et logiciels, qui nous aident à protéger toutes les informations que nous collectons en ligne."
+
+#: templates/privacy.html:44
+msgid "Account Deletion"
+msgstr "Suppression du compte"
+
+#: templates/privacy.html:46
+#, python-format
+msgid "Users may request account deletion at any time by contacting us at <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>. All collected user-specific data will also be irrevocably deleted."
+msgstr "Les utilisateurs peuvent demander la suppression de leur compte à tout moment en nous contactant à <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>. Toutes les données spécifiques à l'utilisateur collectées seront également supprimées de manière irréversible."
+
+#: templates/privacy.html:52
+msgid "Our Cookie Policy"
+msgstr "Notre politique de cookies"
+
+#: templates/privacy.html:54
+msgid "Once you agree to allow our site to use cookies, you also agree to use the data it collects regarding your online behavior (analyze web traffic, web pages you visit and spend the most time on)."
+msgstr "Une fois que vous acceptez d'autoriser notre site à utiliser des cookies, vous acceptez également d'utiliser les données qu'il collecte sur votre comportement en ligne (analyser le trafic web, les pages web que vous visitez et sur lesquelles vous passez le plus de temps)."
+
+#: templates/privacy.html:59
+msgid "The data we collect by using cookies is used to customize our site to your needs. After we use the data for statistical analysis, the data is completely removed from our systems."
+msgstr "Les données que nous collectons à l'aide de cookies sont utilisées pour personnaliser notre site à vos besoins. Après avoir utilisé les données pour l'analyse statistique, les données sont complètement supprimées de nos systèmes."
+
+#: templates/privacy.html:64
+msgid "Please note that cookies don't allow us to gain control of your computer in any way. They are strictly used to monitor which pages you find useful and which you do not so that we can provide a better experience for you."
+msgstr "Veuillez noter que les cookies ne nous permettent pas de prendre le contrôle de votre ordinateur de quelque manière que ce soit. Ils sont strictement utilisés pour surveiller les pages que vous trouvez utiles et celles que vous ne trouvez pas, afin que nous puissions vous offrir une meilleure expérience."
+
+#: templates/privacy.html:69
+msgid "If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href=\"https://www.internetcookies.com\" target=\"_blank\" rel=\"noopener\" class=\"link\">https://www.internetcookies.com</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices."
+msgstr "Si vous souhaitez désactiver les cookies, vous pouvez le faire en accédant aux paramètres de votre navigateur Internet. Vous pouvez visiter <a href=\"https://www.internetcookies.com\" target=\"_blank\" rel=\"noopener\" class=\"link\">https://www.internetcookies.com</a>, qui contient des informations complètes sur la façon de procéder sur une grande variété de navigateurs et d'appareils."
+
+#: templates/privacy.html:76
+msgid "Links to Other Websites"
+msgstr "Liens vers d'autres sites web"
+
+#: templates/privacy.html:78
+#, python-format
+msgid "Our site contains links that lead to other websites. If you click on these links <strong>%(name)s</strong> is not held responsible for your data and privacy protection. Visiting those websites is not governed by this privacy policy agreement. Make sure to read the privacy policy documentation of the website you go to from our website."
+msgstr "Notre site contient des liens menant à d'autres sites web. Si vous cliquez sur ces liens, <strong>%(name)s</strong> n'est pas responsable de la protection de vos données et de votre vie privée. La visite de ces sites web n'est pas régie par le présent accord de politique de confidentialité. Assurez-vous de lire la documentation de politique de confidentialité du site web vers lequel vous vous rendez depuis notre site web."
 
 #: templates/socialaccount/authentication_error.html:4
 #: templates/socialaccount/authentication_error.html:7

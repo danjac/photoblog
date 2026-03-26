@@ -182,10 +182,32 @@ services still expect the old ones, causing immediate 500 errors.
 just kube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
+**Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
+unexpected text), **stop immediately**. Tell the user what went wrong (show the
+error output) and ask:
+
+> PostgreSQL password was **not** updated — the database still has the old password.
+> Deploy has been paused. Would you like me to diagnose and retry, or do you want
+> to fix it manually? (retry/manual)
+
+If **retry**, investigate the error, adjust the command, and try again. Do not
+proceed to deploy until `ALTER ROLE` is confirmed.
+
+If **manual**, stop and tell the user to re-run `/dj-rotate-secrets` when ready.
+
 **Redis:**
 ```bash
 just kube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
 ```
+
+**Verify** the output contains `OK`. If it does not, **stop immediately**. Tell the
+user what went wrong and ask:
+
+> Redis password was **not** updated — Redis still has the old password.
+> Deploy has been paused. Would you like me to diagnose and retry, or do you want
+> to fix it manually? (retry/manual)
+
+Same flow as above — do not proceed to deploy until `OK` is confirmed.
 
 Replace `<new_postgres_password>`, `<old_redis_password>`, and `<new_redis_password>`
 with the actual values (do not print them to the chat — pipe them from variables).

@@ -16,6 +16,10 @@ configuring secrets, and deploying the application end-to-end.
 first. Only fill in what is missing or still `CHANGE_ME`. Re-running is safe — it resumes
 where it left off.
 
+**Terraform rule:** Never use `cd terraform/<dir>` — it changes the working directory
+for subsequent commands. Always use `terraform -chdir=terraform/<dir>` or the
+`just terraform <dir>` wrapper instead.
+
 **Secret handling rules:**
 - All deployment secrets are stored directly in tfvars and helm values files (gitignored).
 - Never echo, print, or repeat a secret value in the terminal or chat.
@@ -162,7 +166,12 @@ just get-kubeconfig
 
 ## Step 2 — Cloudflare DNS and SSL
 
-**Check:** Read `terraform/cloudflare/terraform.tfvars` if it exists.
+**Check:** Read `terraform/cloudflare/terraform.tfvars` if it exists. If it does not
+exist, copy it from the example:
+
+```bash
+cp terraform/cloudflare/terraform.tfvars.example terraform/cloudflare/terraform.tfvars
+```
 
 ### 2a. Confirm domain is Active in Cloudflare
 
@@ -283,12 +292,11 @@ curl -s "https://api.cloudflare.com/client/v4/zones/$zone_id/rulesets" \
 Match rulesets by phase and import using format `zone/<zone_id>/<ruleset_id>`:
 
 ```bash
-cd terraform/cloudflare
 # http_request_firewall_custom → cloudflare_ruleset.zone_level_firewall
-terraform import cloudflare_ruleset.zone_level_firewall zone/<zone_id>/<ruleset_id>
+terraform -chdir=terraform/cloudflare import cloudflare_ruleset.zone_level_firewall zone/<zone_id>/<ruleset_id>
 
 # http_response_headers_transform → cloudflare_ruleset.transform_response_headers
-terraform import cloudflare_ruleset.transform_response_headers zone/<zone_id>/<ruleset_id>
+terraform -chdir=terraform/cloudflare import cloudflare_ruleset.transform_response_headers zone/<zone_id>/<ruleset_id>
 ```
 
 Then re-run `just terraform cloudflare apply`.
@@ -299,7 +307,12 @@ Wait for apply to complete. If it fails for a different reason, show the error a
 
 ## Step 3 — Object Storage (optional — skip if user does not want file/media storage)
 
-**Check:** Read `terraform/storage/terraform.tfvars` if it exists.
+**Check:** Read `terraform/storage/terraform.tfvars` if it exists. If it does not
+exist, copy it from the example:
+
+```bash
+cp terraform/storage/terraform.tfvars.example terraform/storage/terraform.tfvars
+```
 
 If `access_key` and `secret_key` are already set, skip this step entirely.
 
@@ -328,16 +341,6 @@ If **n**, stop. If **y**:
 ```bash
 just terraform storage apply -auto-approve
 ```
-
----
-
-## Database backups
-
-Tell the user:
-
-> Automated database backups are not set up here. Run `/dj-enable-db-backups` when your project is live and actively used.
-
-Then continue to Step 4.
 
 ---
 
@@ -641,14 +644,14 @@ If **n**, skip silently.
 
 ---
 
-## Step 7 — Observability
+## Step 7 — Post-launch (optional)
 
-Check whether `helm/observability/values.secret.yaml` exists.
+Tell the user:
 
-If it does **not** exist, tell the user:
-
-> The observability stack (Grafana + Prometheus + Loki) is not yet deployed.
-> Run `/dj-launch-observability` when you are ready to set it up.
+> **Next steps (optional):**
+> - Run `/dj-launch-observability` to deploy Grafana + Prometheus + Loki
+> - Run `/dj-enable-db-backups` to set up automated daily PostgreSQL backups
+> - Run `/dj-rotate-secrets` to rotate auto-generated secrets when ready
 
 ---
 

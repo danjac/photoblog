@@ -4,7 +4,9 @@ description: Design and write a Django model with factory, fixture, and model te
 
 Design and write a Django model with factory, fixture, and model tests.
 
-**Before writing anything**, read:
+## Required reading
+
+- `docs/python-style-guide.md`
 - `<package_name>/<app_name>/models.py` — existing models and patterns
 - `<package_name>/<app_name>/tests/factories.py` — existing factories
 
@@ -14,52 +16,164 @@ Design and write a Django model with factory, fixture, and model tests.
 
 **STOP. Do not write any code yet.**
 
-Unless the user has explicitly listed every field and relationship inline with
-the command, ask now and wait for their reply before doing anything else:
+Each sub-step below is a separate question. Ask one, wait for the answer, then
+proceed to the next. Do not bundle questions together.
 
-> Describe `<model_name>`. For each field give: name, type, and options (e.g.
-> `null`, `blank`, `choices`, `max_length`, `default`). For relationships
-> (ForeignKey, ManyToMany, OneToOneField) also give: target model/app,
-> `on_delete`, and `related_name`.
+#### 1a — Primary key
 
-Also ask:
+Read `DEFAULT_AUTO_FIELD` from the project's `settings.py`. Also check
+`<package_name>/<app_name>/apps.py` for a `default_auto_field` override — the
+app-level setting takes precedence.
 
-> Should `<model_name>` have timestamps? (created / updated)
+Ask:
 
-If yes, add these fields automatically — do not ask the user to specify them:
+> Primary key: `id` (`<resolved_field_type>`) — use defaults?  [Y/n]
+
+If **yes**, use the resolved default. Do not emit an explicit `id` field in the
+model body (Django adds it automatically).
+
+If **no**, ask:
+
+1. Field name (e.g. `code`, `uid`) — use that name in the sketch and model body
+2. Field type. If the user says **UUID** or **UUIDField**:
+   - Ask: `Generator function?  [default: uuid.uuid4]`
+   - Use `models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False,
+     verbose_name="<name>")`
+   - No further questions needed.
+   - For any other non-default PK type, ask for options as needed.
+
+Always show the PK in the model sketch, whether default or custom.
+
+#### 1b — Timestamps
+
+Ask alone and wait:
+
+> Should `<model_name>` have timestamps?  [Y/n]
+
+If **yes**, ask:
+
+> Use default field names `created` / `updated`?  [Y/n]
+
+If yes to defaults, use:
 
 ```python
-created = models.DateTimeField(auto_now_add=True)
-updated = models.DateTimeField(auto_now=True)
+created = models.DateTimeField(auto_now_add=True, verbose_name="created")
+updated = models.DateTimeField(auto_now=True, verbose_name="updated")
 ```
 
-Do not invent fields. Do not make assumptions about what the model "probably"
-needs based on the app name or project context. Wait.
+If no, ask for the preferred names and use those.
 
-For any ambiguous relationship in the user's response, ask a follow-up before
-proceeding:
-- Which app and model is the target?
-- `on_delete`: default to `CASCADE`; use `SET_NULL` if the field is nullable.
-- `related_name`: suggest `<model_lower>s` if omitted; confirm with the user.
+#### 1c — Fields one at a time
 
-State every assumption explicitly.
+Say:
+
+> Add fields one at a time. For each, give the field name and type
+> (e.g. "title char", "price decimal", "author FK"). Type **DONE** when finished.
+
+For each field the user gives:
+
+- If no type is given, ask: `What type is <field_name>?`
+- Apply the type-specific follow-ups below, then confirm the resolved field
+  definition before moving on to the next.
+
+**Applied silently without asking** (Django best practices):
+- `CharField` / `TextField`: `blank=True` (never `null=True`)
+- `ManyToManyField`: `blank=True`
+- `UUIDField` (non-PK): `editable=False`, `unique=True` — user can override either
+- `verbose_name`: infer from field name (snake_case → space-separated lowercase),
+  unless the user specifies otherwise
+
+**Type-specific follow-ups:**
+
+| Type | Ask |
+|------|-----|
+| `CharField` | If the field name implies a finite set of values (e.g. `status`, `state`, `type`, `kind`, `category`, `role`), ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values (e.g. `pending`, `active`, `closed`), generate a `TextChoices` inner class named `<FieldName>` (e.g. `Status`), and set `max_length` to the length of the longest choice value (no need to ask). Otherwise ask `max_length` directly. |
+| `IntegerField` | If the field name implies a finite set of values, ask: *"Does this field use a fixed set of choices? [Y/n]"* — if yes, prompt for the choice values and generate an `IntegerChoices` inner class. |
+| `DecimalField` | `max_digits`? `decimal_places`? If the field name implies currency (e.g. `price`, `cost`, `amount`, `fee`), ask: *"Use `MoneyField` from django-money instead? [Y/n]  (see `docs/packages.md`)"* — if yes, confirm the package is installed (`uv add django-money`) and use `from djmoney.models.fields import MoneyField`. |
+| `ForeignKey` / `OneToOneField` | Target model (and app if ambiguous)? `on_delete`? (default `CASCADE`; use `SET_NULL` if nullable) `related_name`? (suggest `<model_lower>s`) |
+| `ManyToManyField` | Target model (and app if ambiguous)? `related_name`? (suggest `<model_lower>s`) |
+| `BooleanField` | `default`? |
+| `DateField` / `DateTimeField` | `auto_now_add`, `auto_now`, or plain? |
+| `FileField` | `upload_to`? |
+| `ImageField` | `upload_to`? → then ask sorl-thumbnail (see below) |
+| `UUIDField` (non-PK) | Generator function? (default `uuid.uuid4`). Defaults: `unique=True`, `editable=False` — confirm or override. |
+
+**ImageField → sorl-thumbnail:**
+
+When the user adds an `ImageField`, ask immediately after `upload_to`:
+
+> Use sorl-thumbnail for on-the-fly resizing?  [Y/n]  (see `docs/images.md`)
+
+If **yes**:
+- Use `sorl.thumbnail.ImageField` instead of `models.ImageField`
+- Import: `from sorl.thumbnail import ImageField`
+- Flag to user: confirm sorl-thumbnail is in `INSTALLED_APPS`
+
+If **no**, use `models.ImageField`.
+
+Continue until the user types `DONE`.
+
+#### 1d — Model-level options (ask after DONE)
+
+Ask each of these separately, in order:
+
+1. **Indexing** — `db_index=True` on any fields, or composite
+   `indexes = [models.Index(fields=[...])]` in `Meta`?
+
+2. **Uniqueness** — `unique=True` on any fields, or a
+   `UniqueConstraint(fields=[...], name="...")` in `Meta`?
+
+3. **Help text** — any fields needing `help_text` for the admin or forms?
+
+4. **Non-editable fields** — any additional fields that should be
+   `editable=False`? (UUID fields are already set automatically; no need to
+   re-ask those.)
+
+#### 1e — Model Meta
+
+Infer `verbose_name` from the model name (lowercase, space-separated) and
+`verbose_name_plural` by appending `s` (or ask if the plural looks irregular).
+Confirm both with the user before proceeding.
+
+**Never** add `ordering` unless the user explicitly requests it.
+
+Use plain tuples for Meta sequences — no `ClassVar` annotation needed.
 
 ---
 
 ### Step 2 — Confirm the plan
 
-Print a model sketch and wait for "yes" before writing any code:
+Show the full model sketch and wait for the user to approve or request changes
+before writing any code:
 
 ```
 Model: <model_name>  →  <package_name>/<app_name>/models.py
-  id          BigAutoField (automatic)
-  <field>     <FieldType>(<options>)
+
+  <pk_name>   <PKFieldType>(primary_key=True, ...)   ← always shown
+  <field>     <FieldType>(<options>, verbose_name="...")
   …
-  __str__:    returns <description>
+  created     DateTimeField(auto_now_add=True, ...)   ← if timestamps
+  updated     DateTimeField(auto_now=True, ...)
+
+  Meta:
+    verbose_name        = "<verbose_name>"
+    verbose_name_plural = "<verbose_name_plural>"
+    indexes             = [...]   ← only if requested
+    constraints         = [...]   ← only if requested
+
+  __str__: returns <description>
 ```
 
-Only include `Meta: ordering = [...]` in the sketch if the user has explicitly
-requested a default ordering. Never infer ordering from the model name or fields.
+**Never** include `ordering` in the sketch unless the user explicitly asked for
+it. Use plain tuples for Meta sequences — no `ClassVar` annotation needed:
+
+```python
+# Good
+ordering = ("-created",)
+
+# Bad — unnecessary annotation
+ordering: ClassVar[list[str]] = ["-created"]
+```
 
 ---
 
@@ -72,8 +186,11 @@ Conventions:
 - Use `models.TextChoices` / `models.IntegerChoices` for enums, as inner classes
 - Always define `__str__`; only reference fields on the model itself — never FK
   relations (e.g. use `self.event_id`, not `self.event`)
-- Only add `class Meta` with `ordering` if the user explicitly requested it
 - FK `related_name` must always be explicit — never rely on the Django default
+- Always include `class Meta` with `verbose_name` and `verbose_name_plural`
+- Never add `ordering` to Meta unless the user explicitly requested it
+- Use plain tuples for Meta sequences (e.g. `ordering = ("-created",)`) — no
+  `ClassVar` annotation needed; see `docs/python-style-guide.md`
 
 ```python
 from __future__ import annotations
@@ -192,8 +309,25 @@ Add extra methods for:
 
 ### Step 8 — Verify
 
+Generate the migration:
+
 ```bash
 just dj makemigrations <app_name>
+```
+
+Ask the user:
+
+> Run `just dj migrate` now?  [Y/n]
+
+If yes:
+
+```bash
+just dj migrate
+```
+
+Then run the full check suite:
+
+```bash
 just check-all
 ```
 

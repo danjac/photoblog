@@ -4,6 +4,10 @@ description: Create an empty Django data migration (Python or SQL) for an app
 
 Create a Django data migration for `<app>`.
 
+## Required reading
+
+- `docs/python-style-guide.md`
+
 **Never write migration files by hand.** Always generate the empty file first:
 
 ```bash
@@ -69,11 +73,11 @@ Ask the user:
 
 > Should this migration be reversible? [y/n]
 
-- **Yes** — implement a `reverse_sql` string (SQL) or a `reverse_func` (Python)
+- **Yes** — implement a `reverse_sql` string (SQL) or a `reverse_code` function (Python)
   that undoes the forward operation. Ask the user what the reverse should do if
   not obvious.
 - **No** — use the appropriate noop:
-  - Python: `reverse_func=migrations.RunPython.noop`
+  - Python: `reverse_code=migrations.RunPython.noop`
   - SQL: `reverse_sql=migrations.RunSQL.noop`
 
 ---
@@ -101,7 +105,7 @@ class Migration(migrations.Migration):
     dependencies = [...]  # leave as generated
 
     operations = [
-        migrations.RunPython(forward, reverse_func=migrations.RunPython.noop),
+        migrations.RunPython(forward, reverse_code=migrations.RunPython.noop),
     ]
 ```
 
@@ -133,7 +137,18 @@ Key rules:
 
 ### Step 7 — Verify
 
+Ask the user:
+
+> Run `migrate` now to apply this migration? [y/n]
+
+If yes:
+
 ```bash
-just dj migrate --run-syncdb
+just dj migrate
+```
+
+Then:
+
+```bash
 just check-all
 ```

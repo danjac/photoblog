@@ -17,7 +17,7 @@
       {% if request.search %}<a href="{{ request.path }}" class="btn btn-ghost btn-sm">{% translate "Clear" %}</a>{% endif %}
     </form>
   {% endfragment %}
-  <div class="mt-6">
+  <div class="flex justify-center my-6 sm:justify-start">
     <a href="{% url 'photos:photo_create' %}" class="btn btn-primary">
       {% heroicon_mini "plus" aria_hidden="true" %}
       {% translate "Add Photo" %}

@@ -8,7 +8,12 @@
             <a href="{% url 'photos:photo_detail' photo.pk %}" class="shadow-sm transition-shadow hover:shadow-md card bg-base-200">
               <figure>
                 {% thumbnail photo.image "400x300" crop="center" as im %}
-                  <img src="{{ im.url }}" alt="{{ photo.title }}" class="object-cover w-full" loading="lazy" width="{{ im.width }}" height="{{ im.height }}" />
+                  <img src="{{ im.url }}"
+                       alt="{{ photo.title }}"
+                       class="object-cover w-full"
+                       loading="lazy"
+                       width="{{ im.width }}"
+                       height="{{ im.height }}" />
                 {% endthumbnail %}
               </figure>
               <div class="p-4 card-body">

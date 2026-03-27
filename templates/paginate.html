@@ -26,8 +26,8 @@
       {% if page.has_previous %}
         {% querystring page=page.previous_page_number as prev_url %}
         <a
-          href="{{ request.path }}{{ prev_url }}"
-          hx-get="{{ request.path }}{{ prev_url }}"
+          href="{{ prev_url }}"
+          hx-get="{{ prev_url }}"
           aria-label="{% translate "Previous Page" %}"
           title="{% translate "Previous Page" %}"
           class="btn btn-ghost join-item"
@@ -42,8 +42,8 @@
       {% if page.has_next %}
         {% querystring page=page.next_page_number as next_url %}
         <a
-          href="{{ request.path }}{{ next_url }}"
-          hx-get="{{ request.path }}{{ next_url }}"
+          href="{{ next_url }}"
+          hx-get="{{ next_url }}"
           aria-label="{% translate "Next Page" %}"
           title="{% translate "Next Page" %}"
           class="btn btn-ghost join-item"

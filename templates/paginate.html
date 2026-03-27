@@ -24,8 +24,10 @@
   >
     <div class="join">
       {% if page.has_previous %}
+        {% querystring page=page.previous_page_number as prev_url %}
         <a
-          href="{{ request.path }}{% querystring page=page.previous_page_number %}"
+          href="{{ request.path }}{{ prev_url }}"
+          hx-get="{{ request.path }}{{ prev_url }}"
           aria-label="{% translate "Previous Page" %}"
           title="{% translate "Previous Page" %}"
           class="btn btn-ghost join-item"
@@ -38,8 +40,10 @@
         >{% translate "Previous" %}</span>
       {% endif %}
       {% if page.has_next %}
+        {% querystring page=page.next_page_number as next_url %}
         <a
-          href="{{ request.path }}{% querystring page=page.next_page_number %}"
+          href="{{ request.path }}{{ next_url }}"
+          hx-get="{{ request.path }}{{ next_url }}"
           aria-label="{% translate "Next Page" %}"
           title="{% translate "Next Page" %}"
           class="btn btn-ghost join-item"

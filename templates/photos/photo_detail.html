@@ -68,41 +68,43 @@
     {% endif %}
   </div>
   <div id="comment-list" class="mt-6" aria-live="polite">
-    {% fragment "paginate.html" target="comment-list" %}
-      {% for comment in page %}
-        <div id="comment-{{ comment.pk }}" class="p-4 mt-4 rounded-lg bg-base-200 prose">
-          <p class="font-semibold">{{ comment.user.username }}</p>
-          <p class="mt-1">{{ comment.comment|linebreaksbr }}</p>
-          <p class="mt-2 text-sm text-base-content/60">{{ comment.created }}</p>
-          {% has_perm "comments.change_comment" user comment as can_edit_comment %}
-          {% has_perm "comments.delete_comment" user comment as can_delete_comment %}
-          {% if can_edit_comment or can_delete_comment %}
-            <div class="flex gap-2 mt-6">
-              {% if can_edit_comment %}
-                <a href="{% url 'comments:comment_edit' comment.pk %}"
-                   class="btn btn-sm btn-secondary">
-                  {% heroicon_mini "pencil-square" aria_hidden="true" %}
-                  {% translate "Edit" %}
-                </a>
-              {% endif %}
-              {% if can_delete_comment %}
-                <button type="button"
-                        class="btn btn-sm btn-error"
-                        hx-delete="{% url 'comments:comment_delete' comment.pk %}"
-                        hx-confirm='{% translate "Are you sure you want to delete this comment?" %}'
-                        hx-target="#comment-{{ comment.pk }}"
-                        hx-swap="delete"
-                        hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
-                  {% heroicon_mini "trash" aria_hidden="true" %}
-                  {% translate "Delete" %}
-                </button>
-              {% endif %}
-            </div>
-          {% endif %}
-        </div>
-      {% empty %}
-        <p class="text-base-content/60">{% translate "No comments yet." %}</p>
-      {% endfor %}
-    {% endfragment %}
+    {% partialdef comment-list inline %}
+      {% fragment "paginate.html" target="comment-list" %}
+        {% for comment in page %}
+          <div id="comment-{{ comment.pk }}" class="p-4 mt-4 rounded-lg bg-base-200 prose">
+            <p class="font-semibold">{{ comment.user.username }}</p>
+            <p class="mt-1">{{ comment.comment|linebreaksbr }}</p>
+            <p class="mt-2 text-sm text-base-content/60">{{ comment.created }}</p>
+            {% has_perm "comments.change_comment" user comment as can_edit_comment %}
+            {% has_perm "comments.delete_comment" user comment as can_delete_comment %}
+            {% if can_edit_comment or can_delete_comment %}
+              <div class="flex gap-2 mt-6">
+                {% if can_edit_comment %}
+                  <a href="{% url 'comments:comment_edit' comment.pk %}"
+                     class="btn btn-sm btn-secondary">
+                    {% heroicon_mini "pencil-square" aria_hidden="true" %}
+                    {% translate "Edit" %}
+                  </a>
+                {% endif %}
+                {% if can_delete_comment %}
+                  <button type="button"
+                          class="btn btn-sm btn-error"
+                          hx-delete="{% url 'comments:comment_delete' comment.pk %}"
+                          hx-confirm='{% translate "Are you sure you want to delete this comment?" %}'
+                          hx-target="#comment-{{ comment.pk }}"
+                          hx-swap="delete"
+                          hx-headers='{"{{ csrf_header }}": "{{ csrf_token }}"}'>
+                    {% heroicon_mini "trash" aria_hidden="true" %}
+                    {% translate "Delete" %}
+                  </button>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% empty %}
+          <p class="text-base-content/60">{% translate "No comments yet." %}</p>
+        {% endfor %}
+      {% endfragment %}
+    {% endpartialdef comment-list %}
   </div>
 {% endblock content %}

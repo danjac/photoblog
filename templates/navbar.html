@@ -101,7 +101,7 @@
             {% csrf_token %}
           </form>
           <li role="menuitem">
-            <button type="submit" form="logout-form">
+            <button type="submit" form="logout-form" data-testid="logout-button">
               {% heroicon_mini "arrow-left-on-rectangle" class="size-4 shrink-0" aria_hidden="true" %}
               {% translate "Sign out" %}
             </button>

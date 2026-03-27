@@ -79,6 +79,7 @@ class TestPhotoCreate:
     def test_get(self, client, auth_user):
         response = client.get(reverse("photos:photo_create"))
         assert response.status_code == 200
+        assert response.context["cancel_url"] == reverse("photos:photo_list")
 
     def test_htmx_partial(self, client, auth_user):
         response = client.get(
@@ -107,7 +108,8 @@ class TestPhotoCreate:
 class TestPhotoEdit:
     def test_get(self, client, auth_user):
         photo = PhotoFactory(user=auth_user)
-        response = client.get(reverse("photos:photo_edit", args=[photo.pk]))
+        photo_url = photo.get_absolute_url()
+        response = client.get(photo_url)
         assert response.status_code == 200
 
     def test_htmx_partial(self, client, auth_user):

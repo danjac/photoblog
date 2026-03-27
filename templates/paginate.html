@@ -2,13 +2,13 @@
 {% with has_other_pages=page.has_other_pages %}
   <div id="{{ pagination_config.target }}" aria-live="polite" aria-atomic="true">
     {% if has_other_pages %}
-      <div class="pb-3">
+      <div class="flex justify-center pb-6">
         {% partial links %}
       </div>
     {% endif %}
     {{ content }}
     {% if has_other_pages %}
-      <div class="pt-3">
+      <div class="flex justify-center pt-6">
         {% partial links %}
       </div>
     {% endif %}

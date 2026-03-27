@@ -23,5 +23,7 @@
       {% translate "Add Photo" %}
     </a>
   </div>
-  {% include "photos/partials.html#photo_list" %}
+  {% fragment "paginate.html" %}
+    {% include "photos/partials.html#photo_list" %}
+  {% endfragment %}
 {% endblock content %}

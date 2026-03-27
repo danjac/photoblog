@@ -4,5 +4,7 @@
 {% block content %}
   {% blocktranslate asvar title with submitter=submitter.username %}Photos submitted by {{ submitter }}{% endblocktranslate %}
   {% include "header.html" %}
-  {% include "photos/partials.html#photo_list" %}
+  {% fragment "paginate.html" %}
+    {% include "photos/partials.html#photo_list" %}
+  {% endfragment %}
 {% endblock content %}

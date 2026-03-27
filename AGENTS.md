@@ -2,6 +2,9 @@
 
 This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for detailed documentation on each part of the stack.
 
+## General instructions: read first
+
+When I ask you to STOP and LISTEN, or to DISCUSS before coding, do NOT run any commands or make any edits. Wait for explicit approval before taking action.
 
 ## Stack
 
@@ -13,10 +16,10 @@ This is a Django project using HTMX, AlpineJS, and Tailwind CSS. See `docs/` for
 
 **NOTE**: Python 3.14 and Django 6.0 are valid and exist. Do not flag syntax or features from these versions as errors based on knowledge cutoff assumptions.
 
-
 ## Project Layout
 
 > **Documentation convention:** code examples in `docs/` and `.agents/skills/` use these placeholders — substitute with your actual values:
+>
 > - `my_package` → `photoblog` (root Python package, used in imports and file paths)
 > - `my_app` → an arbitrary Django sub-app within `my_package` (e.g. `users`, `posts`, `comments`)
 > - `my_project` → `photoblog` (project root directory, Docker image name, service name)
@@ -84,6 +87,7 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`
 **Frontend dependencies**: Never use CDNs or introduce npm/Node tooling. Vendor minified files into `static/vendor/`. Track all vendored deps in `vendors.json`; run `just dj sync_vendors` to check for and download updates. See `docs/frontend-dependencies.md` for the full format and workflow.
 
 **Form rendering** — use the first option that fits:
+
 1. `{{ form }}` — all fields, default order
 2. `{{ form.field.as_field_group }}` — explicit field order or subset
 
@@ -106,38 +110,38 @@ migrations. It also indexes the focused docs below.
 the listed doc(s) before writing any code.** The table is a lookup — use it
 actively, not as background reading.
 
-| What you are about to implement | Read first |
-| ------------------------------- | ---------- |
-| Python conventions and gotchas  | `docs/python-style-guide.md` |
-| Django views                    | `docs/django-views.md` |
-| Django models / querysets       | `docs/django-models.md` |
-| Django templates (partials, fragments, pagination) | `docs/django-templates.md` |
-| Django forms, widgets, form rendering       | `docs/django-forms.md` |
-| Validating request params in views          | `docs/django-views.md` |
-| Validating external API responses (pydantic) | `docs/api-integration.md` |
-| Django admin                    | `docs/django.md` |
-| UI components (buttons, modals, layout)         | `docs/design.md` |
-| Accessibility                   | `docs/accessibility.md` |
-| Internationalisation / i18n     | `docs/localization.md` |
-| Adding a Python dependency      | `docs/packages.md` |
-| Adding a JS/CSS dependency      | `docs/frontend-dependencies.md` |
-| Any feature handling user data, accounts, or PII | `docs/gdpr.md` |
-| Background task                 | `docs/django-tasks.md` |
-| Channels, SSE, WebSockets       | `docs/channels.md` |
-| HTMX interaction                | `docs/htmx.md` |
-| AlpineJS component              | `docs/alpine.md` |
-| Dropdown menus                            | `docs/ui-recipes.md` |
-| Lightbox, drag-drop, upload preview       | `docs/ui-recipes.md` |
-| Maps / geocoding (OpenStreetMap + geopy)  | `docs/maps.md` |
-| Authentication / allauth        | `docs/authentication.md` |
-| File uploads / media storage    | `docs/file-storage.md` |
-| Static files / CDN caching      | `docs/static-files.md` |
-| Caching (Redis, per-view, low-level) | `docs/caching.md` |
-| Custom template tag or filter   | `docs/django-templates.md` |
-| Sending email (transactional / dev) | `docs/sending-emails.md` |
-| Testing patterns                | `docs/testing.md` |
-| Any of the above                | `docs/project-structure.md` |
-| MCP servers (postgres, django shell, Playwright, k8s) | `docs/mcp.md` |
+| What you are about to implement                       | Read first                      |
+| ----------------------------------------------------- | ------------------------------- |
+| Python conventions and gotchas                        | `docs/python-style-guide.md`    |
+| Django views                                          | `docs/django-views.md`          |
+| Django models / querysets                             | `docs/django-models.md`         |
+| Django templates (partials, fragments, pagination)    | `docs/django-templates.md`      |
+| Django forms, widgets, form rendering                 | `docs/django-forms.md`          |
+| Validating request params in views                    | `docs/django-views.md`          |
+| Validating external API responses (pydantic)          | `docs/api-integration.md`       |
+| Django admin                                          | `docs/django.md`                |
+| UI components (buttons, modals, layout)               | `docs/design.md`                |
+| Accessibility                                         | `docs/accessibility.md`         |
+| Internationalisation / i18n                           | `docs/localization.md`          |
+| Adding a Python dependency                            | `docs/packages.md`              |
+| Adding a JS/CSS dependency                            | `docs/frontend-dependencies.md` |
+| Any feature handling user data, accounts, or PII      | `docs/gdpr.md`                  |
+| Background task                                       | `docs/django-tasks.md`          |
+| Channels, SSE, WebSockets                             | `docs/channels.md`              |
+| HTMX interaction                                      | `docs/htmx.md`                  |
+| AlpineJS component                                    | `docs/alpine.md`                |
+| Dropdown menus                                        | `docs/ui-recipes.md`            |
+| Lightbox, drag-drop, upload preview                   | `docs/ui-recipes.md`            |
+| Maps / geocoding (OpenStreetMap + geopy)              | `docs/maps.md`                  |
+| Authentication / allauth                              | `docs/authentication.md`        |
+| File uploads / media storage                          | `docs/file-storage.md`          |
+| Static files / CDN caching                            | `docs/static-files.md`          |
+| Caching (Redis, per-view, low-level)                  | `docs/caching.md`               |
+| Custom template tag or filter                         | `docs/django-templates.md`      |
+| Sending email (transactional / dev)                   | `docs/sending-emails.md`        |
+| Testing patterns                                      | `docs/testing.md`               |
+| Any of the above                                      | `docs/project-structure.md`     |
+| MCP servers (postgres, django shell, Playwright, k8s) | `docs/mcp.md`                   |
 
 If a doc contradicts what you see in existing code, flag it — do not silently pick one.
 
@@ -159,68 +163,67 @@ Available in Claude Code and OpenCode as `/dj-<command>`.
 
 **General**
 
-| Command | Purpose |
-| ------- | ------- |
-| `/dj-help` | List all dj-* commands or show help for a specific command |
-| `/dj-sync` | Pull latest template changes via Copier and resolve merge conflicts |
-| `/dj-feedback` | File a GitHub issue against the django-studio repo |
+| Command        | Purpose                                                             |
+| -------------- | ------------------------------------------------------------------- |
+| `/dj-help`     | List all dj-\* commands or show help for a specific command         |
+| `/dj-sync`     | Pull latest template changes via Copier and resolve merge conflicts |
+| `/dj-feedback` | File a GitHub issue against the django-studio repo                  |
 
 **Generators**
 
-| Command | Purpose |
-| ------- | ------- |
-| `/dj-create-app <app_name>` | Scaffold a complete Django app |
-| `/dj-create-view [<app_name>] <view>` | Add a view + template + URL |
-| `/dj-create-task <app_name> <task>` | Add a background task using `django-tasks-db` |
-| `/dj-create-command <app_name> [desc]` | Add a management command with tests |
-| `/dj-create-cron <app_name> <command>` | Schedule a management command as a Kubernetes cron job |
-| `/dj-create-model <app_name> <model>` | Design a model with factory, fixture, and tests |
-| `/dj-create-migration <app_name> [name]` | Create a data migration (Python or SQL) |
-| `/dj-create-crud <app_name> <model>` | Full CRUD views, templates, URLs, forms, and tests |
+| Command                                     | Purpose                                                  |
+| ------------------------------------------- | -------------------------------------------------------- |
+| `/dj-create-app <app_name>`                 | Scaffold a complete Django app                           |
+| `/dj-create-view [<app_name>] <view>`       | Add a view + template + URL                              |
+| `/dj-create-task <app_name> <task>`         | Add a background task using `django-tasks-db`            |
+| `/dj-create-command <app_name> [desc]`      | Add a management command with tests                      |
+| `/dj-create-cron <app_name> <command>`      | Schedule a management command as a Kubernetes cron job   |
+| `/dj-create-model <app_name> <model>`       | Design a model with factory, fixture, and tests          |
+| `/dj-create-migration <app_name> [name]`    | Create a data migration (Python or SQL)                  |
+| `/dj-create-crud <app_name> <model>`        | Full CRUD views, templates, URLs, forms, and tests       |
 | `/dj-create-e2e [<app_name>] <description>` | Write Playwright E2E test(s) for a described interaction |
-| `/dj-create-tag [<app_name>] [<module>]` | Add a template tag |
-| `/dj-create-filter [<app_name>] [<module>]` | Add a template filter |
+| `/dj-create-tag [<app_name>] [<module>]`    | Add a template tag                                       |
+| `/dj-create-filter [<app_name>] [<module>]` | Add a template filter                                    |
 
 **Localisation**
 
-| Command | Purpose |
-| ------- | ------- |
+| Command                  | Purpose                                           |
+| ------------------------ | ------------------------------------------------- |
 | `/dj-translate <locale>` | Extract, translate, and compile message catalogue |
 
 **Audits**
 
-| Command | Purpose |
-| ------- | ------- |
-| `/dj-perf` | Performance audit: N+1 queries, indexes, caching, async |
-| `/dj-secure` | Security audit: settings, views, XSS, CSRF, IDOR, SQLi |
-| `/dj-gdpr` | GDPR compliance audit: PII, erasure, consent, logging |
-| `/dj-a11y` | Accessibility audit: WCAG 2.1 AA |
-| `/dj-deadcode` | Remove unused Python code, Django templates and static assets |
+| Command             | Purpose                                                           |
+| ------------------- | ----------------------------------------------------------------- |
+| `/dj-perf`          | Performance audit: N+1 queries, indexes, caching, async           |
+| `/dj-secure`        | Security audit: settings, views, XSS, CSRF, IDOR, SQLi            |
+| `/dj-gdpr`          | GDPR compliance audit: PII, erasure, consent, logging             |
+| `/dj-a11y`          | Accessibility audit: WCAG 2.1 AA                                  |
+| `/dj-deadcode`      | Remove unused Python code, Django templates and static assets     |
 | `/dj-full-coverage` | Enable 100% coverage gate and write tests for all uncovered lines |
 
 **Deployment**
 
-| Command | Purpose |
-| ------- | ------- |
-| `/dj-launch` | Interactive first-deploy wizard (infra → secrets → deploy) |
-| `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki) |
-| `/dj-scale [n]` | View or change the webapp replica count |
-| `/dj-rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
-| `/dj-enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
-| `/dj-db-backup`         | Trigger an immediate database backup without waiting for the daily cron |
-| `/dj-db-restore`        | Guided production database restore from Object Storage backup |
-
+| Command                    | Purpose                                                                 |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `/dj-launch`               | Interactive first-deploy wizard (infra → secrets → deploy)              |
+| `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki)            |
+| `/dj-scale [n]`            | View or change the webapp replica count                                 |
+| `/dj-rotate-secrets`       | Rotate auto-generated and third-party Helm secrets and redeploy         |
+| `/dj-enable-db-backups`    | Enable automated daily PostgreSQL backups to Object Storage             |
+| `/dj-db-backup`            | Trigger an immediate database backup without waiting for the daily cron |
+| `/dj-db-restore`           | Guided production database restore from Object Storage backup           |
 
 ## MCP Servers
 
 The following MCP servers are configured in `.mcp.json` (gitignored, generated at project creation). They are available to Claude Code when the project is open.
 
-| Server | When available | Capability |
-| ------ | -------------- | ---------- |
-| `postgres` | Always | Execute SQL, inspect schema, check migrations |
-| `playwright` | Always | Browser automation, E2E test debugging |
-| `django` | Always | Django shell: ORM queries, model introspection, arbitrary Python in Django context |
-| `kubernetes` | After `/dj-launch` | Inspect pods, view logs, manage deployments |
+| Server       | When available     | Capability                                                                         |
+| ------------ | ------------------ | ---------------------------------------------------------------------------------- |
+| `postgres`   | Always             | Execute SQL, inspect schema, check migrations                                      |
+| `playwright` | Always             | Browser automation, E2E test debugging                                             |
+| `django`     | Always             | Django shell: ORM queries, model introspection, arbitrary Python in Django context |
+| `kubernetes` | After `/dj-launch` | Inspect pods, view logs, manage deployments                                        |
 
 Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively. Use `kubernetes` to diagnose production pod failures without leaving the editor.
 

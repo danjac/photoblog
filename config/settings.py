@@ -595,6 +595,7 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 LANGUAGES = [
     ("en", "English"),
     ("fr", "Français"),
+    ("fi", "Suomi"),
 ]
 
 # Media files / Object Storage

@@ -1,0 +1,1014 @@
+# Finnish translations for photoblog.
+# Copyright (C) 2026
+# This file is distributed under the same license as the photoblog package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: photoblog\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-27 19:48+0000\n"
+"PO-Revision-Date: 2026-03-27 19:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: Finnish\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: photoblog/comments/models.py:21
+msgid "comment"
+msgstr "kommentti"
+
+#: photoblog/comments/views.py:33
+msgid "Comment added."
+msgstr "Kommentti lisätty."
+
+#: photoblog/comments/views.py:49
+msgid "Comment updated."
+msgstr "Kommentti päivitetty."
+
+#: photoblog/comments/views.py:68
+msgid "Comment deleted."
+msgstr "Kommentti poistettu."
+
+#: photoblog/photos/models.py:29
+msgid "title"
+msgstr "otsikko"
+
+#: photoblog/photos/models.py:30
+msgid "description"
+msgstr "kuvaus"
+
+#: photoblog/photos/models.py:31
+msgid "image"
+msgstr "kuva"
+
+#: photoblog/photos/views.py:84
+msgid "Photo created."
+msgstr "Kuva luotu."
+
+#: photoblog/photos/views.py:109
+msgid "Photo updated."
+msgstr "Kuva päivitetty."
+
+#: photoblog/photos/views.py:131
+msgid "Photo deleted."
+msgstr "Kuva poistettu."
+
+#: photoblog/users/views.py:25
+msgid "Your account has been deleted."
+msgstr "Tilisi on poistettu."
+
+#: templates/400.html:7
+msgid "Bad Request"
+msgstr "Virheellinen pyyntö"
+
+#: templates/400.html:8
+msgid "The request could not be understood by the server."
+msgstr "Palvelin ei pystynyt käsittelemään pyyntöä."
+
+#: templates/400.html:10 templates/403.html:10 templates/404.html:10
+#: templates/500.html:10
+msgid "Go home"
+msgstr "Etusivulle"
+
+#: templates/403.html:7
+msgid "Permission Denied"
+msgstr "Pääsy estetty"
+
+#: templates/403.html:8
+msgid "You do not have permission to access this page."
+msgstr "Sinulla ei ole oikeutta käyttää tätä sivua."
+
+#: templates/404.html:7
+msgid "Page Not Found"
+msgstr "Sivua ei löydy"
+
+#: templates/404.html:8
+msgid "The page you are looking for does not exist."
+msgstr "Etsimääsi sivua ei ole olemassa."
+
+#: templates/500.html:7
+msgid "Server Error"
+msgstr "Palvelinvirhe"
+
+#: templates/500.html:8
+msgid "Something went wrong on our end. Please try again later."
+msgstr "Palvelinpuolella tapahtui virhe. Yritä myöhemmin uudelleen."
+
+#: templates/about.html:5
+msgid "About"
+msgstr "Tietoja"
+
+#: templates/about.html:9
+#, python-format
+msgid "Welcome to <strong>%(name)s</strong>. This page is a placeholder — update it with a description of your project."
+msgstr "Tervetuloa palveluun <strong>%(name)s</strong>. Tämä sivu on paikkamerkki — päivitä se projektin kuvauksella."
+
+#: templates/about.html:15
+#, python-format
+msgid "If you have any questions or feedback, contact us at <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>."
+msgstr "Jos sinulla on kysyttävää tai palautetta, ota yhteyttä osoitteessa <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>."
+
+#: templates/about.html:21
+msgid "Privacy Policy"
+msgstr "Tietosuojakäytäntö"
+
+#: templates/account/account_inactive.html:4
+#: templates/account/account_inactive.html:7
+msgid "Account Inactive"
+msgstr "Tili ei käytössä"
+
+#: templates/account/account_inactive.html:10
+msgid "This account is inactive."
+msgstr "Tämä tili on poistettu käytöstä."
+
+#: templates/account/base.html:15
+msgid "Back to site"
+msgstr "Takaisin sivustolle"
+
+#: templates/account/base.html:20
+msgid "Email"
+msgstr "Sähköposti"
+
+#: templates/account/base.html:25
+msgid "Password"
+msgstr "Salasana"
+
+#: templates/account/base.html:30
+msgid "Connections"
+msgstr "Yhteydet"
+
+#: templates/account/base.html:35
+msgid "Delete account"
+msgstr "Poista tili"
+
+#: templates/account/base.html:53
+msgid "Account Settings"
+msgstr "Tilin asetukset"
+
+#: templates/account/confirm_email_verification_code.html:4
+msgid "Email Verification"
+msgstr "Sähköpostin vahvistus"
+
+#: templates/account/confirm_email_verification_code.html:7
+msgid "Enter Email Verification Code"
+msgstr "Syötä sähköpostin vahvistuskoodi"
+
+#: templates/account/confirm_email_verification_code.html:10
+#, python-format
+msgid "We've sent a code to <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>. The code expires shortly, so please enter it soon."
+msgstr "Lähetimme koodin osoitteeseen <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>. Koodi vanhenee pian, joten syötä se nopeasti."
+
+#: templates/account/confirm_email_verification_code.html:17
+#: templates/account/confirm_login_code.html:23
+#: templates/account/confirm_password_reset_code.html:21
+#: templates/account/email_confirm.html:21
+#: templates/account/reauthenticate.html:17
+msgid "Confirm"
+msgstr "Vahvista"
+
+#: templates/account/confirm_email_verification_code.html:19
+#: templates/account/confirm_login_code.html:26
+#: templates/account/confirm_password_reset_code.html:24
+#: templates/account/confirm_phone_verification_code.html:22
+msgid "Request new code"
+msgstr "Pyydä uusi koodi"
+
+#: templates/account/confirm_email_verification_code.html:22
+#: templates/account/confirm_email_verification_code.html:24
+#: templates/account/delete_account.html:28
+#: templates/comments/comment_form.html:16
+#: templates/photos/photo_confirm_delete.html:15
+#: templates/photos/photo_detail.html:63 templates/photos/photo_form.html:18
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: templates/account/confirm_email_verification_code.html:42
+#: templates/account/confirm_password_reset_code.html:39
+msgid "Use a different email address"
+msgstr "Käytä eri sähköpostiosoitetta"
+
+#: templates/account/confirm_email_verification_code.html:48
+#: templates/account/confirm_password_reset_code.html:46
+#: templates/account/confirm_phone_verification_code.html:44
+msgid "Change"
+msgstr "Muuta"
+
+#: templates/account/confirm_login_code.html:4 templates/account/login.html:7
+#: templates/account/login.html:18
+#: templates/account/password_reset_from_key_done.html:12
+#: templates/account/request_login_code.html:4
+#: templates/socialaccount/login.html:8
+#: templates/socialaccount/login_redirect.html:5
+msgid "Sign In"
+msgstr "Kirjaudu sisään"
+
+#: templates/account/confirm_login_code.html:7
+msgid "Enter Sign-In Code"
+msgstr "Syötä kirjautumiskoodi"
+
+#: templates/account/confirm_login_code.html:11
+#, python-format
+msgid "We sent a code to <strong>%(email)s</strong>. The code expires shortly — enter it below."
+msgstr "Lähetimme koodin osoitteeseen <strong>%(email)s</strong>. Koodi vanhenee pian — syötä se alle."
+
+#: templates/account/confirm_login_code.html:13
+#, python-format
+msgid "We sent a code to <strong>%(phone)s</strong>. The code expires shortly — enter it below."
+msgstr "Lähetimme koodin numeroon <strong>%(phone)s</strong>. Koodi vanhenee pian — syötä se alle."
+
+#: templates/account/confirm_login_code.html:15
+msgid "We sent you a code. The code expires shortly — enter it below."
+msgstr "Lähetimme sinulle koodin. Koodi vanhenee pian — syötä se alle."
+
+#: templates/account/confirm_password_reset_code.html:4
+#: templates/account/password_reset.html:7
+msgid "Password Reset"
+msgstr "Salasanan palautus"
+
+#: templates/account/confirm_password_reset_code.html:7
+msgid "Enter Password Reset Code"
+msgstr "Syötä salasanan palautuskoodi"
+
+#: templates/account/confirm_password_reset_code.html:11
+#, python-format
+msgid "We sent a password reset code to <strong>%(email)s</strong>. The code expires shortly — enter it below."
+msgstr "Lähetimme salasanan palautuskoodin osoitteeseen <strong>%(email)s</strong>. Koodi vanhenee pian — syötä se alle."
+
+#: templates/account/confirm_password_reset_code.html:13
+msgid "We sent you a password reset code. The code expires shortly — enter it below."
+msgstr "Lähetimme sinulle salasanan palautuskoodin. Koodi vanhenee pian — syötä se alle."
+
+#: templates/account/confirm_phone_verification_code.html:4
+msgid "Phone Verification"
+msgstr "Puhelinnumeron vahvistus"
+
+#: templates/account/confirm_phone_verification_code.html:7
+msgid "Enter Phone Verification Code"
+msgstr "Syötä puhelinnumeron vahvistuskoodi"
+
+#: templates/account/confirm_phone_verification_code.html:11
+#, python-format
+msgid "We sent a verification code to <strong>%(phone)s</strong>. The code expires shortly — enter it below."
+msgstr "Lähetimme vahvistuskoodin numeroon <strong>%(phone)s</strong>. Koodi vanhenee pian — syötä se alle."
+
+#: templates/account/confirm_phone_verification_code.html:19
+msgid "Verify"
+msgstr "Vahvista"
+
+#: templates/account/confirm_phone_verification_code.html:37
+msgid "Use a different phone number"
+msgstr "Käytä eri puhelinnumeroa"
+
+#: templates/account/delete_account.html:4
+msgid "Delete Account"
+msgstr "Poista tili"
+
+#: templates/account/delete_account.html:7
+msgid "Delete your account"
+msgstr "Poista tilisi"
+
+#: templates/account/delete_account.html:10
+msgid "This will permanently delete your account and all associated data. This action cannot be undone."
+msgstr "Tämä poistaa tilisi ja kaikki siihen liittyvät tiedot pysyvästi. Toimintoa ei voi peruuttaa."
+
+#: templates/account/delete_account.html:13
+msgid "Are you sure you want to continue?"
+msgstr "Haluatko varmasti jatkaa?"
+
+#: templates/account/delete_account.html:20
+msgid "Delete your account permanently? This cannot be undone."
+msgstr "Poista tilisi pysyvästi? Toimintoa ei voi peruuttaa."
+
+#: templates/account/delete_account.html:25
+msgid "Delete my account"
+msgstr "Poista tilini"
+
+#: templates/account/email.html:4 templates/account/email.html:7
+msgid "Email Addresses"
+msgstr "Sähköpostiosoitteet"
+
+#: templates/account/email.html:12
+msgid "The following email addresses are associated with your account:"
+msgstr "Seuraavat sähköpostiosoitteet on liitetty tilillesi:"
+
+#: templates/account/email.html:37
+msgid "Verified"
+msgstr "Vahvistettu"
+
+#: templates/account/email.html:39
+msgid "Unverified"
+msgstr "Vahvistamaton"
+
+#: templates/account/email.html:42
+msgid "Primary"
+msgstr "Ensisijainen"
+
+#: templates/account/email.html:51
+msgid "Make Primary"
+msgstr "Aseta ensisijaiseksi"
+
+#: templates/account/email.html:54 templates/account/email_change.html:28
+#: templates/account/phone_change.html:27
+msgid "Re-send Verification"
+msgstr "Lähetä vahvistus uudelleen"
+
+#: templates/account/email.html:63 templates/socialaccount/connections.html:35
+msgid "Remove"
+msgstr "Poista"
+
+#: templates/account/email.html:70
+msgid "You have no email addresses associated with your account."
+msgstr "Tilillesi ei ole liitetty sähköpostiosoitteita."
+
+#: templates/account/email.html:75
+msgid "Add Email Address"
+msgstr "Lisää sähköpostiosoite"
+
+#: templates/account/email.html:81
+msgid "Add Email"
+msgstr "Lisää sähköposti"
+
+#: templates/account/email_change.html:4 templates/account/email_change.html:7
+#: templates/account/email_change.html:42
+msgid "Change Email"
+msgstr "Vaihda sähköposti"
+
+#: templates/account/email_change.html:11
+#, python-format
+msgid ""
+"\n"
+"          Your current email address is <strong>%(email)s</strong>.\n"
+"        "
+msgstr ""
+"\n"
+"          Nykyinen sähköpostiosoitteesi on <strong>%(email)s</strong>.\n"
+"        "
+
+#: templates/account/email_change.html:20
+#, python-format
+msgid ""
+"\n"
+"            A verification email has been sent to <strong>%(email)s</strong>. Check your inbox and\n"
+"            click the link to confirm the change.\n"
+"          "
+msgstr ""
+"\n"
+"            Vahvistusviesti on lähetetty osoitteeseen <strong>%(email)s</strong>. Tarkista\n"
+"            postilaatikkosi ja napsauta linkkiä vahvistaaksesi muutoksen.\n"
+"          "
+
+#: templates/account/email_change.html:32
+msgid "Cancel Change"
+msgstr "Peruuta muutos"
+
+#: templates/account/email_confirm.html:4
+#: templates/account/email_confirm.html:7
+msgid "Confirm Email Address"
+msgstr "Vahvista sähköpostiosoite"
+
+#: templates/account/email_confirm.html:13
+#, python-format
+msgid ""
+"\n"
+"            Please confirm that <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>\n"
+"            is an email address for user %(user_display)s.\n"
+"          "
+msgstr ""
+"\n"
+"            Vahvista, että <a class=\"underline\" href=\"mailto:%(email)s\">%(email)s</a>\n"
+"            on käyttäjän %(user_display)s sähköpostiosoite.\n"
+"          "
+
+#: templates/account/email_confirm.html:25
+#, python-format
+msgid ""
+"\n"
+"            Unable to confirm %(email)s because it is already confirmed by a different account.\n"
+"          "
+msgstr ""
+"\n"
+"            %(email)s:ää ei voida vahvistaa, koska se on jo vahvistettu toiselle tilille.\n"
+"          "
+
+#: templates/account/email_confirm.html:33
+#, python-format
+msgid ""
+"\n"
+"          This email confirmation link expired or is invalid.\n"
+"          Please <a class=\"underline\" href=\"%(email_url)s\">issue a new email confirmation request</a>.\n"
+"        "
+msgstr ""
+"\n"
+"          Tämä sähköpostin vahvistuslinkki on vanhentunut tai virheellinen.\n"
+"          <a class=\"underline\" href=\"%(email_url)s\">Pyydä uusi sähköpostin vahvistus</a>.\n"
+"        "
+
+#: templates/account/login.html:10
+#, python-format
+msgid "No account? <a class=\"link link-primary\" href=\"%(url)s\">Sign up</a>."
+msgstr "Ei tiliä? <a class=\"link link-primary\" href=\"%(url)s\">Rekisteröidy</a>."
+
+#: templates/account/logout.html:4 templates/account/logout.html:7
+#: templates/account/logout.html:15
+msgid "Sign Out"
+msgstr "Kirjaudu ulos"
+
+#: templates/account/logout.html:10
+msgid "Are you sure you want to sign out?"
+msgstr "Haluatko varmasti kirjautua ulos?"
+
+#: templates/account/password_change.html:4
+#: templates/account/password_change.html:7
+#: templates/account/password_change.html:14
+#: templates/account/password_reset_from_key.html:18
+#: templates/account/password_reset_from_key.html:24
+msgid "Change Password"
+msgstr "Vaihda salasana"
+
+#: templates/account/password_reset.html:10
+msgid "Enter your email address and we will send you a link to reset your password."
+msgstr "Syötä sähköpostiosoitteesi ja lähetämme sinulle linkin salasanan palautukseen."
+
+#: templates/account/password_reset.html:15
+msgid "Reset Password"
+msgstr "Palauta salasana"
+
+#: templates/account/password_reset_done.html:7
+msgid "Password Reset Sent"
+msgstr "Salasanan palautusviesti lähetetty"
+
+#: templates/account/password_reset_done.html:10
+msgid "We have sent you an email with a link to reset your password. Please check your inbox."
+msgstr "Olemme lähettäneet sinulle sähköpostin salasanan palautuslinkin kanssa. Tarkista postilaatikkosi."
+
+#: templates/account/password_reset_from_key.html:8
+msgid "Invalid Reset Link"
+msgstr "Virheellinen palautuslinkki"
+
+#: templates/account/password_reset_from_key.html:11
+#, python-format
+msgid ""
+"\n"
+"          This password reset link is invalid or has already been used.\n"
+"          Please <a class=\"underline\" href=\"%(url)s\">request a new one</a>.\n"
+"        "
+msgstr ""
+"\n"
+"          Tämä salasanan palautuslinkki on virheellinen tai se on jo käytetty.\n"
+"          <a class=\"underline\" href=\"%(url)s\">Pyydä uusi</a>.\n"
+"        "
+
+#: templates/account/password_reset_from_key.html:28
+msgid "Your password has been changed."
+msgstr "Salasanasi on vaihdettu."
+
+#: templates/account/password_reset_from_key_done.html:7
+msgid "Password Changed"
+msgstr "Salasana vaihdettu"
+
+#: templates/account/password_reset_from_key_done.html:10
+msgid "Your password has been changed successfully."
+msgstr "Salasanasi on vaihdettu onnistuneesti."
+
+#: templates/account/password_set.html:4 templates/account/password_set.html:7
+#: templates/account/password_set.html:14
+msgid "Set Password"
+msgstr "Aseta salasana"
+
+#: templates/account/phone_change.html:4
+msgid "Change Phone"
+msgstr "Vaihda puhelinnumero"
+
+#: templates/account/phone_change.html:7 templates/account/phone_change.html:38
+msgid "Change Phone Number"
+msgstr "Vaihda puhelinnumero"
+
+#: templates/account/phone_change.html:11
+#, python-format
+msgid ""
+"\n"
+"          Your current phone number is <strong>%(phone)s</strong>.\n"
+"        "
+msgstr ""
+"\n"
+"          Nykyinen puhelinnumerosi on <strong>%(phone)s</strong>.\n"
+"        "
+
+#: templates/account/phone_change.html:16
+msgid "(unverified)"
+msgstr "(vahvistamaton)"
+
+#: templates/account/phone_change.html:22
+msgid "Your phone number is still pending verification."
+msgstr "Puhelinnumerosi odottaa vielä vahvistusta."
+
+#: templates/account/reauthenticate.html:4
+#: templates/account/reauthenticate.html:7
+msgid "Confirm Access"
+msgstr "Vahvista käyttöoikeus"
+
+#: templates/account/reauthenticate.html:10
+msgid "Enter your password:"
+msgstr "Syötä salasanasi:"
+
+#: templates/account/request_login_code.html:7
+msgid "Sign In with Code"
+msgstr "Kirjaudu koodilla"
+
+#: templates/account/request_login_code.html:10
+msgid "Enter your email or phone number and we will send you a one-time sign-in code."
+msgstr "Syötä sähköpostiosoitteesi tai puhelinnumerosi ja lähetämme sinulle kertakäyttöisen kirjautumiskoodin."
+
+#: templates/account/request_login_code.html:17
+msgid "Send Code"
+msgstr "Lähetä koodi"
+
+#: templates/account/request_login_code.html:21
+msgid "Other sign-in options"
+msgstr "Muut kirjautumisvaihtoehdot"
+
+#: templates/account/signup.html:7 templates/account/signup.html:22
+#: templates/account/signup_by_passkey.html:4
+#: templates/socialaccount/signup.html:4 templates/socialaccount/signup.html:7
+#: templates/socialaccount/signup.html:20
+msgid "Sign Up"
+msgstr "Rekisteröidy"
+
+#: templates/account/signup.html:10
+#, python-format
+msgid "Already have an account? <a class=\"link link-primary\" href=\"%(url)s\">Sign in</a>."
+msgstr "Onko sinulla jo tili? <a class=\"link link-primary\" href=\"%(url)s\">Kirjaudu sisään</a>."
+
+#: templates/account/signup_by_passkey.html:7
+msgid "Passkey Sign Up"
+msgstr "Rekisteröidy salasanattomalla avaimella"
+
+#: templates/account/signup_by_passkey.html:10
+#, python-format
+msgid "Already have an account? <a class=\"underline\" href=\"%(url)s\">Sign in</a>."
+msgstr "Onko sinulla jo tili? <a class=\"underline\" href=\"%(url)s\">Kirjaudu sisään</a>."
+
+#: templates/account/signup_by_passkey.html:17
+msgid "Sign Up with Passkey"
+msgstr "Rekisteröidy salasanattomalla avaimella"
+
+#: templates/account/signup_by_passkey.html:21
+msgid "Other sign-up options"
+msgstr "Muut rekisteröitymisvaihtoehdot"
+
+#: templates/account/signup_closed.html:4
+#: templates/account/signup_closed.html:7
+msgid "Sign Up Closed"
+msgstr "Rekisteröityminen suljettu"
+
+#: templates/account/signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr "Pahoittelemme, mutta rekisteröityminen on tällä hetkellä suljettu."
+
+#: templates/account/snippets/already_logged_in.html:4
+msgid "Note"
+msgstr "Huomio"
+
+#: templates/account/snippets/already_logged_in.html:5
+#, python-format
+msgid "You are already logged in as %(user_display)s."
+msgstr "Olet jo kirjautunut sisään käyttäjänä %(user_display)s."
+
+#: templates/account/snippets/warn_no_email.html:3
+msgid "Warning:"
+msgstr "Varoitus:"
+
+#: templates/account/snippets/warn_no_email.html:4
+msgid "You currently do not have any email address set up. You should really add an email address so you can receive notifications, reset your password, etc."
+msgstr "Sinulla ei ole tällä hetkellä sähköpostiosoitetta. Lisää sähköpostiosoite, jotta voit vastaanottaa ilmoituksia, palauttaa salasanasi jne."
+
+#: templates/account/verification_sent.html:4
+#: templates/account/verification_sent.html:7
+#: templates/account/verified_email_required.html:4
+#: templates/account/verified_email_required.html:7
+msgid "Verify Your Email Address"
+msgstr "Vahvista sähköpostiosoitteesi"
+
+#: templates/account/verification_sent.html:10
+msgid "We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes."
+msgstr "Olemme lähettäneet sinulle vahvistussähköpostin. Seuraa annettua linkkiä viimeistelläksesi rekisteröitymisen. Jos et näe vahvistussähköpostia saapuneet-kansiossasi, tarkista roskapostikansio. Ota meihin yhteyttä, jos et saa vahvistussähköpostia muutaman minuutin kuluessa."
+
+#: templates/account/verified_email_required.html:11
+msgid "This part of the site requires us to verify that you are who you claim to be. For this purpose, we require that you verify ownership of your email address."
+msgstr "Tämä sivuston osa edellyttää, että vahvistamme henkilöllisyytesi. Tätä varten sinun on vahvistettava sähköpostiosoitteesi omistajuus."
+
+#: templates/account/verified_email_required.html:14
+msgid "We have sent an email to you for verification. Please click on the link inside that email. If you do not see the verification email in your main inbox, check your spam folder. Otherwise contact us if you do not receive it within a few minutes."
+msgstr "Olemme lähettäneet sinulle vahvistussähköpostin. Napsauta sähköpostissa olevaa linkkiä. Jos et näe vahvistussähköpostia saapuneet-kansiossasi, tarkista roskapostikansio. Ota yhteyttä, jos et saa sitä muutaman minuutin kuluessa."
+
+#: templates/account/verified_email_required.html:17
+#, python-format
+msgid "<strong>Note:</strong> you can still <a class=\"underline\" href=\"%(email_url)s\">change your email address</a>."
+msgstr "<strong>Huomio:</strong> voit silti <a class=\"underline\" href=\"%(email_url)s\">vaihtaa sähköpostiosoitteesi</a>."
+
+#: templates/comments/comment_form.html:5
+msgid "Edit Comment"
+msgstr "Muokkaa kommenttia"
+
+#: templates/comments/comment_form.html:12 templates/photos/photo_form.html:14
+msgid "Save"
+msgstr "Tallenna"
+
+#: templates/cookie_banner.html:8
+msgid "Cookie consent"
+msgstr "Evästeiden hyväksyntä"
+
+#: templates/cookie_banner.html:14
+#, python-format
+msgid "This site uses cookies for essential features such as logins and security. We do not share cookies or any other user information with third parties. For more information, please see our <a href=\"%(url)s\" class=\"underline\">Privacy Policy</a>."
+msgstr "Tämä sivusto käyttää evästeitä keskeisten toimintojen, kuten kirjautumisen ja tietoturvan, tarjoamiseen. Emme jaa evästeitä tai muita käyttäjätietoja kolmansille osapuolille. Lisätietoja löydät <a href=\"%(url)s\" class=\"underline\">tietosuojakäytännöstämme</a>."
+
+#: templates/cookie_banner.html:19
+msgid "Accept cookies and close banner"
+msgstr "Hyväksy evästeet ja sulje banneri"
+
+#: templates/cookie_banner.html:25
+msgid "Accept and close"
+msgstr "Hyväksy ja sulje"
+
+#: templates/error_base.html:6
+msgid "Error"
+msgstr "Virhe"
+
+#: templates/forms/partials.html:25 templates/forms/partials.html:87
+msgid "(optional)"
+msgstr "(valinnainen)"
+
+#: templates/forms/partials.html:108
+msgid "Toggle password visibility"
+msgstr "Näytä/piilota salasana"
+
+#: templates/forms/partials.html:143 templates/forms/partials.html:154
+msgid "Preview"
+msgstr "Esikatselu"
+
+#: templates/home.html:9
+msgid "Capture. Share. Remember."
+msgstr "Kuvaa. Jaa. Muista."
+
+#: templates/home.html:12
+msgid "A personal space to showcase your photography. Browse stunning images, discover curated collections, and connect through the art of visual storytelling."
+msgstr "Henkilökohtainen tila valokuvauksen esittelyyn. Selaa upeita kuvia, löydä koottuja kokoelmia ja yhdistyä visuaalisen tarinankerronnan taiteen kautta."
+
+#: templates/home.html:19
+msgid "My Account"
+msgstr "Oma tili"
+
+#: templates/home.html:20
+msgid "Browse Photos"
+msgstr "Selaa kuvia"
+
+#: templates/home.html:22
+msgid "Get started"
+msgstr "Aloita"
+
+#: templates/home.html:23 templates/navbar.html:113 templates/navbar.html:167
+msgid "Sign in"
+msgstr "Kirjaudu sisään"
+
+#: templates/home.html:35
+msgid "Featured Photos"
+msgstr "Esitellyt kuvat"
+
+#: templates/home.html:38
+msgid "Explore a curated selection of stunning imagery from talented photographers around the world. From sweeping landscapes to intimate portraits, discover work that inspires and captivates."
+msgstr "Tutki lahjakkaiden valokuvaajien upeiden kuvien valikoitua kokoelmaa ympäri maailmaa. Laakeista maisemista intiimeihin muotokuviin — löydä teoksia, jotka inspiroivat ja kiehtovat."
+
+#: templates/home.html:50
+msgid "Collections"
+msgstr "Kokoelmat"
+
+#: templates/home.html:53
+msgid "Browse themed collections organized by genre, location, and mood. Whether you're seeking travel inspiration or looking to revisit a favorite subject, our collections make discovery effortless."
+msgstr "Selaa teemakokoelmia, jotka on järjestetty lajityypin, sijainnin ja tunnelman mukaan. Etsitpä matkailunäkymiä tai haluatpa palata suosikkiaiheeseen, kokoelmamme tekevät löytämisestä vaivatonta."
+
+#: templates/home.html:65
+msgid "Latest Uploads"
+msgstr "Uusimmat lataukset"
+
+#: templates/home.html:68
+msgid "Stay up to date with fresh additions from our community. New photos are uploaded daily, ensuring there's always something new to explore and appreciate."
+msgstr "Pysy ajan tasalla yhteisömme uusista lisäyksistä. Uusia kuvia ladataan päivittäin, joten löydettävää on aina."
+
+#: templates/messages.html:18
+msgid "Dismiss"
+msgstr "Sulje"
+
+#: templates/navbar.html:35
+msgid "Select language"
+msgstr "Valitse kieli"
+
+#: templates/navbar.html:85
+msgid "Account settings"
+msgstr "Tilin asetukset"
+
+#: templates/navbar.html:96
+msgid "Site admin"
+msgstr "Sivuston hallinta"
+
+#: templates/navbar.html:106
+msgid "Sign out"
+msgstr "Kirjaudu ulos"
+
+#: templates/navbar.html:116 templates/navbar.html:172
+msgid "Sign up"
+msgstr "Rekisteröidy"
+
+#: templates/navbar.html:123
+msgid "Toggle navigation menu"
+msgstr "Avaa/sulje navigointivalikko"
+
+#: templates/navbar.html:137 templates/navbar.html:153
+msgid "Mobile navigation"
+msgstr "Mobiilinavigaatio"
+
+#: templates/paginate.html:21
+msgid "Pagination"
+msgstr "Sivutus"
+
+#: templates/paginate.html:31 templates/paginate.html:32
+msgid "Previous Page"
+msgstr "Edellinen sivu"
+
+#: templates/paginate.html:34 templates/paginate.html:40
+msgid "Previous"
+msgstr "Edellinen"
+
+#: templates/paginate.html:38 templates/paginate.html:39
+msgid "First Page"
+msgstr "Ensimmäinen sivu"
+
+#: templates/paginate.html:47 templates/paginate.html:48
+msgid "Next Page"
+msgstr "Seuraava sivu"
+
+#: templates/paginate.html:50 templates/paginate.html:56
+msgid "Next"
+msgstr "Seuraava"
+
+#: templates/paginate.html:54 templates/paginate.html:55
+msgid "Last Page"
+msgstr "Viimeinen sivu"
+
+#: templates/photos/partials.html:21
+msgid "No photos yet."
+msgstr "Ei kuvia vielä."
+
+#: templates/photos/photo_confirm_delete.html:5
+msgid "Delete Photo"
+msgstr "Poista kuva"
+
+#: templates/photos/photo_confirm_delete.html:7
+#, python-format
+msgid "Are you sure you want to delete <strong>%(photo)s</strong>?"
+msgstr "Haluatko varmasti poistaa kuvan <strong>%(photo)s</strong>?"
+
+#: templates/photos/photo_confirm_delete.html:12
+#: templates/photos/photo_detail.html:31 templates/photos/photo_detail.html:98
+msgid "Delete"
+msgstr "Poista"
+
+#: templates/photos/photo_detail.html:17
+#, python-format
+msgid "Posted by <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
+msgstr "Lähettänyt <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
+
+#: templates/photos/photo_detail.html:24 templates/photos/photo_detail.html:86
+msgid "Edit"
+msgstr "Muokkaa"
+
+#: templates/photos/photo_detail.html:45
+msgid "Add comment"
+msgstr "Lisää kommentti"
+
+#: templates/photos/photo_detail.html:57
+msgid "Submit"
+msgstr "Lähetä"
+
+#: templates/photos/photo_detail.html:93
+msgid "Are you sure you want to delete this comment?"
+msgstr "Haluatko varmasti poistaa tämän kommentin?"
+
+#: templates/photos/photo_detail.html:105
+msgid "No comments yet."
+msgstr "Ei kommentteja vielä."
+
+#: templates/photos/photo_form.html:5
+msgid "Photo"
+msgstr "Kuva"
+
+#: templates/photos/photo_list.html:5
+msgid "Photos"
+msgstr "Kuvat"
+
+#: templates/photos/photo_list.html:9
+msgid "Search photos"
+msgstr "Hae kuvia"
+
+#: templates/photos/photo_list.html:14
+msgid "Search photos..."
+msgstr "Hae kuvia..."
+
+#: templates/photos/photo_list.html:17
+msgid "Clear"
+msgstr "Tyhjennä"
+
+#: templates/photos/photo_list.html:23
+msgid "Add Photo"
+msgstr "Lisää kuva"
+
+#: templates/photos/user_photo_list.html:5
+#, python-format
+msgid "Photos submitted by %(submitter)s"
+msgstr "Käyttäjän %(submitter)s lähettämät kuvat"
+
+#: templates/privacy.html:5 templates/privacy.html:9
+msgid "Privacy"
+msgstr "Tietosuoja"
+
+#: templates/privacy.html:13
+#, python-format
+msgid "This privacy policy (\"policy\") will help you understand how <strong>%(name)s</strong> (\"us\", \"we\", \"our\") uses and protects the data you provide to us when you visit and use <strong>http://%(domain)s</strong> (\"site\", \"service\")."
+msgstr "Tämä tietosuojakäytäntö (\"käytäntö\") auttaa sinua ymmärtämään, miten <strong>%(name)s</strong> (\"me\", \"meidän\") käyttää ja suojaa tietoja, jotka toimitat meille vieraillessasi sivustolla <strong>http://%(domain)s</strong> (\"sivusto\", \"palvelu\")."
+
+#: templates/privacy.html:19
+msgid "We reserve the right to change this policy at any given time, of which you will be promptly updated. If you want to make sure that you are up to date with the latest changes, we advise you to frequently visit this page."
+msgstr "Pidätämme oikeuden muuttaa tätä käytäntöä milloin tahansa, mistä ilmoitamme sinulle viipymättä. Jos haluat pysyä ajan tasalla viimeisimmistä muutoksista, suosittelemme vierailemaan tällä sivulla säännöllisesti."
+
+#: templates/privacy.html:23
+msgid "What User Data We Collect"
+msgstr "Mitä käyttäjätietoja keräämme"
+
+#: templates/privacy.html:24
+msgid "When you visit the site, we may collect the following data:"
+msgstr "Kun vierailet sivustolla, saatamme kerätä seuraavia tietoja:"
+
+#: templates/privacy.html:26
+msgid "Your IP address."
+msgstr "IP-osoitteesi."
+
+#: templates/privacy.html:27
+msgid "Your email address."
+msgstr "Sähköpostiosoitteesi."
+
+#: templates/privacy.html:28
+msgid "Data profile regarding your online behavior on our site."
+msgstr "Tietoprofiili verkkokäyttäytymisestäsi sivustollamme."
+
+#: templates/privacy.html:30
+msgid "Why We Collect Your Data"
+msgstr "Miksi keräämme tietojasi"
+
+#: templates/privacy.html:31
+msgid "We are collecting your data for several reasons:"
+msgstr "Keräämme tietojasi useista syistä:"
+
+#: templates/privacy.html:33
+msgid "To better understand your needs."
+msgstr "Ymmärtääksemme tarpeitasi paremmin."
+
+#: templates/privacy.html:34
+msgid "To improve our services and products."
+msgstr "Parantaaksemme palveluitamme ja tuotteitamme."
+
+#: templates/privacy.html:35
+msgid "To send you promotional emails containing the information we think you will find interesting."
+msgstr "Lähettääksemme sinulle markkinointiviestejä, joiden uskomme kiinnostavan sinua."
+
+#: templates/privacy.html:36
+msgid "To customize our site according to your online behavior and personal preferences."
+msgstr "Muokataksemme sivustoamme verkkokäyttäytymisesi ja henkilökohtaisten mieltymystesi mukaan."
+
+#: templates/privacy.html:38
+msgid "Safeguarding and Securing the Data"
+msgstr "Tietojen suojaaminen ja turvallisuus"
+
+#: templates/privacy.html:40
+#, python-format
+msgid "<strong>%(name)s</strong> is committed to securing your data and keeping it confidential. <strong>%(name)s</strong> has done all in its power to prevent data theft, unauthorized access, and disclosure by implementing the latest technologies and software, which help us safeguard all the information we collect online."
+msgstr "<strong>%(name)s</strong> on sitoutunut suojaamaan tietojasi ja pitämään ne luottamuksellisina. <strong>%(name)s</strong> on tehnyt kaiken voitavansa estääkseen tietovarkauden, luvattoman käytön ja tietovuodot ottamalla käyttöön uusimmat teknologiat ja ohjelmistot, jotka auttavat meitä suojaamaan kaikkia verkossa keräämiämme tietoja."
+
+#: templates/privacy.html:44
+msgid "Account Deletion"
+msgstr "Tilin poistaminen"
+
+#: templates/privacy.html:46
+#, python-format
+msgid "Users may request account deletion at any time by contacting us at <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>. All collected user-specific data will also be irrevocably deleted."
+msgstr "Käyttäjät voivat pyytää tilin poistamista milloin tahansa ottamalla meihin yhteyttä osoitteessa <a href=\"mailto:%(email)s\" class=\"link\">%(email)s</a>. Kaikki kerätyt käyttäjäkohtaiset tiedot poistetaan myös peruuttamattomasti."
+
+#: templates/privacy.html:52
+msgid "Our Cookie Policy"
+msgstr "Evästekäytäntömme"
+
+#: templates/privacy.html:54
+msgid "Once you agree to allow our site to use cookies, you also agree to use the data it collects regarding your online behavior (analyze web traffic, web pages you visit and spend the most time on)."
+msgstr "Kun hyväksyt evästeiden käytön sivustollamme, hyväksyt myös verkkokäyttäytymisestäsi kerättyjen tietojen käytön (verkkoliikenteen analysointi, vierailemasi sivut ja niillä viettämäsi aika)."
+
+#: templates/privacy.html:59
+msgid "The data we collect by using cookies is used to customize our site to your needs. After we use the data for statistical analysis, the data is completely removed from our systems."
+msgstr "Evästeiden avulla keräämämme tiedot käytetään sivuston mukauttamiseen tarpeisiisi. Tilastoanalyysin jälkeen tiedot poistetaan kokonaan järjestelmistämme."
+
+#: templates/privacy.html:64
+msgid "Please note that cookies don't allow us to gain control of your computer in any way. They are strictly used to monitor which pages you find useful and which you do not so that we can provide a better experience for you."
+msgstr "Huomaa, että evästeet eivät anna meille minkäänlaista hallintaa tietokoneellesi. Niitä käytetään ainoastaan seuraamaan, mitkä sivut ovat sinulle hyödyllisiä ja mitkä eivät, jotta voimme tarjota paremman käyttökokemuksen."
+
+#: templates/privacy.html:69
+#, python-format
+msgid "If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\" class=\"link\">%(url)s</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices."
+msgstr "Jos haluat poistaa evästeet käytöstä, voit tehdä sen selaimen asetuksista. Voit vierailla osoitteessa <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\" class=\"link\">%(url)s</a>, jossa on kattavaa tietoa siitä, miten tämä tehdään eri selaimilla ja laitteilla."
+
+#: templates/privacy.html:76
+msgid "Links to Other Websites"
+msgstr "Linkit muille verkkosivustoille"
+
+#: templates/privacy.html:78
+#, python-format
+msgid "Our site contains links that lead to other websites. If you click on these links <strong>%(name)s</strong> is not held responsible for your data and privacy protection. Visiting those websites is not governed by this privacy policy agreement. Make sure to read the privacy policy documentation of the website you go to from our website."
+msgstr "Sivustomme sisältää linkkejä muille verkkosivustoille. Jos napsautat näitä linkkejä, <strong>%(name)s</strong> ei ole vastuussa tietojesi suojaamisesta. Näiden sivustojen vierailuja ei sääntele tämä tietosuojakäytäntö. Muista lukea kunkin sivuston tietosuojakäytäntö."
+
+#: templates/socialaccount/authentication_error.html:4
+#: templates/socialaccount/authentication_error.html:7
+msgid "Third-Party Login Failure"
+msgstr "Kolmannen osapuolen kirjautuminen epäonnistui"
+
+#: templates/socialaccount/authentication_error.html:10
+msgid "An error occurred while attempting to login via your third-party account."
+msgstr "Kirjautuminen kolmannen osapuolen tilin kautta epäonnistui."
+
+#: templates/socialaccount/connections.html:4
+#: templates/socialaccount/connections.html:7
+msgid "Account Connections"
+msgstr "Tiliyhteykset"
+
+#: templates/socialaccount/connections.html:11
+msgid "You can sign in to your account using any of the following third-party accounts:"
+msgstr "Voit kirjautua tilillesi millä tahansa seuraavista kolmannen osapuolen tileistä:"
+
+#: templates/socialaccount/connections.html:40
+msgid "You currently have no third-party accounts connected to this account."
+msgstr "Sinulla ei ole tällä hetkellä kolmannen osapuolen tilejä liitettynä tähän tiliin."
+
+#: templates/socialaccount/connections.html:44
+msgid "Add a Third-Party Account"
+msgstr "Lisää kolmannen osapuolen tili"
+
+#: templates/socialaccount/login.html:6
+msgid "Connect Account"
+msgstr "Yhdistä tili"
+
+#: templates/socialaccount/login.html:14
+#, python-format
+msgid "Connect %(provider)s"
+msgstr "Yhdistä %(provider)s"
+
+#: templates/socialaccount/login.html:16
+#, python-format
+msgid "Sign In Via %(provider)s"
+msgstr "Kirjaudu sisään %(provider)s-palvelun kautta"
+
+#: templates/socialaccount/login.html:22
+#, python-format
+msgid "You are about to connect a new third-party account from %(provider)s."
+msgstr "Olet yhdistämässä uutta kolmannen osapuolen tiliä palvelusta %(provider)s."
+
+#: templates/socialaccount/login.html:26
+#, python-format
+msgid "You are about to sign in using a third-party account from %(provider)s."
+msgstr "Olet kirjautumassa sisään kolmannen osapuolen tilillä palvelusta %(provider)s."
+
+#: templates/socialaccount/login.html:31
+#: templates/socialaccount/login_redirect.html:9
+msgid "Continue"
+msgstr "Jatka"
+
+#: templates/socialaccount/login_cancelled.html:4
+#: templates/socialaccount/login_cancelled.html:7
+msgid "Login Cancelled"
+msgstr "Kirjautuminen peruutettu"
+
+#: templates/socialaccount/login_cancelled.html:11
+#, python-format
+msgid "You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a class=\"underline\" href=\"%(login_url)s\">sign in</a>."
+msgstr "Peruit kirjautumisen sivustollemme jollakin olemassa olevista tileistäsi. Jos tämä oli virhe, siirry <a class=\"underline\" href=\"%(login_url)s\">kirjautumaan sisään</a>."
+
+#: templates/socialaccount/signup.html:10
+#, python-format
+msgid ""
+"\n"
+"        You are about to use your %(provider_name)s account to login to %(site_name)s.\n"
+"        As a final step, please complete the following form:\n"
+"      "
+msgstr ""
+"\n"
+"        Olet käyttämässä %(provider_name)s-tiliäsi kirjautuaksesi sivustoon %(site_name)s.\n"
+"        Viimeisenä vaiheena täytä seuraava lomake:\n"
+"      "

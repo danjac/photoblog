@@ -82,7 +82,7 @@ def photo_create(request: HttpRequest) -> RenderOrRedirectResponse:
             photo.user = request.user
             photo.save()
             messages.success(request, _("Photo created."))
-            return redirect("photos:photo_list")
+            return redirect(photo)
     else:
         form = PhotoForm()
     return render_partial_response(

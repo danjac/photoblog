@@ -2,15 +2,16 @@ import io
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.urls import reverse
-from PIL import Image as PilImage
+from django.urls import reverse, reverse_lazy
+from PIL import Image
 
+from photoblog.photos.models import Photo
 from photoblog.photos.tests.factories import PhotoFactory
 
 
 def _make_image():
     buf = io.BytesIO()
-    PilImage.new("RGB", (10, 10), color="blue").save(buf, format="PNG")
+    Image.new("RGB", (10, 10), color="blue").save(buf, format="PNG")
     buf.seek(0)
     return SimpleUploadedFile("test.png", buf.read(), content_type="image/png")
 
@@ -76,32 +77,35 @@ class TestPhotoDetail:
 
 @pytest.mark.django_db
 class TestPhotoCreate:
+    url = reverse_lazy("photos:photo_create")
+
     def test_get(self, client, auth_user):
-        response = client.get(reverse("photos:photo_create"))
+        response = client.get(self.url)
         assert response.status_code == 200
         assert response.context["cancel_url"] == reverse("photos:photo_list")
 
     def test_htmx_partial(self, client, auth_user):
         response = client.get(
-            reverse("photos:photo_create"),
+            self.url,
             headers={"HX-Request": "true", "HX-Target": "photo-form"},
         )
         assert response.status_code == 200
 
     def test_post_invalid(self, client, auth_user):
-        response = client.post(reverse("photos:photo_create"), data={})
+        response = client.post(self.url, data={})
         assert response.status_code == 200
 
     def test_post_valid(self, client, auth_user):
         response = client.post(
-            reverse("photos:photo_create"),
+            self.url,
             data={"title": "My Photo", "image": _make_image()},
         )
-        assert response.status_code == 302
+        photo = Photo.objects.get()
+        assert response.url == photo.get_absolute_url()
 
     def test_redirect_if_not_logged_in(self, client):
         response = client.get(reverse("photos:photo_create"))
-        assert response.status_code == 302
+        assert response.url.startswith(reverse("account_login"))
 
 
 @pytest.mark.django_db
@@ -138,11 +142,12 @@ class TestPhotoEdit:
 
     def test_post_valid(self, client, auth_user):
         photo = PhotoFactory(user=auth_user)
+        photo_url = photo.get_absolute_url()
         response = client.post(
             reverse("photos:photo_edit", args=[photo.pk]),
             data={"title": "Updated", "image": _make_image()},
         )
-        assert response.status_code == 302
+        assert response.url == photo_url
 
     def test_permission_denied_if_not_owner(self, client, auth_user, other_user_photo):
         response = client.get(reverse("photos:photo_edit", args=[other_user_photo.pk]))

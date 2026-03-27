@@ -104,7 +104,7 @@ cronjobs:
     schedule: "25 9 * * *"
     command: "./manage.sh prune_db_task_results --min-age-days=1"
   thumbnail-cleanup:
-    schedule: "0 3 * * *"
+    schedule: "0 5 * * *"
     command: "./manage.sh thumbnail cleanup"
 
 # Database backups - disabled by default, see docs/database-backups.md to enable

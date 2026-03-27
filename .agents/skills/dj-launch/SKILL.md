@@ -5,6 +5,8 @@ description: Interactive first-deploy wizard: provisions infra, configures secre
 Interactive first-deploy wizard. Guides the user through provisioning infrastructure,
 configuring secrets, and deploying the application end-to-end.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/infrastructure.md`
@@ -49,6 +51,22 @@ If `terraform/hetzner/terraform.tfvars` does not yet exist, tell the user:
 > - Sentry DSN (for error tracking — from your Sentry project settings)
 >
 > Say **ready** when you have them.
+
+---
+
+## Webapp replica count
+
+Before provisioning infrastructure, ask the user:
+
+> How many webapp instances do you want? (default: 2)
+
+Accept a positive integer. If the user presses Enter or says "default", use **2**.
+
+Save the answer as `<webapp_count>`. This value is used in two places:
+- `webapp_count` in `terraform/hetzner/terraform.tfvars` (number of Hetzner nodes)
+- `replicas` in `helm/site/values.secret.yaml` (number of Kubernetes pods)
+
+Both must match so the cluster has enough nodes to schedule the requested replicas.
 
 ---
 
@@ -121,10 +139,15 @@ If `location` is not already set, ask:
 
 Set `location`.
 
-### 1e. Write terraform.tfvars and apply
+### 1e. Webapp count
 
-Write `terraform/hetzner/terraform.tfvars` with all collected values, preserving any
-existing values that were already set.
+Set `webapp_count` to `<webapp_count>` (collected earlier). This determines how many
+Hetzner nodes are created for webapp pods.
+
+### 1f. Write terraform.tfvars and apply
+
+Write `terraform/hetzner/terraform.tfvars` with all collected values (including
+`webapp_count`), preserving any existing values that were already set.
 
 Then:
 ```bash
@@ -314,6 +337,13 @@ exist, copy it from the example:
 cp terraform/storage/terraform.tfvars.example terraform/storage/terraform.tfvars
 ```
 
+Set `location` to match the Hetzner cluster location chosen in step 1. Confirm with
+the user:
+
+> Storage location set to `<location>` to match your cluster — OK?
+
+If the user wants a different location, let them override it.
+
 If `access_key` and `secret_key` are already set, skip this step entirely.
 
 Read `access_key` and `secret_key` from `terraform/storage/terraform.tfvars`.
@@ -379,6 +409,12 @@ secrets:
 
 Tell the user these have been generated automatically.
 
+### Webapp replicas
+
+Set `replicas` to `<webapp_count>` (collected at the start of the wizard). This must
+match the `webapp_count` in `terraform/hetzner/terraform.tfvars` so each replica has
+a dedicated node.
+
 ### Values from Terraform outputs
 
 Fetch automatically — never prompt for these:
@@ -435,7 +471,7 @@ was not configured in Step 2e, skip.
 **Admin URL** — generate a random human-readable slug if the user skips:
 
 ```bash
-slug=$(uv run python .agents/skills/resources/random-slug.py)
+slug=$(.agents/skills/bin/random-slug.py)
 default_admin_url="${slug}/"
 ```
 
@@ -586,19 +622,19 @@ gh run watch
 
 Then show pod status:
 ```bash
-just kube get pods
+just --yes rkube get pods
 ```
 
 If all pods are Running:
 
 If `<site_name>` was provided in Step 4, run:
 ```bash
-just rdj set_default_site <domain> "<site_name>"
+just --yes rdj set_default_site <domain> "<site_name>"
 ```
 
 If it was not provided, tell the user:
 > You can set the default site name at any time by running:
-> `just rdj set_default_site <domain> "Your Site Name"`
+> `just --yes rdj set_default_site <domain> "Your Site Name"`
 
 Then tell the user:
 
@@ -606,13 +642,13 @@ Then tell the user:
 > Your app is live at https://<domain>
 >
 > Next steps:
-> - Run `just rdj createsuperuser` to create an admin account
+> - Run `just --yes rdj createsuperuser` to create an admin account
 > - Visit https://<domain>/<admin-url> to access the Django admin
 
 If any pods are not Running, show the pod status and relevant logs:
 ```bash
-just kube describe pod <failing-pod>
-just kube logs <failing-pod>
+just --yes rkube describe pod <failing-pod>
+just --yes rkube logs <failing-pod>
 ```
 Diagnose and help the user fix the issue before declaring success.
 
@@ -622,6 +658,10 @@ Diagnose and help the user fix the issue before declaring success.
 
 Now that the cluster is live, offer to add the Kubernetes MCP server to `.mcp.json`
 so AI assistants can inspect pods, logs, and deployments directly.
+
+**Pre-check:** Read `.mcp.json` and check whether a `kubernetes` key already exists
+under `mcpServers`. If it does, skip this step entirely — the MCP server is already
+configured.
 
 Tell the user:
 
@@ -634,7 +674,7 @@ Tell the user:
 If **y**, patch `.mcp.json`:
 
 ```bash
-uv run python .agents/skills/resources/add-kube-mcp.py
+.agents/skills/bin/add-kube-mcp.py
 ```
 
 Tell the user:
@@ -649,6 +689,7 @@ If **n**, skip silently.
 Tell the user:
 
 > **Next steps (optional):**
+> - Run `/dj-scale [n]` to view or change the webapp replica count
 > - Run `/dj-launch-observability` to deploy Grafana + Prometheus + Loki
 > - Run `/dj-enable-db-backups` to set up automated daily PostgreSQL backups
 > - Run `/dj-rotate-secrets` to rotate auto-generated secrets when ready
@@ -662,7 +703,8 @@ non-secret or required for the user to take action:
 
 | Value | Step | Why the user needs it |
 |-------|------|----------------------|
-| Server IP address | 1e | SSH access, DNS verification |
+| Webapp replica count | Pre-flight | Confirms node and replica count |
+| Server IP address | 1f | SSH access, DNS verification |
 | Domain (confirmed) | 2c | Sanity check |
 | Admin URL path | 4 | Needed to bookmark Django admin |
 | Site URL (`https://<domain>`) | 6c | Confirm app is live |

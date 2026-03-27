@@ -4,6 +4,8 @@ description: Rotate auto-generated and third-party Helm secrets and redeploy
 
 Rotate secrets in `helm/site/values.secret.yaml` and redeploy.
 
+**IMPORTANT: Execute one sub-step at a time. Wait for user confirmation before proceeding to the next sub-step. Do not batch multiple questions or actions into a single response.**
+
 ## Required reading
 
 - `docs/deployment.md`
@@ -58,7 +60,7 @@ runbooks that reference the current admin path:
 If **yes**, generate a new random human-readable slug:
 
 ```bash
-new_admin_url="$(uv run python .agents/skills/resources/random-slug.py)/"
+new_admin_url="$(.agents/skills/bin/random-slug.py)/"
 ```
 
 Present the pending changes before touching anything:
@@ -179,7 +181,7 @@ services still expect the old ones, causing immediate 500 errors.
 
 **PostgreSQL:**
 ```bash
-just kube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
+just --yes rkube exec postgres-0 -- bash -c "psql -U postgres -c \"ALTER USER postgres PASSWORD '<new_postgres_password>';\""
 ```
 
 **Verify** the output contains `ALTER ROLE`. If it does not (empty output, error, or
@@ -197,7 +199,7 @@ If **manual**, stop and tell the user to re-run `/dj-rotate-secrets` when ready.
 
 **Redis:**
 ```bash
-just kube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
+just --yes rkube exec deploy/redis -- redis-cli -a "<old_redis_password>" CONFIG SET requirepass "<new_redis_password>"
 ```
 
 **Verify** the output contains `OK`. If it does not, **stop immediately**. Tell the
@@ -212,7 +214,44 @@ Same flow as above — do not proceed to deploy until `OK` is confirmed.
 Replace `<new_postgres_password>`, `<old_redis_password>`, and `<new_redis_password>`
 with the actual values (do not print them to the chat — pipe them from variables).
 
-### 5b. Deploy the app
+### 5b. Patch the live Kubernetes Secret atomically
+
+After updating the running services, patch **all** affected keys in the live
+Kubernetes Secret in a single `kubectl patch` call. This ensures that any pods
+restarted before `helm upgrade` completes will pick up consistent credentials —
+including the full connection-string keys (`DATABASE_URL`, `REDIS_URL`) that
+embed the passwords.
+
+Build base64-encoded values for every key that changed and patch them in one
+call:
+
+```bash
+NEW_POSTGRES_PASSWORD="$new_postgres" \
+NEW_REDIS_PASSWORD="$new_redis" \
+NAMESPACE="$namespace" \
+  .agents/skills/dj-rotate-secrets/bin/patch-k8s-secrets.sh
+```
+
+Replace `$namespace` with the Helm release namespace (the same namespace the
+chart is deployed into).
+
+**Verify** the output contains `secret/secrets patched`. If it does not, **stop
+immediately** and tell the user what went wrong.
+
+### 5c. Restart app deployments
+
+Environment variables are baked into pods at start time. Restart the app and
+worker deployments so running pods pick up the patched secret:
+
+```bash
+just --yes rkube rollout restart deployment/django-app deployment/django-worker
+```
+
+**Verify** each deployment shows `deployment.apps/django-app restarted` and
+`deployment.apps/django-worker restarted`. If either fails, stop and ask the
+user before continuing.
+
+### 5d. Deploy the app
 
 ```bash
 just deploy-config

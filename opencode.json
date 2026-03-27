@@ -49,6 +49,14 @@
       "template": ".agents/skills/dj-create-view/SKILL.md",
       "description": "Add a view, template, and URL"
     },
+    "dj-db-backup": {
+      "template": ".agents/skills/dj-db-backup/SKILL.md",
+      "description": "Trigger an immediate production database backup without waiting for the daily cron"
+    },
+    "dj-db-restore": {
+      "template": ".agents/skills/dj-db-restore/SKILL.md",
+      "description": "Restore the production database from a Hetzner Object Storage backup"
+    },
     "dj-deadcode": {
       "template": ".agents/skills/dj-deadcode/SKILL.md",
       "description": "Remove unused Python code, Django templates and static assets"
@@ -88,6 +96,10 @@
     "dj-rotate-secrets": {
       "template": ".agents/skills/dj-rotate-secrets/SKILL.md",
       "description": "Rotate auto-generated and third-party Helm secrets and redeploy"
+    },
+    "dj-scale": {
+      "template": ".agents/skills/dj-scale/SKILL.md",
+      "description": "View or change the webapp replica count"
     },
     "dj-secure": {
       "template": ".agents/skills/dj-secure/SKILL.md",

@@ -1,4 +1,5 @@
-# ruff: noqa: INP001, T201
+#!/usr/bin/env -S uv run python
+# ruff: noqa: T201
 """Print the backup directory for this project's pre-sync snapshots.
 
 The post-gen hook backs up generated config files to

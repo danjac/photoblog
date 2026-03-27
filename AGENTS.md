@@ -49,6 +49,22 @@ just start / just stop  # Docker services (PostgreSQL, Redis, Mailpit)
 
 Run `just` with no arguments for the full command list.
 
+### Production commands (`r` prefix)
+
+All production commands use the `r` prefix and are gated with an interactive confirmation
+prompt. When running them inside a skill (where the user has already confirmed intent),
+use `just --yes` to suppress the prompt:
+
+```bash
+just --yes rkube get pods          # run kubectl without re-prompting
+just --yes rdj migrate             # run manage.py on production
+just --yes rscale-down django-app  # scale down a deployment
+just --yes rcrons-disable          # suspend all CronJobs
+```
+
+Human-invoked commands (typed directly in the terminal) do not need `--yes` — the
+confirmation is the intended safety gate.
+
 Tests live in `photoblog/**/tests/`; framework: `pytest`+`pytest-django`; E2E tests marked `@pytest.mark.e2e`.
 
 ## Git Workflow
@@ -127,6 +143,7 @@ If a doc contradicts what you see in existing code, flag it — do not silently 
 
 - **Search before implementing** — search with `rg` or `ast-grep` for existing utilities. Check `photoblog/db/search.py`, `photoblog/http/`, `photoblog/partials.py`, and `photoblog/paginator.py` before writing new code.
 - **Scope discipline** — only change what was explicitly requested.
+- **One step at a time** — in multi-step skills, execute one sub-step at a time. Wait for user confirmation before proceeding to the next. Do not batch multiple questions or actions into a single response.
 - **Diagnose before changing** — state your diagnosis with a file:line reference before editing.
 - **Add imports and first usage in the same edit** — the pre-commit ruff hook strips unused imports immediately. Always add an import and its first usage together in a single edit.
 
@@ -187,8 +204,11 @@ Available in Claude Code and OpenCode as `/dj-<command>`.
 | ------- | ------- |
 | `/dj-launch` | Interactive first-deploy wizard (infra → secrets → deploy) |
 | `/dj-launch-observability` | Deploy the observability stack (Grafana + Prometheus + Loki) |
+| `/dj-scale [n]` | View or change the webapp replica count |
 | `/dj-rotate-secrets` | Rotate auto-generated and third-party Helm secrets and redeploy |
 | `/dj-enable-db-backups` | Enable automated daily PostgreSQL backups to Object Storage |
+| `/dj-db-backup`         | Trigger an immediate database backup without waiting for the daily cron |
+| `/dj-db-restore`        | Guided production database restore from Object Storage backup |
 
 
 ## MCP Servers

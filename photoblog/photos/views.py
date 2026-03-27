@@ -82,13 +82,16 @@ def photo_create(request: HttpRequest) -> RenderOrRedirectResponse:
             photo.user = request.user
             photo.save()
             messages.success(request, _("Photo created."))
-            return redirect(reverse("photos:photo_list"))
+            return redirect("photos:photo_list")
     else:
         form = PhotoForm()
     return render_partial_response(
         request,
         "photos/photo_form.html",
-        {"form": form},
+        {
+            "form": form,
+            "cancel_url": reverse("photos:photo_list"),
+        },
         target="photo-form",
         partial="photo-form",
     )
@@ -113,7 +116,11 @@ def photo_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
     return render_partial_response(
         request,
         "photos/photo_form.html",
-        {"form": form, "photo": photo},
+        {
+            "form": form,
+            "photo": photo,
+            "cancel_url": photo.get_absolute_url(),
+        },
         target="photo-form",
         partial="photo-form",
     )

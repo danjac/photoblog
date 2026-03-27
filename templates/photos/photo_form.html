@@ -13,7 +13,7 @@
             {% heroicon_mini "check" aria_hidden="true" %}
             {% translate "Save" %}
           </button>
-          <a href="{% url 'photos:photo_list' %}" class="btn btn-secondary">
+          <a href="{{ cancel_url }}" class="btn btn-secondary">
             {% heroicon_mini "x-mark" aria_hidden="true" %}
             {% translate "Cancel" %}
           </a>

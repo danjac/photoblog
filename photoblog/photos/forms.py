@@ -11,5 +11,9 @@ class PhotoForm(forms.ModelForm):
 
     class Meta:
         model = Photo
-        fields = ("title", "description", "image")
+        fields = (
+            "title",
+            "image",
+            "description",
+        )
         widgets: ClassVar[dict] = {"image": ThumbnailWidget}

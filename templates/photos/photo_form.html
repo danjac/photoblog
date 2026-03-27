@@ -7,9 +7,7 @@
   {% partialdef photo-form inline %}
     <div id="photo-form">
       {% fragment "form.html" htmx=True hx_target="#photo-form" multipart=True %}
-        {% for field in form %}
-          {{ field.as_field_group }}
-        {% endfor %}
+        {{ form }}
         {% fragment "form.html#buttons" %}
           <button type="submit" class="btn btn-primary">
             {% heroicon_mini "check" aria_hidden="true" %}

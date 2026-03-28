@@ -9,15 +9,8 @@ any merge conflicts interactively.
 
 ### 1. Run Copier update
 
-Before running Copier, back up the auto-generated files to a project-scoped
-directory so they are not overwritten if multiple projects are synced at the
-same time:
-
 ```bash
-mkdir -p /tmp/photoblog
-cp -f .claude/settings.json /tmp/photoblog/settings.json.bak 2>/dev/null || true
-cp -f .mcp.json /tmp/photoblog/mcp.json.bak 2>/dev/null || true
-cp -f opencode.json /tmp/photoblog/opencode.json.bak 2>/dev/null || true
+uvx copier update --trust
 ```
 
 The post-gen hook automatically backs up `.claude/settings.json`, `.mcp.json`,

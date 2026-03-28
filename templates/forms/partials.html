@@ -127,6 +127,41 @@
   {% render_field field class="select" %}
 {% endpartialdef selectmultiple %}
 
+{# Tag chip widget — pill editor backed by a hidden text input #}
+{% partialdef tagwidget %}
+  {% partial label %}
+  <div
+    x-data="tagWidget('{{ field.value|default:''|escapejs }}')"
+    class="space-y-2"
+  >
+    <div class="flex flex-wrap gap-2 items-center py-2 !h-auto input"
+         @click="$refs.tagInput.focus()">
+      <template x-for="tag in tags" :key="tag">
+        <span class="gap-1 badge badge-outline">
+          <span x-text="tag"></span>
+          <button
+            type="button"
+            @click.stop="removeTag(tag)"
+            aria-label="{% translate "Remove tag" %}"
+          >
+            {% heroicon_mini "x-mark" class="size-3" aria_hidden="true" %}
+          </button>
+        </span>
+      </template>
+      <input
+        type="text"
+        x-ref="tagInput"
+        @input="onInput"
+        @keydown.enter.prevent="addTag()"
+        @keydown.backspace="$refs.tagInput.value === '' && removeLastTag()"
+        placeholder="{% translate "Add tag…" %}"
+        class="flex-1 text-sm bg-transparent outline-none min-w-20"
+      >
+    </div>
+    <input type="hidden" name="{{ field.html_name }}" :value="tags.join(' ')">
+  </div>
+{% endpartialdef tagwidget %}
+
 {# Image field with sorl thumbnail preview and Alpine.js live preview on file select #}
 {% partialdef thumbnailwidget %}
   {% partial label %}

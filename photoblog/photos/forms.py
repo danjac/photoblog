@@ -5,7 +5,7 @@ from django.core.validators import validate_slug
 from django.utils.translation import gettext_lazy as _
 
 from photoblog.photos.models import Photo, Tag
-from photoblog.photos.widgets import ThumbnailWidget
+from photoblog.photos.widgets import TagWidget, ThumbnailWidget
 
 
 class PhotoForm(forms.ModelForm):
@@ -15,6 +15,7 @@ class PhotoForm(forms.ModelForm):
         required=False,
         label=_("Tags"),
         help_text=_("Space-separated list of tags"),
+        widget=TagWidget(),
     )
 
     field_order = ("title", "image", "tags", "description")

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Trigger an immediate database backup on the production cluster.
 # Runs the postgres-backup CronJob as a one-off job and streams the logs.
-# Usage: called via 'just rdb-backup' — do not invoke directly.
 set -euo pipefail
 
 export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/photoblog.yaml}"

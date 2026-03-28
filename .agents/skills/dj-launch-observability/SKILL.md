@@ -15,11 +15,37 @@ Run this after `/dj-launch` once your application is live.
 
 ---
 
-## Pre-flight
+## Pre-flight — Monitor VM
 
-Check if the Kubernetes MCP server is configured in `.mcp.json`. If
-`mcpServers.kubernetes` is present, use it to verify the cluster is accessible
-by listing nodes. Otherwise:
+Read `create_monitor` from `terraform/hetzner/terraform.tfvars`.
+
+If `create_monitor` is `false` or the file does not exist, the monitor VM was not
+provisioned during `/dj-launch`. Ask the user:
+
+> The monitor VM has not been provisioned yet. Provisioning it will create one
+> additional Hetzner node and apply the Hetzner terraform. Proceed? (y/n)
+
+If **n**, stop.
+
+If **y**:
+
+1. Set `create_monitor = true` in `terraform/hetzner/terraform.tfvars`.
+2. Run:
+   ```bash
+   just terraform hetzner plan
+   ```
+   Show the plan. Confirm it adds only the monitor node and its firewall, then apply:
+   ```bash
+   just terraform hetzner apply -auto-approve
+   ```
+
+Wait for apply to complete before continuing.
+
+---
+
+## Pre-flight — Cluster
+
+Verify the cluster is accessible:
 
 ```bash
 just --yes rkube get nodes
@@ -60,7 +86,7 @@ printing it. Tell the user:
 ## Step 1b — Grafana DNS record
 
 Read `terraform/cloudflare/terraform.tfvars`. If `grafana_subdomain` is not set or
-is empty, set it to `"grafana"` and set `monitor_ip` to the server IP:
+is empty, set it to `"grafana"` and set `monitor_ip` to the server node's public IP:
 
 ```bash
 monitor_ip=$(just terraform-value hetzner server_public_ip)

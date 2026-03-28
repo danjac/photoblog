@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-26 12:55+0000\n"
+"POT-Creation-Date: 2026-03-28 22:13+0000\n"
 "PO-Revision-Date: 2026-03-25\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
@@ -32,27 +32,47 @@ msgstr "Commentaire mis à jour."
 msgid "Comment deleted."
 msgstr "Commentaire supprimé."
 
-#: photoblog/photos/models.py:29
+#: photoblog/photos/forms.py:16
+msgid "Tags"
+msgstr "Tags"
+
+#: photoblog/photos/forms.py:17
+msgid "Space-separated list of tags"
+msgstr "Liste de tags séparés par des espaces"
+
+#: photoblog/photos/models.py:39
 msgid "title"
 msgstr "titre"
 
-#: photoblog/photos/models.py:30
+#: photoblog/photos/models.py:40
 msgid "description"
 msgstr "description"
 
-#: photoblog/photos/models.py:31
+#: photoblog/photos/models.py:41
 msgid "image"
 msgstr "image"
 
-#: photoblog/photos/views.py:84
+#: photoblog/photos/models.py:66 photoblog/photos/models.py:76
+msgid "tag"
+msgstr "tag"
+
+#: photoblog/photos/models.py:72
+msgid "photos"
+msgstr "photos"
+
+#: photoblog/photos/models.py:77
+msgid "tags"
+msgstr "tags"
+
+#: photoblog/photos/views.py:102
 msgid "Photo created."
 msgstr "Photo créée."
 
-#: photoblog/photos/views.py:109
+#: photoblog/photos/views.py:131
 msgid "Photo updated."
 msgstr "Photo mise à jour."
 
-#: photoblog/photos/views.py:131
+#: photoblog/photos/views.py:157
 msgid "Photo deleted."
 msgstr "Photo supprimée."
 
@@ -181,7 +201,7 @@ msgstr "Demander un nouveau code"
 #: templates/account/delete_account.html:28
 #: templates/comments/comment_form.html:16
 #: templates/photos/photo_confirm_delete.html:15
-#: templates/photos/photo_detail.html:63 templates/photos/photo_form.html:20
+#: templates/photos/photo_detail.html:78 templates/photos/photo_form.html:23
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -613,7 +633,7 @@ msgstr "<strong>Note :</strong> vous pouvez toujours <a class=\"underline\" href
 msgid "Edit Comment"
 msgstr "Modifier le commentaire"
 
-#: templates/comments/comment_form.html:12 templates/photos/photo_form.html:16
+#: templates/comments/comment_form.html:12 templates/photos/photo_form.html:19
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -646,7 +666,15 @@ msgstr "(facultatif)"
 msgid "Toggle password visibility"
 msgstr "Afficher/masquer le mot de passe"
 
-#: templates/forms/partials.html:143 templates/forms/partials.html:154
+#: templates/forms/partials.html:145
+msgid "Remove tag"
+msgstr "Supprimer le tag"
+
+#: templates/forms/partials.html:157
+msgid "Add tag…"
+msgstr "Ajouter un tag…"
+
+#: templates/forms/partials.html:178 templates/forms/partials.html:189
 msgid "Preview"
 msgstr "Aperçu"
 
@@ -670,7 +698,7 @@ msgstr "Parcourir les photos"
 msgid "Get started"
 msgstr "Commencer"
 
-#: templates/home.html:23 templates/navbar.html:113 templates/navbar.html:167
+#: templates/home.html:23 templates/navbar.html:113
 msgid "Sign in"
 msgstr "Se connecter"
 
@@ -718,47 +746,39 @@ msgstr "Administration du site"
 msgid "Sign out"
 msgstr "Se déconnecter"
 
-#: templates/navbar.html:116 templates/navbar.html:172
+#: templates/navbar.html:116
 msgid "Sign up"
 msgstr "S'inscrire"
-
-#: templates/navbar.html:123
-msgid "Toggle navigation menu"
-msgstr "Afficher/masquer le menu de navigation"
-
-#: templates/navbar.html:137 templates/navbar.html:153
-msgid "Mobile navigation"
-msgstr "Navigation mobile"
 
 #: templates/paginate.html:21
 msgid "Pagination"
 msgstr "Pagination"
 
-#: templates/paginate.html:29 templates/paginate.html:30
+#: templates/paginate.html:31 templates/paginate.html:32
 msgid "Previous Page"
 msgstr "Page précédente"
 
-#: templates/paginate.html:32 templates/paginate.html:38
+#: templates/paginate.html:34 templates/paginate.html:40
 msgid "Previous"
 msgstr "Précédent"
 
-#: templates/paginate.html:36 templates/paginate.html:37
+#: templates/paginate.html:38 templates/paginate.html:39
 msgid "First Page"
 msgstr "Première page"
 
-#: templates/paginate.html:43 templates/paginate.html:44
+#: templates/paginate.html:47 templates/paginate.html:48
 msgid "Next Page"
 msgstr "Page suivante"
 
-#: templates/paginate.html:46 templates/paginate.html:52
+#: templates/paginate.html:50 templates/paginate.html:56
 msgid "Next"
 msgstr "Suivant"
 
-#: templates/paginate.html:50 templates/paginate.html:51
+#: templates/paginate.html:54 templates/paginate.html:55
 msgid "Last Page"
 msgstr "Dernière page"
 
-#: templates/photos/partials.html:21
+#: templates/photos/partials.html:26
 msgid "No photos yet."
 msgstr "Aucune photo pour l'instant."
 
@@ -772,42 +792,42 @@ msgid "Are you sure you want to delete <strong>%(photo)s</strong>?"
 msgstr "Êtes-vous sûr de vouloir supprimer <strong>%(photo)s</strong> ?"
 
 #: templates/photos/photo_confirm_delete.html:12
-#: templates/photos/photo_detail.html:31 templates/photos/photo_detail.html:97
+#: templates/photos/photo_detail.html:46 templates/photos/photo_detail.html:113
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/photos/photo_detail.html:17
+#: templates/photos/photo_detail.html:7 templates/photos/photo_list.html:5
+msgid "Photos"
+msgstr "Photos"
+
+#: templates/photos/photo_detail.html:23
 #, python-format
 msgid "Posted by <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
 msgstr "Publié par <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
 
-#: templates/photos/photo_detail.html:24 templates/photos/photo_detail.html:85
+#: templates/photos/photo_detail.html:39 templates/photos/photo_detail.html:101
 msgid "Edit"
 msgstr "Modifier"
 
-#: templates/photos/photo_detail.html:45
+#: templates/photos/photo_detail.html:60
 msgid "Add comment"
 msgstr "Ajouter un commentaire"
 
-#: templates/photos/photo_detail.html:57
+#: templates/photos/photo_detail.html:72
 msgid "Submit"
 msgstr "Envoyer"
 
-#: templates/photos/photo_detail.html:92
+#: templates/photos/photo_detail.html:108
 msgid "Are you sure you want to delete this comment?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce commentaire ?"
 
-#: templates/photos/photo_detail.html:104
+#: templates/photos/photo_detail.html:120
 msgid "No comments yet."
 msgstr "Aucun commentaire pour l'instant."
 
-#: templates/photos/photo_form.html:5
+#: templates/photos/photo_form.html:10
 msgid "Photo"
 msgstr "Photo"
-
-#: templates/photos/photo_list.html:5
-msgid "Photos"
-msgstr "Photos"
 
 #: templates/photos/photo_list.html:9
 msgid "Search photos"
@@ -824,6 +844,11 @@ msgstr "Effacer"
 #: templates/photos/photo_list.html:23
 msgid "Add Photo"
 msgstr "Ajouter une photo"
+
+#: templates/photos/tag_detail.html:5
+#, python-format
+msgid "#%(tag)s"
+msgstr "#%(tag)s"
 
 #: templates/photos/user_photo_list.html:5
 #, python-format
@@ -922,8 +947,9 @@ msgid "Please note that cookies don't allow us to gain control of your computer 
 msgstr "Veuillez noter que les cookies ne nous permettent pas de prendre le contrôle de votre ordinateur de quelque manière que ce soit. Ils sont strictement utilisés pour surveiller les pages que vous trouvez utiles et celles que vous ne trouvez pas, afin que nous puissions vous offrir une meilleure expérience."
 
 #: templates/privacy.html:69
-msgid "If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href=\"https://www.internetcookies.com\" target=\"_blank\" rel=\"noopener\" class=\"link\">https://www.internetcookies.com</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices."
-msgstr "Si vous souhaitez désactiver les cookies, vous pouvez le faire en accédant aux paramètres de votre navigateur Internet. Vous pouvez visiter <a href=\"https://www.internetcookies.com\" target=\"_blank\" rel=\"noopener\" class=\"link\">https://www.internetcookies.com</a>, qui contient des informations complètes sur la façon de procéder sur une grande variété de navigateurs et d'appareils."
+#, python-format
+msgid "If you want to disable cookies, you can do it by accessing the settings of your internet browser. You can visit <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\" class=\"link\">%(url)s</a>, which contains comprehensive information on how to do this on a wide variety of browsers and devices."
+msgstr "Si vous souhaitez désactiver les cookies, vous pouvez le faire en accédant aux paramètres de votre navigateur Internet. Vous pouvez visiter <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\" class=\"link\">%(url)s</a>, qui contient des informations complètes sur la façon de procéder sur une grande variété de navigateurs et d'appareils."
 
 #: templates/privacy.html:76
 msgid "Links to Other Websites"
@@ -1011,6 +1037,12 @@ msgstr ""
 "        Vous êtes sur le point d'utiliser votre compte %(provider_name)s pour vous connecter à %(site_name)s.\n"
 "        En dernière étape, veuillez remplir le formulaire suivant :\n"
 "      "
+
+#~ msgid "Toggle navigation menu"
+#~ msgstr "Afficher/masquer le menu de navigation"
+
+#~ msgid "Mobile navigation"
+#~ msgstr "Navigation mobile"
 
 #~ msgid "Signed in as"
 #~ msgstr "Connecté en tant que"

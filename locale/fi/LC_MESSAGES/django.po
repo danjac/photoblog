@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: photoblog\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-27 19:48+0000\n"
+"POT-Creation-Date: 2026-03-28 22:14+0000\n"
 "PO-Revision-Date: 2026-03-27 19:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
@@ -32,27 +32,47 @@ msgstr "Kommentti päivitetty."
 msgid "Comment deleted."
 msgstr "Kommentti poistettu."
 
-#: photoblog/photos/models.py:29
+#: photoblog/photos/forms.py:16
+msgid "Tags"
+msgstr "Tagit"
+
+#: photoblog/photos/forms.py:17
+msgid "Space-separated list of tags"
+msgstr "Välilyönnillä eroteltu luettelo tageista"
+
+#: photoblog/photos/models.py:39
 msgid "title"
 msgstr "otsikko"
 
-#: photoblog/photos/models.py:30
+#: photoblog/photos/models.py:40
 msgid "description"
 msgstr "kuvaus"
 
-#: photoblog/photos/models.py:31
+#: photoblog/photos/models.py:41
 msgid "image"
 msgstr "kuva"
 
-#: photoblog/photos/views.py:84
+#: photoblog/photos/models.py:66 photoblog/photos/models.py:76
+msgid "tag"
+msgstr "tagi"
+
+#: photoblog/photos/models.py:72
+msgid "photos"
+msgstr "kuvat"
+
+#: photoblog/photos/models.py:77
+msgid "tags"
+msgstr "tagit"
+
+#: photoblog/photos/views.py:102
 msgid "Photo created."
 msgstr "Kuva luotu."
 
-#: photoblog/photos/views.py:109
+#: photoblog/photos/views.py:131
 msgid "Photo updated."
 msgstr "Kuva päivitetty."
 
-#: photoblog/photos/views.py:131
+#: photoblog/photos/views.py:157
 msgid "Photo deleted."
 msgstr "Kuva poistettu."
 
@@ -181,7 +201,7 @@ msgstr "Pyydä uusi koodi"
 #: templates/account/delete_account.html:28
 #: templates/comments/comment_form.html:16
 #: templates/photos/photo_confirm_delete.html:15
-#: templates/photos/photo_detail.html:63 templates/photos/photo_form.html:18
+#: templates/photos/photo_detail.html:78 templates/photos/photo_form.html:23
 msgid "Cancel"
 msgstr "Peruuta"
 
@@ -613,7 +633,7 @@ msgstr "<strong>Huomio:</strong> voit silti <a class=\"underline\" href=\"%(emai
 msgid "Edit Comment"
 msgstr "Muokkaa kommenttia"
 
-#: templates/comments/comment_form.html:12 templates/photos/photo_form.html:14
+#: templates/comments/comment_form.html:12 templates/photos/photo_form.html:19
 msgid "Save"
 msgstr "Tallenna"
 
@@ -646,7 +666,15 @@ msgstr "(valinnainen)"
 msgid "Toggle password visibility"
 msgstr "Näytä/piilota salasana"
 
-#: templates/forms/partials.html:143 templates/forms/partials.html:154
+#: templates/forms/partials.html:145
+msgid "Remove tag"
+msgstr "Poista tagi"
+
+#: templates/forms/partials.html:157
+msgid "Add tag…"
+msgstr "Lisää tagi…"
+
+#: templates/forms/partials.html:178 templates/forms/partials.html:189
 msgid "Preview"
 msgstr "Esikatselu"
 
@@ -670,7 +698,7 @@ msgstr "Selaa kuvia"
 msgid "Get started"
 msgstr "Aloita"
 
-#: templates/home.html:23 templates/navbar.html:113 templates/navbar.html:167
+#: templates/home.html:23 templates/navbar.html:113
 msgid "Sign in"
 msgstr "Kirjaudu sisään"
 
@@ -718,17 +746,9 @@ msgstr "Sivuston hallinta"
 msgid "Sign out"
 msgstr "Kirjaudu ulos"
 
-#: templates/navbar.html:116 templates/navbar.html:172
+#: templates/navbar.html:116
 msgid "Sign up"
 msgstr "Rekisteröidy"
-
-#: templates/navbar.html:123
-msgid "Toggle navigation menu"
-msgstr "Avaa/sulje navigointivalikko"
-
-#: templates/navbar.html:137 templates/navbar.html:153
-msgid "Mobile navigation"
-msgstr "Mobiilinavigaatio"
 
 #: templates/paginate.html:21
 msgid "Pagination"
@@ -758,7 +778,7 @@ msgstr "Seuraava"
 msgid "Last Page"
 msgstr "Viimeinen sivu"
 
-#: templates/photos/partials.html:21
+#: templates/photos/partials.html:26
 msgid "No photos yet."
 msgstr "Ei kuvia vielä."
 
@@ -772,42 +792,42 @@ msgid "Are you sure you want to delete <strong>%(photo)s</strong>?"
 msgstr "Haluatko varmasti poistaa kuvan <strong>%(photo)s</strong>?"
 
 #: templates/photos/photo_confirm_delete.html:12
-#: templates/photos/photo_detail.html:31 templates/photos/photo_detail.html:98
+#: templates/photos/photo_detail.html:46 templates/photos/photo_detail.html:113
 msgid "Delete"
 msgstr "Poista"
 
-#: templates/photos/photo_detail.html:17
+#: templates/photos/photo_detail.html:7 templates/photos/photo_list.html:5
+msgid "Photos"
+msgstr "Kuvat"
+
+#: templates/photos/photo_detail.html:23
 #, python-format
 msgid "Posted by <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
 msgstr "Lähettänyt <a href=\"%(user_photos_url)s\" class=\"link\">%(username)s</a>"
 
-#: templates/photos/photo_detail.html:24 templates/photos/photo_detail.html:86
+#: templates/photos/photo_detail.html:39 templates/photos/photo_detail.html:101
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: templates/photos/photo_detail.html:45
+#: templates/photos/photo_detail.html:60
 msgid "Add comment"
 msgstr "Lisää kommentti"
 
-#: templates/photos/photo_detail.html:57
+#: templates/photos/photo_detail.html:72
 msgid "Submit"
 msgstr "Lähetä"
 
-#: templates/photos/photo_detail.html:93
+#: templates/photos/photo_detail.html:108
 msgid "Are you sure you want to delete this comment?"
 msgstr "Haluatko varmasti poistaa tämän kommentin?"
 
-#: templates/photos/photo_detail.html:105
+#: templates/photos/photo_detail.html:120
 msgid "No comments yet."
 msgstr "Ei kommentteja vielä."
 
-#: templates/photos/photo_form.html:5
+#: templates/photos/photo_form.html:10
 msgid "Photo"
 msgstr "Kuva"
-
-#: templates/photos/photo_list.html:5
-msgid "Photos"
-msgstr "Kuvat"
 
 #: templates/photos/photo_list.html:9
 msgid "Search photos"
@@ -824,6 +844,11 @@ msgstr "Tyhjennä"
 #: templates/photos/photo_list.html:23
 msgid "Add Photo"
 msgstr "Lisää kuva"
+
+#: templates/photos/tag_detail.html:5
+#, python-format
+msgid "#%(tag)s"
+msgstr "#%(tag)s"
 
 #: templates/photos/user_photo_list.html:5
 #, python-format
@@ -1012,3 +1037,9 @@ msgstr ""
 "        Olet käyttämässä %(provider_name)s-tiliäsi kirjautuaksesi sivustoon %(site_name)s.\n"
 "        Viimeisenä vaiheena täytä seuraava lomake:\n"
 "      "
+
+#~ msgid "Toggle navigation menu"
+#~ msgstr "Avaa/sulje navigointivalikko"
+
+#~ msgid "Mobile navigation"
+#~ msgstr "Mobiilinavigaatio"

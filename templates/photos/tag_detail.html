@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+  {% blocktranslate asvar title with tag=tag.tag %}#{{ tag }}{% endblocktranslate %}
+  {% include "header.html" %}
+  {% partialdef pagination inline %}
+    {% fragment "paginate.html" %}
+      {% include "photos/partials.html#photo_list" %}
+    {% endfragment %}
+  {% endpartialdef pagination %}
+{% endblock content %}

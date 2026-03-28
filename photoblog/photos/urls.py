@@ -15,4 +15,5 @@ urlpatterns: list[URLPattern | URLResolver] = [
     path("<int:pk>/", views.photo_detail, name="photo_detail"),
     path("<int:pk>/edit/", views.photo_edit, name="photo_edit"),
     path("<int:pk>/delete/", views.photo_delete, name="photo_delete"),
+    path("tags/<slug:tag>/", views.tag_detail, name="tag_detail"),
 ]

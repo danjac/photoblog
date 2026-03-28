@@ -17,7 +17,7 @@ from photoblog.http.decorators import require_form_methods
 from photoblog.paginator import PaginationConfig, render_paginated_response
 from photoblog.partials import render_partial_response
 from photoblog.photos.forms import PhotoForm
-from photoblog.photos.models import Photo
+from photoblog.photos.models import Photo, Tag
 from photoblog.users.models import User
 
 if TYPE_CHECKING:
@@ -54,9 +54,26 @@ def photo_list(request: HttpRequest) -> TemplateResponse:
 
 @require_safe
 @login_required
+def tag_detail(request: HttpRequest, tag: str) -> TemplateResponse:
+    """Display a paginated list of photos for a given tag."""
+    tag_obj = get_object_or_404(Tag, tag=tag)
+    return render_paginated_response(
+        request,
+        "photos/tag_detail.html",
+        Photo.objects.filter(tags=tag_obj)
+        .only("pk", "title", "image")
+        .order_by("-created"),
+        extra_context={"tag": tag_obj},
+    )
+
+
+@require_safe
+@login_required
 def photo_detail(request: HttpRequest, pk: int) -> TemplateResponse:
     """Display a single photo."""
-    photo = get_object_or_404(Photo.objects.select_related("user"), pk=pk)
+    photo = get_object_or_404(
+        Photo.objects.select_related("user").prefetch_related("tags"), pk=pk
+    )
     comment_form = CommentForm() if request.user.is_authenticated else None
     comments = (
         Comment.objects.filter(photo=photo).select_related("user").order_by("-created")
@@ -81,6 +98,7 @@ def photo_create(request: HttpRequest) -> RenderOrRedirectResponse:
             photo = form.save(commit=False)
             photo.user = request.user
             photo.save()
+            form.save_tags(photo)
             messages.success(request, _("Photo created."))
             return redirect(photo)
     else:
@@ -109,6 +127,7 @@ def photo_edit(request: HttpRequest, pk: int) -> RenderOrRedirectResponse:
         form = PhotoForm(request.POST, request.FILES, instance=photo)
         if form.is_valid():
             form.save()
+            form.save_tags(photo)
             messages.success(request, _("Photo updated."))
             return redirect(photo)
     else:

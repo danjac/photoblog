@@ -1,7 +1,8 @@
 import pytest
+from django.db import IntegrityError
 
 from photoblog.photos.models import Photo
-from photoblog.photos.tests.factories import PhotoFactory
+from photoblog.photos.tests.factories import PhotoFactory, TagFactory
 
 
 @pytest.mark.django_db
@@ -13,6 +14,16 @@ class TestPhoto:
     def test_str(self):
         obj = PhotoFactory()
         assert str(obj) == obj.title
+
+    def test_get_tags_returns_tag_names(self):
+        photo = PhotoFactory()
+        tag = TagFactory(tag="nature")
+        photo.tags.add(tag)
+        assert list(photo.get_tags()) == ["nature"]
+
+    def test_get_tags_empty(self):
+        photo = PhotoFactory()
+        assert list(photo.get_tags()) == []
 
 
 @pytest.mark.django_db
@@ -42,3 +53,19 @@ class TestPhotoSearch:
         assert hasattr(
             Photo.objects.search("annotated", annotation="score").first(), "score"
         )
+
+
+@pytest.mark.django_db
+class TestTag:
+    def test_create(self):
+        obj = TagFactory()
+        assert obj.pk is not None
+
+    def test_str(self):
+        obj = TagFactory(tag="nature")
+        assert str(obj) == "nature"
+
+    def test_tag_unique(self):
+        TagFactory(tag="duplicate")
+        with pytest.raises(IntegrityError):
+            TagFactory(tag="duplicate")

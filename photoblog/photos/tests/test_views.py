@@ -5,8 +5,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse, reverse_lazy
 from PIL import Image
 
-from photoblog.photos.models import Photo
-from photoblog.photos.tests.factories import PhotoFactory
+from photoblog.photos.models import Photo, Tag
+from photoblog.photos.tests.factories import PhotoFactory, TagFactory
 
 
 def _make_image():
@@ -103,6 +103,21 @@ class TestPhotoCreate:
         photo = Photo.objects.get()
         assert response.url == photo.get_absolute_url()
 
+    def test_post_valid_creates_tags(self, client, auth_user):
+        client.post(
+            self.url,
+            data={"title": "My Photo", "image": _make_image(), "tags": "nature travel"},
+        )
+        assert Tag.objects.filter(tag="nature").exists()
+        assert Tag.objects.filter(tag="travel").exists()
+
+    def test_post_valid_lowercases_tags(self, client, auth_user):
+        client.post(
+            self.url,
+            data={"title": "My Photo", "image": _make_image(), "tags": "Nature"},
+        )
+        assert Tag.objects.filter(tag="nature").exists()
+
     def test_redirect_if_not_logged_in(self, client):
         response = client.get(reverse("photos:photo_create"))
         assert response.url.startswith(reverse("account_login"))
@@ -149,6 +164,31 @@ class TestPhotoEdit:
         )
         assert response.url == photo_url
 
+    def test_post_valid_saves_tags(self, client, auth_user):
+        photo = PhotoFactory(user=auth_user)
+        client.post(
+            reverse("photos:photo_edit", args=[photo.pk]),
+            data={"title": "Updated", "image": _make_image(), "tags": "nature"},
+        )
+        assert list(photo.get_tags()) == ["nature"]
+
+    def test_post_valid_replaces_existing_tags(self, client, auth_user):
+        photo = PhotoFactory(user=auth_user)
+        tag = TagFactory(tag="old")
+        photo.tags.add(tag)
+        client.post(
+            reverse("photos:photo_edit", args=[photo.pk]),
+            data={"title": "Updated", "image": _make_image(), "tags": "new"},
+        )
+        assert list(photo.get_tags()) == ["new"]
+
+    def test_get_populates_tags_initial(self, client, auth_user):
+        photo = PhotoFactory(user=auth_user)
+        tag = TagFactory(tag="nature")
+        photo.tags.add(tag)
+        response = client.get(reverse("photos:photo_edit", args=[photo.pk]))
+        assert response.context["form"].fields["tags"].initial == "nature"
+
     def test_permission_denied_if_not_owner(self, client, auth_user, other_user_photo):
         response = client.get(reverse("photos:photo_edit", args=[other_user_photo.pk]))
         assert response.status_code == 403
@@ -181,3 +221,28 @@ class TestPhotoDelete:
             reverse("photos:photo_delete", args=[other_user_photo.pk])
         )
         assert response.status_code == 403
+
+
+@pytest.mark.django_db
+class TestTagDetail:
+    def test_get(self, client, auth_user):
+        TagFactory(tag="nature")
+        response = client.get(reverse("photos:tag_detail", args=["nature"]))
+        assert response.status_code == 200
+
+    def test_htmx_partial(self, client, auth_user):
+        TagFactory(tag="nature")
+        response = client.get(
+            reverse("photos:tag_detail", args=["nature"]),
+            headers={"HX-Request": "true", "HX-Target": "pagination"},
+        )
+        assert response.status_code == 200
+
+    def test_404(self, client, auth_user):
+        response = client.get(reverse("photos:tag_detail", args=["nonexistent"]))
+        assert response.status_code == 404
+
+    def test_redirect_if_not_logged_in(self, client):
+        TagFactory(tag="nature")
+        response = client.get(reverse("photos:tag_detail", args=["nature"]))
+        assert response.status_code == 302

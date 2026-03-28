@@ -67,15 +67,26 @@ If `<n>` > `webapp_count`, advise:
 
 > You're scaling to `<n>` replicas but only have `<webapp_count>` Hetzner
 > node(s). Consider increasing `webapp_count` in
-> `terraform/hetzner/terraform.tfvars` to `<n>` and running:
->
-> ```bash
-> just tf hetzner apply
-> ```
+> `terraform/hetzner/terraform.tfvars` to `<n>` first.
 >
 > Provision additional nodes first? [y/n]
 
-If yes, update `webapp_count` in `terraform.tfvars` and run `just tf hetzner apply`.
+If yes, update `webapp_count` in `terraform.tfvars` and run:
+
+```bash
+just terraform hetzner plan
+```
+
+Show the plan output, then ask:
+
+> Proceed with apply? [y/n]
+
+If yes:
+
+```bash
+just terraform hetzner apply -auto-approve
+```
+
 Wait for it to complete before proceeding.
 
 If no, proceed with the current node count (Kubernetes will schedule pods as best
@@ -96,7 +107,7 @@ just deploy-config
 ### Step 5 — Verify
 
 ```bash
-kubectl get pods -l app=django-app
+just --yes rkube get pods -l app=django-app
 ```
 
 Confirm the expected number of pods are running.

@@ -16,8 +16,10 @@ This project uses Django forms for HTML form submissions, with
 - [Common Custom Widgets](#common-custom-widgets)
   - [Thumbnail Widget](#thumbnail-widget)
   - [Multiple File Upload](#multiple-file-upload)
+  - [Tag Widget](#tag-widget)
   - [MoneyWidget](#moneywidget)
   - [django-countries LazySelect](#django-countries-lazyselect)
+- [Alpine Widget JS and class Media](#alpine-widget-js-and-class-media)
 
 ## Form View Pattern
 
@@ -223,6 +225,9 @@ from django.forms.widgets import FileInput
 
 class ThumbnailWidget(FileInput):
     """File input widget that renders a sorl thumbnail preview in forms/partials.html."""
+
+    class Media:
+        js = ("widgets/thumbnail.js",)
 ```
 
 Use it via `Meta.widgets`:
@@ -242,31 +247,57 @@ Add the `thumbnailwidget` partialdef to `forms/partials.html`:
 {% partialdef thumbnailwidget %}
   {% load thumbnail %}
   {% partial label %}
-  <div
-    x-data="{ previewUrl: null }"
-    @change="previewUrl = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
-  >
-    {% with image=field.field.widget.image %}
-      {% if image %}
-        {% thumbnail image "340x240" crop="center" as im %}
+  {% with image=field.field.widget.image %}
+    {% if image %}
+      {% thumbnail image "340x240" crop="center" as im %}
+        <div x-data="thumbnailWidget()">
           <img
-            src="{{ im.url }}"
             :src="previewUrl ?? '{{ im.url }}'"
             alt="{% translate "Preview" %}"
             width="{{ im.width }}"
             height="{{ im.height }}"
             class="mb-2 rounded-lg"
           />
-        {% endthumbnail %}
-      {% else %}
+          <input
+            type="file"
+            name="{{ field.html_name }}"
+            id="{{ field.id_for_label }}"
+            class="file-input"
+            @change="onFileChange"
+          >
+        </div>
+      {% endthumbnail %}
+    {% else %}
+      <div x-data="thumbnailWidget()">
         <template x-if="previewUrl">
           <img :src="previewUrl" alt="{% translate "Preview" %}" width="340" height="240" class="mb-2 rounded-lg" />
         </template>
-      {% endif %}
-    {% endwith %}
-    {% render_field field class="file-input" %}
-  </div>
+        <input
+          type="file"
+          name="{{ field.html_name }}"
+          id="{{ field.id_for_label }}"
+          class="file-input"
+          @change="onFileChange"
+        >
+      </div>
+    {% endif %}
+  {% endwith %}
 {% endpartialdef thumbnailwidget %}
+```
+
+Create `static/widgets/thumbnail.js`:
+
+```js
+document.addEventListener('alpine:init', () => {
+  Alpine.data('thumbnailWidget', () => ({
+    previewUrl: null,
+
+    onFileChange(event) {
+      const file = event.target.files[0];
+      this.previewUrl = file ? URL.createObjectURL(file) : null;
+    },
+  }));
+});
 ```
 
 Then render normally:
@@ -316,6 +347,109 @@ Django form submission works normally.
 - The upload/delete workflow for existing server-side files is project-specific —
   implement via HTMX partial swaps.
 
+### Tag Widget
+
+`TagWidget` is a `TextInput` subclass that renders an Alpine.js pill/chip tag editor.
+Tags are stored as a space-separated string in the database; the widget splits and
+joins on spaces. Create the widget class in `widgets.py`:
+
+```python
+from django.forms.widgets import TextInput
+
+
+class TagWidget(TextInput):
+    """Text input that renders as an Alpine.js pill/chip tag editor in forms/partials.html."""
+
+    class Media:
+        js = ("widgets/tags.js",)
+```
+
+Add the `tagwidget` partialdef to `templates/forms/partials.html`:
+
+```html
+{# Tag chip widget — pill editor backed by a hidden text input #}
+{% partialdef tagwidget %}
+  {% partial label %}
+  <div
+    x-data="tagWidget('{{ field.value|default:''|escapejs }}')"
+    class="space-y-2"
+  >
+    <div class="flex flex-wrap gap-2 items-center py-2 !h-auto input"
+         @click="$refs.tagInput.focus()">
+      <template x-for="tag in tags" :key="tag">
+        <span class="gap-1 badge badge-outline">
+          <span x-text="tag"></span>
+          <button
+            type="button"
+            @click.stop="removeTag(tag)"
+            aria-label="{% translate "Remove tag" %}"
+          >
+            {% heroicon_mini "x-mark" class="size-3" aria_hidden="true" %}
+          </button>
+        </span>
+      </template>
+      <input
+        type="text"
+        x-ref="tagInput"
+        @input="onInput"
+        @keydown.enter.prevent="addTag()"
+        @keydown.backspace="$refs.tagInput.value === '' && removeLastTag()"
+        placeholder="{% translate "Add tag…" %}"
+        class="flex-1 text-sm bg-transparent outline-none min-w-20"
+      >
+    </div>
+    <input type="hidden" name="{{ field.html_name }}" :value="tags.join(' ')">
+  </div>
+{% endpartialdef tagwidget %}
+```
+
+Create `static/widgets/tags.js`:
+
+```js
+document.addEventListener('alpine:init', () => {
+  Alpine.data('tagWidget', (initial) => ({
+    tags: initial ? initial.trim().split(/\s+/) : [],
+
+    onInput(event) {
+      const value = event.target.value;
+      if (!value.endsWith(' ')) return;
+      const tag = value.trim().toLowerCase();
+      event.target.value = '';
+      if (tag && !this.tags.includes(tag)) {
+        this.tags = [...this.tags, tag];
+      }
+    },
+
+    addTag() {
+      const tag = this.$refs.tagInput.value.trim().toLowerCase();
+      this.$refs.tagInput.value = '';
+      if (tag && !this.tags.includes(tag)) {
+        this.tags = [...this.tags, tag];
+      }
+    },
+
+    removeTag(tag) {
+      this.tags = this.tags.filter((t) => t !== tag);
+    },
+
+    removeLastTag() {
+      if (this.tags.length > 0) {
+        this.tags = this.tags.slice(0, -1);
+      }
+    },
+  }));
+});
+```
+
+The hidden input uses `:value="tags.join(' ')"` (reactive binding) so Alpine always
+keeps it in sync with the displayed chips.
+
+Then render normally:
+
+```html
+{{ form.tags.as_field_group }}
+```
+
 ### MoneyWidget
 
 [django-money](https://github.com/django-money/django-money) pairs `MoneyField` with
@@ -343,3 +477,42 @@ identically to a standard `<select>`, so no custom partial is needed — the exi
 {# django-countries LazySelect (same as a regular select) #}
 {% partialdef lazyselect %}{% partial select %}{% endpartialdef %}
 ```
+
+## Alpine Widget JS and class Media
+
+When a widget uses a reusable, named Alpine component (registered via `Alpine.data()`),
+load the JS through `class Media` rather than inlining it in the partial template:
+
+```python
+class ThumbnailWidget(FileInput):
+    class Media:
+        js = ("widgets/thumbnail.js",)
+
+
+class TagWidget(TextInput):
+    class Media:
+        js = ("widgets/tags.js",)
+```
+
+The form template renders `{{ form.media }}` in `{% block scripts %}`, which collects
+and deduplicates JS from every widget on the form automatically. Place static files
+under `static/widgets/`.
+
+Simple inline `x-data` objects — a single reactive variable, no shared logic — do not
+need a separate file. Use `class Media` when the component has methods or state complex
+enough to benefit from browser caching and reuse across forms.
+
+**Inline is fine** — the `passwordinput` partial uses a single boolean toggle; no
+separate file is warranted:
+
+```html
+<div x-data="{ show: false }" class="relative">
+  ...
+  <button x-on:click="show = !show; $refs.password.type = show ? 'text' : 'password';">
+  ...
+</div>
+```
+
+**Use `class Media`** — `TagWidget` and `ThumbnailWidget` register named
+`Alpine.data()` components with multiple methods; these belong in static files loaded
+via `class Media` so the browser can cache and deduplicate them across forms.

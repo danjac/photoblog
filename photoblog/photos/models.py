@@ -1,3 +1,5 @@
+import pathlib
+import uuid
 from typing import TYPE_CHECKING
 
 import sorl.thumbnail
@@ -15,6 +17,16 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from django.db.models import Manager
+
+
+def upload_handler(instance: object, filename: str) -> str:
+    """Generate a unique upload path for photo images.
+
+    Replaces the original filename with a UUID hex string, preserving the
+    file extension. Guarantees no filename collisions between uploads.
+    """
+    ext = pathlib.Path(filename).suffix.lower()
+    return f"photos/{uuid.uuid4().hex}{ext}"
 
 
 class PhotoQuerySet(Searchable, models.QuerySet["Photo"]):
@@ -38,7 +50,7 @@ class Photo(models.Model):
     )
     title = models.CharField(max_length=250, verbose_name=_("title"))
     description = models.TextField(blank=True, verbose_name=_("description"))
-    image = sorl.thumbnail.ImageField(upload_to="photos/", verbose_name=_("image"))
+    image = sorl.thumbnail.ImageField(upload_to=upload_handler, verbose_name=_("image"))
     search_vector = SearchVectorField(null=True, editable=False)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)

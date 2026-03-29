@@ -1,8 +1,26 @@
 import pytest
 from django.db import IntegrityError
 
-from photoblog.photos.models import Photo
+from photoblog.photos.models import Photo, upload_handler
 from photoblog.photos.tests.factories import PhotoFactory, TagFactory
+
+
+class TestUploadHandler:
+    def test_extension_preserved(self):
+        assert upload_handler(None, "photo.jpg").endswith(".jpg")
+
+    def test_extension_lowercased(self):
+        assert upload_handler(None, "photo.JPG").endswith(".jpg")
+
+    def test_stored_under_photos_dir(self):
+        assert upload_handler(None, "photo.jpg").startswith("photos/")
+
+    def test_unique_per_call(self):
+        assert upload_handler(None, "photo.jpg") != upload_handler(None, "photo.jpg")
+
+    def test_original_name_discarded(self):
+        path = upload_handler(None, "my_holiday.jpg")
+        assert "my_holiday" not in path
 
 
 @pytest.mark.django_db

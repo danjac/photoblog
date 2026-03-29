@@ -1,13 +1,14 @@
 from allauth.account.models import EmailAddress
 from factory import django
-from factory.declarations import LazyAttribute, Sequence, SubFactory
+from factory.declarations import LazyAttribute, SubFactory
+from factory.faker import Faker
 
 from photoblog.users.models import User
 
 
 class UserFactory(django.DjangoModelFactory):
-    username = Sequence(lambda n: f"user-{n}")
-    email = Sequence(lambda n: f"user-{n}@example.com")
+    username = Faker("user_name")
+    email = Faker("email")
     password = django.Password("testpass")
 
     class Meta:

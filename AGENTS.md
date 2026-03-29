@@ -203,9 +203,9 @@ Available in Claude Code and OpenCode as `/dj-<command>`.
 
 **Localisation**
 
-| Command                  | Purpose                                           |
-| ------------------------ | ------------------------------------------------- |
-| `/dj-translate <locale>` | Extract, translate, and compile message catalogue |
+| Command | Purpose |
+| ------- | ------- |
+| `/dj-localize <locale>` | Add localization formats, extract, translate, and compile message catalogue |
 
 **Audits**
 

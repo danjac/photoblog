@@ -89,6 +89,10 @@
       "template": ".agents/skills/dj-launch-observability/SKILL.md",
       "description": "Deploy the observability stack (Grafana + Prometheus + Loki)"
     },
+    "dj-localize": {
+      "template": ".agents/skills/dj-localize/SKILL.md",
+      "description": "Add localization formats, extract strings, translate using agent, compile .mo catalogue"
+    },
     "dj-perf": {
       "template": ".agents/skills/dj-perf/SKILL.md",
       "description": "Performance audit: N+1 queries, missing indexes, caching, async"

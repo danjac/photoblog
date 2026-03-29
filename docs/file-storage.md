@@ -143,6 +143,63 @@ Storage is S3-compatible, so the same library works without modification.
 `django-storages[s3]` is included in `pyproject.toml`. It brings in `boto3` as a transitive
 dependency. No manual `uv add` is needed.
 
+## Unique Filenames
+
+Django's default `upload_to="path/"` stores files at their original name, which causes
+collisions when two users upload files with the same name — or a user double-submits.
+Collisions also poison the sorl-thumbnail cache: deleting one duplicate wipes the shared
+cache entry and breaks thumbnails for the surviving record.
+
+Use a callable `upload_to` that generates a UUID-based filename on every upload.
+
+### Simple function
+
+```python
+import pathlib
+import uuid
+
+from django.db.models import Model
+
+
+def upload_handler(instance: Model, filename: str) -> str:
+    ext = pathlib.Path(filename).suffix.lower()
+    return f"uploads/{uuid.uuid4().hex}{ext}"
+
+
+image = models.ImageField(upload_to=upload_handler)
+```
+
+### Reusable class (multiple fields/directories)
+
+When you have many `FileField`/`ImageField` across a model or project, use a
+`@deconstructible` class so each field can specify its own directory while Django's
+migration framework can serialise the callable:
+
+```python
+import pathlib
+import uuid
+
+from django.db.models import Model
+from django.utils.deconstruct import deconstructible
+
+
+@deconstructible
+class UploadHandler:
+    def __init__(self, dirname: str) -> None:
+        self.dirname = dirname
+
+    def __call__(self, instance: Model, filename: str) -> str:
+        ext = pathlib.Path(filename).suffix.lower()
+        return f"{self.dirname}/{uuid.uuid4().hex}{ext}"
+
+
+avatar = models.ImageField(upload_to=UploadHandler("avatars"))
+document = models.FileField(upload_to=UploadHandler("documents"))
+```
+
+Both patterns guarantee unique filenames per upload, prevent storage collisions, and
+ensure thumbnail caches are never shared between records.
+
 ## sorl-thumbnail
 
 For image resizing, thumbnail generation, and upload form widgets, see `docs/images.md`.

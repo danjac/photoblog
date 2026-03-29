@@ -62,6 +62,7 @@ def tag_detail(request: HttpRequest, tag: str) -> TemplateResponse:
         "photos/tag_detail.html",
         Photo.objects.filter(tags=tag_obj)
         .only("pk", "title", "image")
+        .distinct()
         .order_by("-created"),
         extra_context={"tag": tag_obj},
     )

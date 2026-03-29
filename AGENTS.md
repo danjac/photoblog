@@ -100,6 +100,20 @@ See `docs/django-forms.md`.
 
 **Documentation**: When updating a `docs/` file, keep its `## Contents` table of contents in sync. If a doc lacks a ToC and has 8+ `##` sections or 250+ lines, add one below the intro paragraph.
 
+## General Rules
+
+STOP and ask before applying a fix. Before making any changes, state your hypothesis about
+the root cause and which files you plan to modify. Wait for confirmation before proceeding.
+If the user corrects you, re-read the relevant code/docs before responding.
+
+Do not make excessive or environment-specific changes beyond what was requested. If the
+user asks for a targeted edit, make only that edit. Ask before adding dev/staging/production
+variants.
+
+When the user corrects you or says 'stop', immediately stop, acknowledge the correction,
+and re-examine the situation from scratch. Do not repeat the same approach or question the
+user's stated facts.
+
 ## Working Conventions
 
 ### Required reading before implementation
@@ -228,6 +242,27 @@ The following MCP servers are configured in `.mcp.json` (gitignored, generated a
 Use `postgres` and `django` to debug data issues. Use `playwright` to investigate E2E failures interactively.
 
 See `docs/mcp.md` for details.
+
+## Django
+
+When working with Django migrations: use `reverse_code` (not `reverse_func`), never add
+`--run-syncdb`, and confirm the makemigrations command with the user before running it.
+
+For i18n/translation work, READ `docs/localization.md` before making any changes. Follow
+the exact syntax patterns documented there. Do not claim templates are correct without
+verifying against the docs.
+
+## Deployment & Operations
+
+When rotating secrets or credentials, ALWAYS verify the change worked before proceeding.
+Never assume `ALTER ROLE`, password changes, or credential updates succeeded — run a
+connection test. Update ALL references (`DATABASE_URL`, `REDIS_URL`, etc.) atomically.
+
+## GitHub Issues
+
+When asked to "fix all open issues": work on them ONE AT A TIME sequentially — do not use
+parallel agents or worktrees. For each: create branch, fix, test, open PR, then move to
+the next issue.
 
 ## Template Feedback
 

@@ -597,6 +597,7 @@ LANGUAGES = [
     ("fr", "Français"),
     ("fi", "Suomi"),
     ("sv", "Svenska"),
+    ("uk", "Українська"),
 ]
 
 # Media files / Object Storage

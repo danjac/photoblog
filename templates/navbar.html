@@ -36,7 +36,7 @@
         @click="toggle()"
       >
         {% heroicon_mini "globe-alt" class="size-5 shrink-0" aria_hidden="true" %}
-        <span class="hidden sm:inline">{{ current_language|upper }}</span>
+        {% for lang in language_info_list %}{% if lang.code == current_language %}<span class="hidden sm:inline">{{ lang.name_local }}</span>{% endif %}{% endfor %}
         {% heroicon_mini "chevron-down" class="size-4" aria_hidden="true" %}
       </button>
       <ul

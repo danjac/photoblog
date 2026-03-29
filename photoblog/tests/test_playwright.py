@@ -57,5 +57,5 @@ def test_language_switcher_changes_language(page: Page, live_server):
     # Click Français in the menu
     page.get_by_role("button", name="Français").click()
 
-    # After the POST + redirect, the navbar should show "FR" as the active language code
-    expect(page.locator("header")).to_contain_text("FR")
+    # After the POST + redirect, the navbar should show the native language name
+    expect(page.locator("header")).to_contain_text("français")
